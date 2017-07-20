@@ -1,139 +1,24 @@
-﻿@{
-    ViewBag.Title = "Home Page";
-}
-
-@section scripts
-{
-    <style type="text/css">
-        .minus_plus {
-            pointer-events: none;
-        }
-
-
-        /*wyłączanie pointer-eventów od elementów w svg czyli w każdym węźle*/
-        .tree-element *:not(rect) {
-            pointer-events: none;
-        }
-
-
-        .tree-element .tree-element-frame:hover {
-            stroke: #808080;
-        }
-
-        .move-tree:hover {
-            stroke-linecap: round;
-            stroke-miterlimit: 6;
-            stroke: #808080;
-            stroke-width: 2;
-        }
-
-        .zoom-tree:hover {
-            fill: #808080;
-        }
-    </style>
-
-
-    <script type="text/javascript">
-
-        var lastClickedRect = null;
-
-        $(document).ready(function () {
-
-            // włączanie czerwonej ramki dla obwódki wybranego członka rodziny i zmiany klasy na tree-element-frame-active
-            $('.tree-element').click(function () {
-                if (lastClickedRect != null) {
-                    lastClickedRect.children('.tree-element-frame-active').attr('stroke', 'black');
-                    lastClickedRect.children('.tree-element-frame-active').attr('class', 'tree-element-frame');
-                }
-
-                $(this).children('.tree-element-frame').attr('stroke', 'red');
-                $(this).children('.tree-element-frame').attr('class', 'tree-element-frame-active');
-
-                lastClickedRect = $(this);
-
-            });
-
-
-        });
-
-        function move(dx, dy)
-        {
-            var matrix = $('.tree').attr('transform');
-            matrix = matrix.substring(7, matrix.length - 1);
-            matrix = matrix.split(' ');
-
-            matrix[4] = parseInt(matrix[4]) + dx;
-            matrix[5] = parseInt(matrix[5]) + dy;
-
-            $('.tree').attr('transform', "matrix(" + matrix[0] + ' ' + matrix[1] + ' ' + matrix[2] + ' ' + matrix[3] + ' ' + matrix[4] + ' ' + matrix[5] + ')');
-        }
-
-        function scale(scale)
-        {
-            var matrix = $('.tree').attr('transform');
-            matrix = matrix.substring(7, matrix.length - 1);
-            matrix = matrix.split(' ');
-
-            for (var i = 0; i < matrix.length; i++) {
-                matrix[i] *= scale;
-            }
-
-            matrix[4] += (1 - scale) * parseInt($('.svg_container').width()) / 2;
-            matrix[5] += (1 - scale) * parseInt($('.svg_container').height()) / 2;
-
-            $('.tree').attr('transform', "matrix(" + matrix[0] + ' ' + matrix[1] + ' ' + matrix[2] + ' ' + matrix[3] + ' ' + matrix[4] + ' ' + matrix[5] + ')');
-        }
-
-
-    </script>
-}
-
-
-<div class="jumbotron">
+﻿<div class="jumbotron">
     <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
+    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS, and JavaScript.</p>
     <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
 </div>
-
 <div class="row">
-
-    <svg class="svg_container" height="1000" width="100%" style="border:1px gray solid">
-
-        <g class="tree" transform="matrix(2 0 0 2 0 0)">
-
-            <svg class="tree-element" id="1" width="200" height="100" x="50" y="50">
-                <rect class="tree-element-frame" width="200" height="100" x="0" y="0" fill="white" stroke="black" />
-                <text x="50%" y="10%" textLength="200" lengthAdjust="spacing" font-family="Verdana" font-size="12" fill="blue" alignment-baseline="middle" text-anchor="middle">Krzysztof Jan Dobrowoski-Łapiński</text>
-
-                <image width="50" height="50" x="25" y="25" xlink:href="~/cb98.jpg" />
-            </svg>
-
-            <svg class="tree-element" id="2" width="200" height="100" x="300" y="50">
-                <rect class="tree-element-frame" width="200" height="100" x="0" y="0" fill="white" stroke="black" />
-                <text x="50%" y="10%" font-family="Verdana" font-size="12" fill="blue" alignment-baseline="middle" text-anchor="middle">Krzysztof</text>
-            </svg>
-        </g>
-
-        <!-- Kontrolka do przewijania -->
-        <circle cx="50" cy="50" r="42" fill="white" opacity="0.75"></circle>
-        <path class="move-tree" onclick="move(0,50)" d="M50 10 l12 20 a40, 70 0 0, 0 -24, 0z"></path>
-        <path class="move-tree" onclick="move(50,0)" d="M10 50 l20 -12 a70, 40 0 0, 0 0, 24z"></path>
-        <path class="move-tree" onclick="move(0,-50)" d="M50 90 l12 -20 a40, 70 0 0, 1 -24, 0z"></path>
-        <path class="move-tree" onclick="move(-50,0)" d="M90 50 l-20 -12 a70, 40 0 0, 1 0, 24z"></path>
-
-        <!-- Otoczka powiększ/pomniejsz-->
-        <circle cx="50" cy="50" r="20" fill="white" stroke="black" stroke-width="1" />
-
-        <!-- Powiększ/pomniejsz-->
-        <circle class="zoom-tree" onclick="scale(0.8)" cx="50" cy="40" r="7" fill="white" stroke="black" stroke-width="1" onclick="scale()" />
-        <circle class="zoom-tree" onclick="scale(1.25)" cx="50" cy="60" r="7" fill="white" stroke="black" stroke-width="1" />
-
-        <!-- Minus/Plus pomniejszania-->
-        <rect class="minus_plus" x="45" y="38.5" width="10" height="3" />
-
-        <rect class="minus_plus" x="45" y="58.5" width="10" height="3" />
-        <rect class="minus_plus" x="48.5" y="55" width="3" height="10" />
-
-
-    </svg>
+    <div class="col-md-4">
+        <h2>Getting started</h2>
+        <p>ASP.NET Web API is a framework that makes it easy to build HTTP services that reach
+        a broad range of clients, including browsers and mobile devices. ASP.NET Web API
+        is an ideal platform for building RESTful applications on the .NET Framework.</p>
+        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301870">Learn more &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Get more libraries</h2>
+        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
+        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301871">Learn more &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Web Hosting</h2>
+        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
+        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301872">Learn more &raquo;</a></p>
+    </div>
 </div>
