@@ -38,6 +38,7 @@
         var lastClickedRect = null;
 
         $(document).ready(function () {
+            //$("#modal_loading").modal({ backdrop: 'static', keyboard: false }) okienko z loadingiem
 
             // włączanie czerwonej ramki dla obwódki wybranego członka rodziny i zmiany klasy na tree-element-frame-active
             $('.tree-element').click(function () {
@@ -125,8 +126,8 @@
         <circle cx="50" cy="50" r="20" fill="white" stroke="black" stroke-width="1" />
 
         <!-- Powiększ/pomniejsz-->
-        <circle class="zoom-tree" onclick="scale(0.8)" cx="50" cy="40" r="7" fill="white" stroke="black" stroke-width="1" onclick="scale()" />
-        <circle class="zoom-tree" onclick="scale(1.25)" cx="50" cy="60" r="7" fill="white" stroke="black" stroke-width="1" />
+        <circle class="zoom-tree" onclick="scale(0.8)" cx="50" cy="40" r="7" fill="white" stroke="black" stroke-width="1"/>
+        <circle class="zoom-tree" onclick="scale(1.25)" cx="50" cy="60" r="7" fill="white" stroke="black" stroke-width="1"/>
 
         <!-- Minus/Plus pomniejszania-->
         <rect class="minus_plus" x="45" y="38.5" width="10" height="3" />
@@ -136,4 +137,14 @@
 
 
     </svg>
+</div>
+
+
+<!-- Okno modalne operacja w tle -->
+<div id="modal_loading" class="modal fade" role="dialog">
+    <div class="modal-dialog" style="width:90px;">
+        <div class="modal-content" style="margin:10%;">
+            <img src="/images/ajax-loader.gif" id="loading-indicator" />
+        </div>
+    </div>
 </div>
