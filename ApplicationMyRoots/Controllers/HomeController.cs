@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ApplicationMyRoots.Common;
+using ApplicationMyRoots.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,11 +10,20 @@ namespace ApplicationMyRoots.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+        public ActionResult MyTree()
         {
-            ViewBag.Title = "Home Page";
+            if(ResourceManager.LoggedUser != null)
+            {
+                ViewBag.Title = "My Tree";
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("LogIn", "Login");
+            }
 
-            return View();
+
+
         }
     }
 }

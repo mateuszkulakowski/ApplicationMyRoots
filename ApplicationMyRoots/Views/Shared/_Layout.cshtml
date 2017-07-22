@@ -16,13 +16,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Aplikacja Moje Korzenie", "MyTree", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)</li>
-                    <li>@Html.ActionLink("API", "Index", "Help", new { area = "" }, null)</li>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/Login/Registry"><span class="glyphicon glyphicon-user"></span> Zarejestruj</a></li>
+                    <li><a href="/Login/LogIn"><span class="glyphicon glyphicon-log-in"></span> Zaloguj</a></li>
                 </ul>
+
             </div>
         </div>
     </div>
