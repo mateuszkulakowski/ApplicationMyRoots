@@ -71,7 +71,6 @@ c:\users\mateusz\documents\visual studio 2017\Projects\ApplicationMyRoots\Applic
 c:\users\mateusz\documents\visual studio 2017\Projects\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.csprojResolveAssemblyReference.cache
 c:\users\mateusz\documents\visual studio 2017\Projects\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.dll
 c:\users\mateusz\documents\visual studio 2017\Projects\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.pdb
-C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.csprojResolveAssemblyReference.cache
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.dll
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.pdb
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\bin\ApplicationInsights.config
@@ -148,3 +147,7 @@ C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoot
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\bin\EntityFramework.SqlServer.dll
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\bin\EntityFramework.xml
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\bin\EntityFramework.SqlServer.xml
+C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.csprojResolveAssemblyReference.cache
+C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.TabelkaUserdodanie.resources
+C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.csproj.GenerateResource.Cache
+C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.TabelkaUsernulowalnepolaSigniBornDate.resources
