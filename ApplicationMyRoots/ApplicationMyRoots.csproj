@@ -157,7 +157,7 @@
     <Compile Include="Common\Converters.cs" />
     <Compile Include="Common\ResourceManager.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="ControllersAPI\ValuesController.cs" />
+    <Compile Include="ControllersAPI\HtmlBuilderController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="DAL\DbContext.cs" />
     <Compile Include="Global.asax.cs">
@@ -171,7 +171,25 @@
     <Compile Include="Migrations\201707231303376_Tabelka User nulowalne pola Sign i Born Date.Designer.cs">
       <DependentUpon>201707231303376_Tabelka User nulowalne pola Sign i Born Date.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201707241930548_pole NameSurname - User.cs" />
+    <Compile Include="Migrations\201707241930548_pole NameSurname - User.Designer.cs">
+      <DependentUpon>201707241930548_pole NameSurname - User.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201707251905024_Tabelka Errors z błędami podczas wykonywania programu.cs" />
+    <Compile Include="Migrations\201707251905024_Tabelka Errors z błędami podczas wykonywania programu.Designer.cs">
+      <DependentUpon>201707251905024_Tabelka Errors z błędami podczas wykonywania programu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201707251919190_Tabelka FailedLogins.cs" />
+    <Compile Include="Migrations\201707251919190_Tabelka FailedLogins.Designer.cs">
+      <DependentUpon>201707251919190_Tabelka FailedLogins.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201707251932416_pole userID w tabelce failedlogin.cs" />
+    <Compile Include="Migrations\201707251932416_pole userID w tabelce failedlogin.Designer.cs">
+      <DependentUpon>201707251932416_pole userID w tabelce failedlogin.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Error.cs" />
+    <Compile Include="Models\FailedLogin.cs" />
     <Compile Include="ViewsModels\LogInUser.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -222,6 +240,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201707231303376_Tabelka User nulowalne pola Sign i Born Date.resx">
       <DependentUpon>201707231303376_Tabelka User nulowalne pola Sign i Born Date.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201707241930548_pole NameSurname - User.resx">
+      <DependentUpon>201707241930548_pole NameSurname - User.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201707251905024_Tabelka Errors z błędami podczas wykonywania programu.resx">
+      <DependentUpon>201707251905024_Tabelka Errors z błędami podczas wykonywania programu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201707251919190_Tabelka FailedLogins.resx">
+      <DependentUpon>201707251919190_Tabelka FailedLogins.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201707251932416_pole userID w tabelce failedlogin.resx">
+      <DependentUpon>201707251932416_pole userID w tabelce failedlogin.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

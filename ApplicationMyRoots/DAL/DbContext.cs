@@ -13,5 +13,9 @@ namespace ApplicationMyRoots.DAL
 
         public DbSet<User> Users { get; set; }
 
+        public DbSet<Error> Errors { get; set; }
+
+        public DbSet<FailedLogin> FailedLogins { get; set; }
+
     }
 }

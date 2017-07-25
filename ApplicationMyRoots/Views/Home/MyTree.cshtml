@@ -11,16 +11,16 @@
 
 
         /*wyłączanie pointer-eventów od elementów w svg czyli w każdym węźle*/
-        .tree-element *:not(rect) {
+        .tree-elements *:not(rect) {
             pointer-events: none;
         }
 
 
-        .tree-element .tree-element-frame:hover {
+        .tree-elements .tree-element-frames:hover {
             stroke: #808080;
         }
 
-        .move-tree:hover {
+        .move-trees:hover {
             stroke-linecap: round;
             stroke-miterlimit: 6;
             stroke: #808080;
@@ -40,15 +40,20 @@
         $(document).ready(function () {
             //$("#modal_loading").modal({ backdrop: 'static', keyboard: false }) okienko z loadingiem
 
+            $.get("api/HtmlBuilder/GetFirstLoggedUser/"+ @Session["LoggedUserID"], function (data) {
+                $(".tree").html(data);
+            });
+            
+
             // włączanie czerwonej ramki dla obwódki wybranego członka rodziny i zmiany klasy na tree-element-frame-active
-            $('.tree-element').click(function () {
+            $('.tree-elements').click(function () {
                 if (lastClickedRect != null) {
-                    lastClickedRect.children('.tree-element-frame-active').attr('stroke', 'black');
-                    lastClickedRect.children('.tree-element-frame-active').attr('class', 'tree-element-frame');
+                    lastClickedRect.children('.tree-element-frames-active').attr('stroke', 'black');
+                    lastClickedRect.children('.tree-element-frames-active').attr('class', 'tree-element-frames');
                 }
 
-                $(this).children('.tree-element-frame').attr('stroke', 'red');
-                $(this).children('.tree-element-frame').attr('class', 'tree-element-frame-active');
+                $(this).children('.tree-element-frames').attr('stroke', 'red');
+                $(this).children('.tree-element-frames').attr('class', 'tree-element-frames-active');
 
                 lastClickedRect = $(this);
 
@@ -102,16 +107,9 @@
 
         <g class="tree" transform="matrix(2 0 0 2 0 0)">
 
-            <svg class="tree-element" id="1" width="200" height="100" x="50" y="50">
-                <rect class="tree-element-frame" width="200" height="100" x="0" y="0" fill="white" stroke="black" />
-                <text x="50%" y="10%" textLength="200" lengthAdjust="spacing" font-family="Verdana" font-size="12" fill="blue" alignment-baseline="middle" text-anchor="middle">Krzysztof Jan Dobrowoski-Łapiński</text>
-
-                <image width="50" height="50" x="25" y="25" xlink:href="~/cb98.jpg" />
-            </svg>
-
-            <svg class="tree-element" id="2" width="200" height="100" x="300" y="50">
-                <rect class="tree-element-frame" width="200" height="100" x="0" y="0" fill="white" stroke="black" />
-                <text x="50%" y="10%" font-family="Verdana" font-size="12" fill="blue" alignment-baseline="middle" text-anchor="middle">Krzysztof</text>
+            <svg class="tree-elements" id="2" width="200" height="100" x="300" y="50">
+                <rect class="tree-element-frames" width="200" height="100" x="0" y="0" fill="white" stroke="black" />
+                <text class="tree-element-texts" x="50%" y="10%" font-family="Verdana" font-size="12" fill="blue" alignment-baseline="middle" text-anchor="middle">Krzysztof</text>
             </svg>
         </g>
 

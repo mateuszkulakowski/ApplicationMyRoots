@@ -29,9 +29,24 @@ namespace ApplicationMyRoots.Controllers
                     {
                         ResourceManager.LoggedUser = db.Users.Where(u => u.Login.Equals(logInUser.Login) && u.Password.Equals(logInUser.Password)).First();
                     }
-                    catch(Exception e) // uzupełnić wpis o niepoprawnym logoaniu w bazie!
+                    catch(Exception e)
                     {
-                        ViewBag.Error = "Nie ma takiego użytkownika!";
+                        try
+                        {
+                            int UserID = db.Users.Where(u => u.Login.Equals(logInUser.Login)).First().UserID;
+
+                            db.FailedLogins.Add(new FailedLogin
+                            {
+                                Message = "Niepoprawne dane logowania: Użytkownik o loginie -> \"" + logInUser.Login + "\"",
+                                UserID = UserID,
+                                DateLogin = DateTime.Now
+                            });
+                            db.SaveChanges();
+                        }
+                        catch(Exception ex){}
+
+
+                        ViewBag.Error = "Nie poprawne dane logowania!";
                         return View(logInUser);
                     }
                 }
@@ -61,6 +76,7 @@ namespace ApplicationMyRoots.Controllers
                 {
                     ResourceManager.LoggedUser = user;
 
+                    // Sprawdzić czy nie istnieje już podny login!!
                     db.Users.Add(user);
                     db.SaveChanges();
                 }

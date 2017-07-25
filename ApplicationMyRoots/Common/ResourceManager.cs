@@ -19,6 +19,10 @@ namespace ApplicationMyRoots.Common
             set
             {
                 HttpContext.Current.Session["LoggedUser"] = value;
+                if(value != null)
+                    HttpContext.Current.Session["LoggedUserID"] = value.UserID;
+                else
+                    HttpContext.Current.Session["LoggedUserID"] = null;
             }
 
         }
