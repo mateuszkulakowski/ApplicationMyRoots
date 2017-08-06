@@ -46,15 +46,29 @@
 
                 // dodanie onclicka zaznaczenie na czerwono
                 $('.tree-elements').on('click', function () {
+
                     if (lastClickedRect != null) {
                         lastClickedRect.children('.tree-element-frames-active').attr('stroke', 'black');
                         lastClickedRect.children('.tree-element-frames-active').attr('class', 'tree-element-frames');
+
+                        //chowanie przycisków do dodania
+                        $(this).children('.addfather').attr('visibility', 'hidden');
+
+                        if (lastClickedRect.attr('id') == $(this).attr('id')) // gdy chcemy odznaczyć zaznaczonego
+                        {
+                            lastClickedRect = null;
+                            return;
+                        }
                     }
 
                     $(this).children('.tree-element-frames').attr('stroke', 'red');
                     $(this).children('.tree-element-frames').attr('class', 'tree-element-frames-active');
 
                     lastClickedRect = $(this);
+
+                    //wyświetlenie przycisków do dodawania członków rodziny
+                    $(this).children('.addfather').attr('visibility', 'visible');
+
                 });
             });
 
@@ -68,7 +82,6 @@
 
             //unload - do zapisywania aktualnego powiększenia/pomnijeszenia przesunięcia drzewa
             $(window).unload(function () {
-
                 $.ajax({
                     url: 'api/HtmlBuilder/SaveUserMainTree/' + @Session["LoggedUserID"],
                     headers: { 'matrix': $('.tree').attr('transform') },
@@ -91,8 +104,6 @@
             //});
 
         });
-        
-
 
         function move(dx, dy) {
             var matrix = $('.tree').attr('transform');
@@ -136,9 +147,13 @@
     <svg class="svg_container" height="1000" width="100%" style="border:1px gray solid">
 
         <g class="tree" transform="matrix(2 0 0 2 0 0)">
-            @*<svg class="tree-elements" id="2" width="200" height="100" x="300" y="50">
-                <rect class="tree-element-frames" width="200" height="100" x="0" y="0" fill="white" stroke="black" />
-                <text class="tree-element-texts" x="50%" y="10%" font-family="verdana" font-size="12" fill="blue" alignment-baseline="middle" text-anchor="middle">krzysztof</text>
+            @*<svg class="tree-elements" id="2" width="200" height="120" x="300" y="50">
+                <rect class="tree-element-frames" width="200" height="100" x="0" y="20" fill="white" stroke="black" />
+                <text class="tree-element-texts" x="50%" y="25%" font-family="verdana" font-size="12" fill="blue" alignment-baseline="middle" text-anchor="middle">krzysztof</text>
+                
+                <rect class="addfather" width="80" height="20" x="10" y="0" fill="white" stroke="red" />
+                <text class="addfather" x="25%" y="10" font-family="verdana" font-size="6" fill="black" alignment-baseline="middle" text-anchor="middle">Dodaj Ojca</text>
+            
             </svg>*@
         </g>
 

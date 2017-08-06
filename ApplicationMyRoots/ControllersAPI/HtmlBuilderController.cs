@@ -33,13 +33,15 @@ namespace ApplicationMyRoots.Controllers
                         {
                             return userTrees.Where(ut => ut.isMainTree == true).First().TreeHtmlCode;
                         }
-                        else //pierwsze zalogowanie
+                        else //pierwsze zalogowanie - użytkownik nie ma drzewa stworzonego
                         {
-
                             string htmlTree =
-                                "<svg class=\"tree-elements\" id=\"" + user.UserID + "\" name=\"" + user.UserID + "\" width=\"200\" height=\"100\" x=\"0\" y=\"0\">" +
-                                    "<rect class=\"tree-element-frames\" width=\"200\" height=\"100\" x=\"0\" y=\"0\" fill=\"white\" stroke=\"black\" />" +
-                                    "<text class=\"tree-element-texts\" x=\"50%\" y=\"10%\" font-family=\"Verdana\" font-size=\"12\" fill=\"blue\" alignment-baseline=\"middle\" text-anchor=\"middle\">" + user.NameSurname + "</text>" +
+                                "<svg class=\"tree-elements\" id=\"" + user.UserID + "\" name=\"" + user.UserID + "\" width=\"200\" height=\"120\" x=\"0\" y=\"0\">" +
+                                    "<rect class=\"tree-element-frames\" width=\"200\" height=\"100\" x=\"0\" y=\"20\" fill=\"white\" stroke=\"black\" />" +
+                                    "<text class=\"tree-element-texts\" x=\"50%\" y=\"25%\" font-family=\"Verdana\" font-size=\"12\" fill=\"blue\" alignment-baseline=\"middle\" text-anchor=\"middle\">" + user.NameSurname + "</text>" +
+                                    
+                                    "<rect class=\"addfather\" width=\"80\" height=\"20\" x=\"10\" y=\"0\" fill=\"white\" stroke=\"red\" visibility=\"hidden\"/>"+
+                                    "<text class=\"addfather\" x=\"25%\" y=\"10\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\">Dodaj Ojca</text>" +
                                 "</svg>";
 
 
