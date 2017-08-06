@@ -40,30 +40,61 @@
         $(document).ready(function () {
             //$("#modal_loading").modal({ backdrop: 'static', keyboard: false }) okienko z loadingiem
 
-            $.get("api/HtmlBuilder/GetFirstLoggedUser/"+ @Session["LoggedUserID"], function (data) {
+            //pobieranie drzewa z api
+            $.get("api/HtmlBuilder/GetUserMainTree/" + @Session["LoggedUserID"], function (data) {
                 $(".tree").html(data);
-            });
-            
 
-            // włączanie czerwonej ramki dla obwódki wybranego członka rodziny i zmiany klasy na tree-element-frame-active
-            $('.tree-elements').click(function () {
-                if (lastClickedRect != null) {
-                    lastClickedRect.children('.tree-element-frames-active').attr('stroke', 'black');
-                    lastClickedRect.children('.tree-element-frames-active').attr('class', 'tree-element-frames');
-                }
+                // dodanie onclicka zaznaczenie na czerwono
+                $('.tree-elements').on('click', function () {
+                    if (lastClickedRect != null) {
+                        lastClickedRect.children('.tree-element-frames-active').attr('stroke', 'black');
+                        lastClickedRect.children('.tree-element-frames-active').attr('class', 'tree-element-frames');
+                    }
 
-                $(this).children('.tree-element-frames').attr('stroke', 'red');
-                $(this).children('.tree-element-frames').attr('class', 'tree-element-frames-active');
+                    $(this).children('.tree-element-frames').attr('stroke', 'red');
+                    $(this).children('.tree-element-frames').attr('class', 'tree-element-frames-active');
 
-                lastClickedRect = $(this);
-
+                    lastClickedRect = $(this);
+                });
             });
 
+
+            //pobieranie tranformmatrix
+            $.get("api/HtmlBuilder/GetUserMainTreeTransformMatrix/" + @Session["LoggedUserID"], function (data) {
+                if(data!=null)
+                    $(".tree").attr('transform', data);
+            });
+
+
+            //unload - do zapisywania aktualnego powiększenia/pomnijeszenia przesunięcia drzewa
+            $(window).unload(function () {
+
+                $.ajax({
+                    url: 'api/HtmlBuilder/SaveUserMainTree/' + @Session["LoggedUserID"],
+                    headers: { 'matrix': $('.tree').attr('transform') },
+                    method: 'GET'
+                });
+            });
+
+
+            // dodanie onclicka zaznaczenie na czerwono
+            //$('.tree-elements').on('click', function () {
+            //    if (lastClickedRect != null) {
+            //        lastClickedRect.children('.tree-element-frames-active').attr('stroke', 'black');
+            //        lastClickedRect.children('.tree-element-frames-active').attr('class', 'tree-element-frames');
+            //    }
+
+            //    $(this).children('.tree-element-frames').attr('stroke', 'red');
+            //    $(this).children('.tree-element-frames').attr('class', 'tree-element-frames-active');
+
+            //    lastClickedRect = $(this);
+            //});
 
         });
+        
 
-        function move(dx, dy)
-        {
+
+        function move(dx, dy) {
             var matrix = $('.tree').attr('transform');
             matrix = matrix.substring(7, matrix.length - 1);
             matrix = matrix.split(' ');
@@ -74,8 +105,7 @@
             $('.tree').attr('transform', "matrix(" + matrix[0] + ' ' + matrix[1] + ' ' + matrix[2] + ' ' + matrix[3] + ' ' + matrix[4] + ' ' + matrix[5] + ')');
         }
 
-        function scale(scale)
-        {
+        function scale(scale) {
             var matrix = $('.tree').attr('transform');
             matrix = matrix.substring(7, matrix.length - 1);
             matrix = matrix.split(' ');
@@ -106,11 +136,10 @@
     <svg class="svg_container" height="1000" width="100%" style="border:1px gray solid">
 
         <g class="tree" transform="matrix(2 0 0 2 0 0)">
-
-            <svg class="tree-elements" id="2" width="200" height="100" x="300" y="50">
+            @*<svg class="tree-elements" id="2" width="200" height="100" x="300" y="50">
                 <rect class="tree-element-frames" width="200" height="100" x="0" y="0" fill="white" stroke="black" />
-                <text class="tree-element-texts" x="50%" y="10%" font-family="Verdana" font-size="12" fill="blue" alignment-baseline="middle" text-anchor="middle">Krzysztof</text>
-            </svg>
+                <text class="tree-element-texts" x="50%" y="10%" font-family="verdana" font-size="12" fill="blue" alignment-baseline="middle" text-anchor="middle">krzysztof</text>
+            </svg>*@
         </g>
 
         <!-- Kontrolka do przewijania -->
@@ -132,8 +161,6 @@
 
         <rect class="minus_plus" x="45" y="58.5" width="10" height="3" />
         <rect class="minus_plus" x="48.5" y="55" width="3" height="10" />
-
-
     </svg>
 </div>
 

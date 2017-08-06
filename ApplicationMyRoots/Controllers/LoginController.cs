@@ -43,7 +43,7 @@ namespace ApplicationMyRoots.Controllers
                             });
                             db.SaveChanges();
                         }
-                        catch(Exception ex){}
+                        catch(Exception ex){} // tu brak takiego loginu więc nic nie odnotowujemy
 
 
                         ViewBag.Error = "Nie poprawne dane logowania!";
