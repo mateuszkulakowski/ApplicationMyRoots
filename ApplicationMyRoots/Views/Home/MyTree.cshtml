@@ -10,14 +10,15 @@
         }
 
 
-        /*wyłączanie pointer-eventów od elementów w svg czyli w każdym węźle*/
+        /*wyłączanie pointer-eventów od elementów w svg czyli w każdym węźle dla rectów*/
         .tree-elements *:not(rect) {
             pointer-events: none;
         }
 
 
-        .tree-elements .tree-element-frames:hover {
+        .tree-elements .tree-element-frames,.tree-element-frames-active:hover {
             stroke: #808080;
+            cursor: pointer;
         }
 
         .move-trees:hover {
@@ -53,6 +54,10 @@
 
                         //chowanie przycisków do dodania
                         $(this).children('.addfather').attr('visibility', 'hidden');
+                        $(this).children('.addmother').attr('visibility', 'hidden');
+                        $(this).children('.addpartnerR').attr('visibility', 'hidden');
+                        $(this).children('.addpartnerL').attr('visibility', 'hidden');
+                        $(this).children('.addchildren').attr('visibility', 'hidden');
 
                         if (lastClickedRect.attr('id') == $(this).attr('id')) // gdy chcemy odznaczyć zaznaczonego
                         {
@@ -68,6 +73,10 @@
 
                     //wyświetlenie przycisków do dodawania członków rodziny
                     $(this).children('.addfather').attr('visibility', 'visible');
+                    $(this).children('.addmother').attr('visibility', 'visible');
+                    $(this).children('.addpartnerR').attr('visibility', 'visible');
+                    $(this).children('.addpartnerL').attr('visibility', 'visible');
+                    $(this).children('.addchildren').attr('visibility', 'visible');
 
                 });
             });
@@ -147,13 +156,27 @@
     <svg class="svg_container" height="1000" width="100%" style="border:1px gray solid">
 
         <g class="tree" transform="matrix(2 0 0 2 0 0)">
-            @*<svg class="tree-elements" id="2" width="200" height="120" x="300" y="50">
-                <rect class="tree-element-frames" width="200" height="100" x="0" y="20" fill="white" stroke="black" />
+            @*<svg class="tree-elements" id="2" width="240" height="140" x="100" y="50">
+                <rect class="tree-element-frames" width="200" height="100" x="20" y="20" fill="white" stroke="black" />
                 <text class="tree-element-texts" x="50%" y="25%" font-family="verdana" font-size="12" fill="blue" alignment-baseline="middle" text-anchor="middle">krzysztof</text>
                 
-                <rect class="addfather" width="80" height="20" x="10" y="0" fill="white" stroke="red" />
-                <text class="addfather" x="25%" y="10" font-family="verdana" font-size="6" fill="black" alignment-baseline="middle" text-anchor="middle">Dodaj Ojca</text>
+                <rect class="addfather" width="80" height="20" x="30" y="0" fill="white" stroke="red" />
+                <text class="addfather" x="28%" y="8%" font-family="verdana" font-size="6" fill="black" alignment-baseline="middle" text-anchor="middle">Dodaj Ojca</text>
             
+                <rect class="addmother" width="80" height="20" x="130" y="0" fill="white" stroke="red" />
+                <text class="addmother" x="71%" y="8%" font-family="verdana" font-size="6" fill="black" alignment-baseline="middle" text-anchor="middle">Dodaj Matkę</text>
+
+                <rect class="addpartnerR" width="20" height="80" x="220" y="30" fill="white" stroke="red" />
+                <text class="addpartnerR" transform="rotate(90)" x="29%" y="-164%" font-family="verdana" font-size="6" fill="black" alignment-baseline="middle" text-anchor="middle">Dodaj Partnera</text>
+
+                <rect class="addpartnerL" width="20" height="80" x="0" y="30" fill="white" stroke="red" />
+                <text class="addpartnerL" transform="rotate(90)" x="29%" y="-8%" font-family="verdana" font-size="6" fill="black" alignment-baseline="middle"text-anchor="middle">Dodaj Partnera</text>
+
+                <rect class="addpartnerL" width="20" height="80" x="0" y="30" fill="white" stroke="red" />
+                <text class="addpartnerL" transform="rotate(90)" x="29%" y="-8%" font-family="verdana" font-size="6" fill="black" alignment-baseline="middle" text-anchor="middle">Dodaj Partnera</text>
+
+                <rect class="addchildren" width="180" height="20" x="30" y="120" fill="white" stroke="red" />
+                <text class="addchildren" x="50%" y="92%" font-family="verdana" font-size="6" fill="black" alignment-baseline="middle" text-anchor="middle">Dodaj Dziecko</text>
             </svg>*@
         </g>
 

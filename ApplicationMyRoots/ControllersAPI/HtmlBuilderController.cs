@@ -36,12 +36,27 @@ namespace ApplicationMyRoots.Controllers
                         else //pierwsze zalogowanie - użytkownik nie ma drzewa stworzonego
                         {
                             string htmlTree =
-                                "<svg class=\"tree-elements\" id=\"" + user.UserID + "\" name=\"" + user.UserID + "\" width=\"200\" height=\"120\" x=\"0\" y=\"0\">" +
-                                    "<rect class=\"tree-element-frames\" width=\"200\" height=\"100\" x=\"0\" y=\"20\" fill=\"white\" stroke=\"black\" />" +
-                                    "<text class=\"tree-element-texts\" x=\"50%\" y=\"25%\" font-family=\"Verdana\" font-size=\"12\" fill=\"blue\" alignment-baseline=\"middle\" text-anchor=\"middle\">" + user.NameSurname + "</text>" +
-                                    
-                                    "<rect class=\"addfather\" width=\"80\" height=\"20\" x=\"10\" y=\"0\" fill=\"white\" stroke=\"red\" visibility=\"hidden\"/>"+
-                                    "<text class=\"addfather\" x=\"25%\" y=\"10\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\">Dodaj Ojca</text>" +
+                                "<svg class=\"tree-elements\" id=\""+user.UserID+"\" width=\"240\" height=\"140\" x=\"100\" y=\"50\">"+
+                                    "<rect class=\"tree-element-frames\" width=\"200\" height=\"100\" x=\"20\" y=\"20\" fill=\"white\" stroke=\"black\"/>" +
+                                    "<text class=\"tree-element-texts\" x=\"50%\" y=\"25%\" font-family=\"verdana\" font-size=\"12\" fill=\"blue\" alignment-baseline=\"middle\" text-anchor=\"middle\">" + user.Surname+"</text>"+
+
+                                    "<rect class=\"addfather\" width=\"80\" height=\"20\" x=\"30\" y=\"0\" fill=\"white\" stroke=\"red\" visibility=\"hidden\"/>" +
+                                    "<text class=\"addfather\" x=\"28%\" y=\"8%\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\">Dodaj Ojca</text>" +
+
+                                    "<rect class=\"addmother\" width=\"80\" height=\"20\" x=\"130\" y=\"0\" fill=\"white\" stroke=\"red\" visibility=\"hidden\"/>" +
+                                    "<text class=\"addmother\" x=\"71%\" y=\"8%\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\">Dodaj Matkę</text>" +
+
+                                    "<rect class=\"addpartnerR\" width=\"20\" height=\"80\" x=\"220\" y=\"30\" fill=\"white\" stroke=\"red\" visibility=\"hidden\"/>" +
+                                    "<text class=\"addpartnerR\" transform=\"rotate(90)\" x=\"29%\" y=\"-164%\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\">Dodaj Partnera</text>" +
+
+                                    "<rect class=\"addpartnerL\" width=\"20\" height=\"80\" x=\"0\" y=\"30\" fill=\"white\" stroke=\"red\" visibility=\"hidden\"/>" +
+                                    "<text class=\"addpartnerL\" transform=\"rotate(90)\" x=\"29%\" y=\"-8%\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\"text-anchor=\"middle\" visibility=\"hidden\">Dodaj Partnera</text>" +
+
+                                    "<rect class=\"addpartnerL\" width=\"20\" height=\"80\" x=\"0\" y=\"30\" fill=\"white\" stroke=\"red\" visibility=\"hidden\"/>" +
+                                    "<text class=\"addpartnerL\" transform=\"rotate(90)\" x=\"29%\" y=\"-8%\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\">Dodaj Partnera</text>" +
+
+                                    "<rect class=\"addchildren\" width=\"180\" height=\"20\" x=\"30\" y=\"120\" fill=\"white\" stroke=\"red\" visibility=\"hidden\" />" +
+                                    "<text class=\"addchildren\" x=\"50%\" y=\"92%\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\"> Dodaj Dziecko</text>"+
                                 "</svg>";
 
 
