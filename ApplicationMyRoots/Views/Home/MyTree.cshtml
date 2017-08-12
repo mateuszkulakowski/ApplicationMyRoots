@@ -45,6 +45,19 @@
             $.get("api/HtmlBuilder/GetUserMainTree/" + @Session["LoggedUserID"], function (data) {
                 $(".tree").html(data);
 
+                //pobieranie textów dla wstawionych węzłów - etykiety dodające
+                $("text[class^=add]").each(function (index,element) {
+                    $.ajax({
+                        url: 'api/Language/getElementTextInLanguage/' + $(this).attr("data-tag"),
+                        headers: { 'languageID': @Session["LanguageID"]},
+                        method: 'GET',
+                        success: function (data) {
+                            $(element).html(data);
+                        }
+                    });
+
+                });
+
                 // dodanie onclicka zaznaczenie na czerwono
                 $('.tree-elements').on('click', function () {
 
@@ -52,12 +65,8 @@
                         lastClickedRect.children('.tree-element-frames-active').attr('stroke', 'black');
                         lastClickedRect.children('.tree-element-frames-active').attr('class', 'tree-element-frames');
 
-                        //chowanie przycisków do dodania
-                        $(this).children('.addfather').attr('visibility', 'hidden');
-                        $(this).children('.addmother').attr('visibility', 'hidden');
-                        $(this).children('.addpartnerR').attr('visibility', 'hidden');
-                        $(this).children('.addpartnerL').attr('visibility', 'hidden');
-                        $(this).children('.addchildren').attr('visibility', 'hidden');
+                        //chowanie przycisków do dodawania
+                        $(this).children('*[class^=add]').attr('visibility', 'hidden');
 
                         if (lastClickedRect.attr('id') == $(this).attr('id')) // gdy chcemy odznaczyć zaznaczonego
                         {
@@ -72,11 +81,7 @@
                     lastClickedRect = $(this);
 
                     //wyświetlenie przycisków do dodawania członków rodziny
-                    $(this).children('.addfather').attr('visibility', 'visible');
-                    $(this).children('.addmother').attr('visibility', 'visible');
-                    $(this).children('.addpartnerR').attr('visibility', 'visible');
-                    $(this).children('.addpartnerL').attr('visibility', 'visible');
-                    $(this).children('.addchildren').attr('visibility', 'visible');
+                    $(this).children('*[class^=add]').attr('visibility', 'visible');
 
                 });
             });
@@ -97,20 +102,6 @@
                     method: 'GET'
                 });
             });
-
-
-            // dodanie onclicka zaznaczenie na czerwono
-            //$('.tree-elements').on('click', function () {
-            //    if (lastClickedRect != null) {
-            //        lastClickedRect.children('.tree-element-frames-active').attr('stroke', 'black');
-            //        lastClickedRect.children('.tree-element-frames-active').attr('class', 'tree-element-frames');
-            //    }
-
-            //    $(this).children('.tree-element-frames').attr('stroke', 'red');
-            //    $(this).children('.tree-element-frames').attr('class', 'tree-element-frames-active');
-
-            //    lastClickedRect = $(this);
-            //});
 
         });
 
@@ -139,8 +130,7 @@
 
             $('.tree').attr('transform', "matrix(" + matrix[0] + ' ' + matrix[1] + ' ' + matrix[2] + ' ' + matrix[3] + ' ' + matrix[4] + ' ' + matrix[5] + ')');
         }
-
-
+        
     </script>
 }
 
@@ -154,7 +144,7 @@
 <div class="row">
 
     <svg class="svg_container" height="1000" width="100%" style="border:1px gray solid">
-
+        
         <g class="tree" transform="matrix(2 0 0 2 0 0)">
             @*<svg class="tree-elements" id="2" width="240" height="140" x="100" y="50">
                 <rect class="tree-element-frames" width="200" height="100" x="20" y="20" fill="white" stroke="black" />

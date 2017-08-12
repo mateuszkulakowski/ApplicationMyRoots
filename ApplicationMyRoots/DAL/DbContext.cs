@@ -19,5 +19,10 @@ namespace ApplicationMyRoots.DAL
 
         public DbSet<UserTree> UserTrees { get; set; }
 
+        public DbSet<UserTreeNode> UserTreeNodes { get; set; }
+
+        public DbSet<Language> Languages { get; set; }
+
+        public DbSet<LanguageText> LanguageTexts { get; set; }
     }
 }

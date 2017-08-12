@@ -156,6 +156,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Common\Converters.cs" />
     <Compile Include="Common\ResourceManager.cs" />
+    <Compile Include="ControllersAPI\LanguageController.cs" />
     <Compile Include="ControllersAPI\UserController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="ControllersAPI\HtmlBuilderController.cs" />
@@ -204,10 +205,25 @@
     <Compile Include="Migrations\201708061028049_zmieniona nazwa pola transformMatrix.Designer.cs">
       <DependentUpon>201708061028049_zmieniona nazwa pola transformMatrix.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201708121044281_tabelka usertreenodes i języki początek.cs" />
+    <Compile Include="Migrations\201708121044281_tabelka usertreenodes i języki początek.Designer.cs">
+      <DependentUpon>201708121044281_tabelka usertreenodes i języki początek.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708121055583_zmiana nazwy pola - languagetext.cs" />
+    <Compile Include="Migrations\201708121055583_zmiana nazwy pola - languagetext.Designer.cs">
+      <DependentUpon>201708121055583_zmiana nazwy pola - languagetext.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708121116011_tabelka users dodanie wybranego języka.cs" />
+    <Compile Include="Migrations\201708121116011_tabelka users dodanie wybranego języka.Designer.cs">
+      <DependentUpon>201708121116011_tabelka users dodanie wybranego języka.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Error.cs" />
     <Compile Include="Models\FailedLogin.cs" />
+    <Compile Include="Models\Language.cs" />
+    <Compile Include="Models\LanguageText.cs" />
     <Compile Include="Models\UserTree.cs" />
+    <Compile Include="Models\UserTreeNode.cs" />
     <Compile Include="ViewsModels\LogInUser.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -282,6 +298,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201708061028049_zmieniona nazwa pola transformMatrix.resx">
       <DependentUpon>201708061028049_zmieniona nazwa pola transformMatrix.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708121044281_tabelka usertreenodes i języki początek.resx">
+      <DependentUpon>201708121044281_tabelka usertreenodes i języki początek.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708121055583_zmiana nazwy pola - languagetext.resx">
+      <DependentUpon>201708121055583_zmiana nazwy pola - languagetext.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708121116011_tabelka users dodanie wybranego języka.resx">
+      <DependentUpon>201708121116011_tabelka users dodanie wybranego języka.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

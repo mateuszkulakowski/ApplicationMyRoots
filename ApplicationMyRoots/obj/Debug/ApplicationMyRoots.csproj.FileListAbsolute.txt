@@ -159,3 +159,6 @@ C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoot
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.UserTreespoleisMainTree.resources
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.pozycjadrzewapoletranslationmatrix.resources
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.zmienionanazwapolatransformMatrix.resources
+C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.tabelkausertreenodesijęzykipoczątek.resources
+C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.zmiananazwypolalanguagetext.resources
+C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.tabelkausersdodaniewybranegojęzyka.resources

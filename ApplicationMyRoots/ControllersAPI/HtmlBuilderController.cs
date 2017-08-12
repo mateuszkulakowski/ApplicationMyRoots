@@ -41,22 +41,19 @@ namespace ApplicationMyRoots.Controllers
                                     "<text class=\"tree-element-texts\" x=\"50%\" y=\"25%\" font-family=\"verdana\" font-size=\"12\" fill=\"blue\" alignment-baseline=\"middle\" text-anchor=\"middle\">" + user.Surname+"</text>"+
 
                                     "<rect class=\"addfather\" width=\"80\" height=\"20\" x=\"30\" y=\"0\" fill=\"white\" stroke=\"red\" visibility=\"hidden\"/>" +
-                                    "<text class=\"addfather\" x=\"28%\" y=\"8%\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\">Dodaj Ojca</text>" +
+                                    "<text class=\"addfather\" x=\"28%\" y=\"8%\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"20\"></text>" +
 
                                     "<rect class=\"addmother\" width=\"80\" height=\"20\" x=\"130\" y=\"0\" fill=\"white\" stroke=\"red\" visibility=\"hidden\"/>" +
-                                    "<text class=\"addmother\" x=\"71%\" y=\"8%\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\">Dodaj Matkę</text>" +
+                                    "<text class=\"addmother\" x=\"71%\" y=\"8%\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"21\"></text>" +
 
                                     "<rect class=\"addpartnerR\" width=\"20\" height=\"80\" x=\"220\" y=\"30\" fill=\"white\" stroke=\"red\" visibility=\"hidden\"/>" +
-                                    "<text class=\"addpartnerR\" transform=\"rotate(90)\" x=\"29%\" y=\"-164%\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\">Dodaj Partnera</text>" +
+                                    "<text class=\"addpartnerR\" transform=\"rotate(90)\" x=\"29%\" y=\"-164%\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"22\"></text>" +
 
                                     "<rect class=\"addpartnerL\" width=\"20\" height=\"80\" x=\"0\" y=\"30\" fill=\"white\" stroke=\"red\" visibility=\"hidden\"/>" +
-                                    "<text class=\"addpartnerL\" transform=\"rotate(90)\" x=\"29%\" y=\"-8%\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\"text-anchor=\"middle\" visibility=\"hidden\">Dodaj Partnera</text>" +
-
-                                    "<rect class=\"addpartnerL\" width=\"20\" height=\"80\" x=\"0\" y=\"30\" fill=\"white\" stroke=\"red\" visibility=\"hidden\"/>" +
-                                    "<text class=\"addpartnerL\" transform=\"rotate(90)\" x=\"29%\" y=\"-8%\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\">Dodaj Partnera</text>" +
+                                    "<text class=\"addpartnerL\" transform=\"rotate(90)\" x=\"29%\" y=\"-8%\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\"text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"23\"></text>" +
 
                                     "<rect class=\"addchildren\" width=\"180\" height=\"20\" x=\"30\" y=\"120\" fill=\"white\" stroke=\"red\" visibility=\"hidden\" />" +
-                                    "<text class=\"addchildren\" x=\"50%\" y=\"92%\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\"> Dodaj Dziecko</text>"+
+                                    "<text class=\"addchildren\" x=\"50%\" y=\"92%\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"24\"></text>" +
                                 "</svg>";
 
 

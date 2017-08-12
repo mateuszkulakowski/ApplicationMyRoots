@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
@@ -18,6 +19,7 @@ namespace ApplicationMyRoots.Models
             this.Surname = Surname;
         }
 
+        [Key]
         public int UserID { get; set; }
 
         public String Login { get; set; }
@@ -40,6 +42,11 @@ namespace ApplicationMyRoots.Models
         public DateTime? DateSign { get; set; }
 
         public String City { get; set; }
+
+        [ForeignKey("Language")]
+        public int? LanguageID { get; set; }
+
+        public Language Language { get; set; }
 
     }
 }
