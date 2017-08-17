@@ -15,6 +15,8 @@ namespace ApplicationMyRoots.Controllers
             if(ResourceManager.LoggedUser != null)
             {
                 ViewBag.Title = "My Tree";
+                ViewBag.LoggedUser = ResourceManager.LoggedUser.UserID;
+                ViewBag.LanguageID = ResourceManager.LoggedUser.LanguageID;
                 return View();
             }
             else

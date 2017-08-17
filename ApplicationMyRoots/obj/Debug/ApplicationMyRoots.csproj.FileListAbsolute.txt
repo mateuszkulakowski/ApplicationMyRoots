@@ -162,3 +162,5 @@ C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoot
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.tabelkausertreenodesijęzykipoczątek.resources
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.zmiananazwypolalanguagetext.resources
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.tabelkausersdodaniewybranegojęzyka.resources
+C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\bin\RazorEngine.dll
+C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\bin\RazorJS.dll

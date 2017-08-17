@@ -17,14 +17,20 @@ namespace ApplicationMyRoots.Controllers
     {
         // Pierwszy raz użytkownik stworzył konto i dostaje na drzewie tylko swoją osobę
         [HttpGet]
-        public string GetUserMainTree(int id)
+        public string GetUserMainTree(string id)
         {
+            int id_result = -1;
+            try
+            {
+                id_result = int.Parse(id);
+            }catch(Exception e){ }
+
+
             using (var db = new DAL.DbContext())
             {
                 try
                 {
-
-                    User user = db.Users.Find(id);
+                    User user = db.Users.Find(id_result);
                     if (user != null)
                     {
                         var userTrees = db.UserTrees.Where(ut => ut.UserID == user.UserID);
@@ -132,7 +138,7 @@ namespace ApplicationMyRoots.Controllers
 
 
         [HttpGet]
-        public void SaveUserMainTree(int id)
+        public void SaveUserMainTreeTransformMatrix(int id)
         {
             using (var db = new DAL.DbContext())
             {

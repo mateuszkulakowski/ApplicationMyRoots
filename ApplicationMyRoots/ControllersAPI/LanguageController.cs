@@ -11,9 +11,17 @@ namespace ApplicationMyRoots.ControllersAPI
     public class LanguageController : ApiController
     {
         [HttpGet]
-        public string getElementTextInLanguage(int? id)
+        public string getElementTextInLanguage(string id)//id to data-tag przy elemencie html
         {
-            return ResourceManager.getElementTextInLanguage((int)id, int.Parse(this.Request.Headers.GetValues("languageID").First()));
+            int id_result;
+            try
+            {
+                id_result = int.Parse(id);
+                return ResourceManager.getElementTextInLanguage(id_result, int.Parse(this.Request.Headers.GetValues("languageID").First()));
+            }
+            catch (Exception e) { return "Error"; }
+
+
         }
 
     }
