@@ -35,6 +35,14 @@
                 {
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="#" style="pointer-events:none;" data-tag="4">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(4, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID) <strong>@zalogowany.Name</strong></a></li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#" data-tag="25">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(25, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/MyAccount/Settings" data-tag="26">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(26, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</a></li>
+                            </ul>
+                        </li>
                         <li><a href="/Login/LogOut"><span class="glyphicon glyphicon-log-out" data-tag="5"></span> @ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(5, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</a></li>
                     </ul>
                 }

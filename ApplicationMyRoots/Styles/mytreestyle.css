@@ -1,0 +1,28 @@
+﻿.minus_plus {
+    pointer-events: none;
+}
+
+
+/*wyłączanie pointer-eventów od elementów w svg czyli w każdym węźle dla rectów*/
+.tree-elements *:not(rect) {
+    pointer-events: none;
+}
+
+
+.tree-elements .tree-element-frames,
+.tree-element-frames-active:hover,
+rect[class^=add]:hover {
+    stroke: #808080;
+    cursor: pointer;
+}
+
+.move-trees:hover {
+    stroke-linecap: round;
+    stroke-miterlimit: 6;
+    stroke: #808080;
+    stroke-width: 2;
+}
+
+.zoom-tree:hover {
+    fill: #808080;
+}

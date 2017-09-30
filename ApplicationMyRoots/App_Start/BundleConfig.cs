@@ -24,8 +24,12 @@ namespace ApplicationMyRoots
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
 
+            //moje
             bundles.Add(new ScriptBundle("~/bundles/mytreescripts").Include(
                       "~/Scripts/mytreescripts.js"));
+
+            bundles.Add(new StyleBundle("~/Styles/mytreestyle").Include(
+                      "~/Styles/mytreestyle.css"));
         }
     }
 }

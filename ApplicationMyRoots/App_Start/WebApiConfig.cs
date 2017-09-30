@@ -19,6 +19,12 @@ namespace ApplicationMyRoots
                 routeTemplate: "api/{controller}/{action}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            config.Routes.MapHttpRoute(
+            name: "SecoundApi",
+            routeTemplate: "api/{controller}/{action}/{id}/{mainUser}",
+            defaults: new { id = RouteParameter.Optional }
+            );
         }
     }
 }

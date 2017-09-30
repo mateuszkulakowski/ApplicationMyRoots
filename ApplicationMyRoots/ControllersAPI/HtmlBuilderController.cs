@@ -41,26 +41,29 @@ namespace ApplicationMyRoots.Controllers
                         }
                         else //pierwsze zalogowanie - użytkownik nie ma drzewa stworzonego
                         {
+                            //data-have - czy dodany już ojciec/matka/partner
+                            //data-mainuser - czy to ten co ma konto na stronce czy dodany jako węzeł 1-main, 0-dodany
+
                             string htmlTree =
-                                "<svg class=\"tree-elements\" id=\""+user.UserID+"\" width=\"240\" height=\"140\" x=\"100\" y=\"50\">"+
-                                    "<rect class=\"tree-element-frames\" width=\"200\" height=\"100\" x=\"20\" y=\"20\" fill=\"white\" stroke=\"black\"/>" +
-                                    "<text class=\"tree-element-texts\" x=\"50%\" y=\"25%\" font-family=\"verdana\" font-size=\"12\" fill=\"blue\" alignment-baseline=\"middle\" text-anchor=\"middle\">" + user.Surname+"</text>"+
+                                "<g class=\"tree-elements\" id=\""+user.UserID+ "\" onmousedown=\"mousedowntreeelement(evt)\" transform=\"matrix(1 0 0 1 0 0)\" data-mainuser=\"1\">" +
+                                    "<rect class=\"tree-element-frames\" width=\"200\" height=\"100\" x=\"100\" y=\"50\" fill=\"white\" stroke=\"black\"/>" +
+                                    "<text class=\"tree-element-texts\" x=\"200\" y=\"65\" font-family=\"verdana\" font-size=\"12\" fill=\"blue\" alignment-baseline=\"middle\" text-anchor=\"middle\">" + user.NameSurname+"</text>"+
 
-                                    "<rect class=\"addfather\" width=\"80\" height=\"20\" x=\"30\" y=\"0\" fill=\"white\" stroke=\"red\" visibility=\"hidden\"/>" +
-                                    "<text class=\"addfather\" x=\"28%\" y=\"8%\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"20\"></text>" +
+                                    "<rect class=\"addparents\" width=\"180\" height=\"20\" x=\"110\" y=\"30\" fill=\"white\" stroke=\"red\" visibility=\"hidden\" data-have=\"0\" onclick=\"addNewNodeToTreeClick(this)\"/>" +
+                                    "<text class=\"addparents\" x=\"200\" y=\"40\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"20\" data-have=\"0\"></text>" +
 
-                                    "<rect class=\"addmother\" width=\"80\" height=\"20\" x=\"130\" y=\"0\" fill=\"white\" stroke=\"red\" visibility=\"hidden\"/>" +
-                                    "<text class=\"addmother\" x=\"71%\" y=\"8%\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"21\"></text>" +
+                                    "<rect class=\"addpartnerR\" width=\"20\" height=\"80\" x=\"300\" y=\"60\" fill=\"white\" stroke=\"red\" visibility=\"hidden\" data-have=\"0\" onclick=\"addNewNodeToTreeClick(this)\"/>" +
+                                    "<text class=\"addpartnerR\" transform=\"rotate(90)\" x=\"100\" y=\"-310\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"22\" data-have=\"0\"></text>" +
 
-                                    "<rect class=\"addpartnerR\" width=\"20\" height=\"80\" x=\"220\" y=\"30\" fill=\"white\" stroke=\"red\" visibility=\"hidden\"/>" +
-                                    "<text class=\"addpartnerR\" transform=\"rotate(90)\" x=\"29%\" y=\"-164%\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"22\"></text>" +
+                                    "<rect class=\"addpartnerL\" width=\"20\" height=\"80\" x=\"80\" y=\"60\" fill=\"white\" stroke=\"red\" visibility=\"hidden\" data-have=\"0\" onclick=\"addNewNodeToTreeClick(this)\"/>" +
+                                    "<text class=\"addpartnerL\" transform=\"rotate(90)\" x=\"100\" y=\"-90\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\"text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"23\" data-have=\"0\"></text>" +
 
-                                    "<rect class=\"addpartnerL\" width=\"20\" height=\"80\" x=\"0\" y=\"30\" fill=\"white\" stroke=\"red\" visibility=\"hidden\"/>" +
-                                    "<text class=\"addpartnerL\" transform=\"rotate(90)\" x=\"29%\" y=\"-8%\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\"text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"23\"></text>" +
+                                    "<rect class=\"addchildren\" width=\"180\" height=\"20\" x=\"110\" y=\"150\" fill=\"white\" stroke=\"red\" visibility=\"hidden\" data-have=\"0\" onclick=\"addNewNodeToTreeClick(this)\"/>" +
+                                    "<text class=\"addchildren\" x=\"200\" y=\"160\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"24\" data-have=\"0\"></text>" +
 
-                                    "<rect class=\"addchildren\" width=\"180\" height=\"20\" x=\"30\" y=\"120\" fill=\"white\" stroke=\"red\" visibility=\"hidden\" />" +
-                                    "<text class=\"addchildren\" x=\"50%\" y=\"92%\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"24\"></text>" +
-                                "</svg>";
+                                    "<image class=\"nodeImage\" xlink:href=\"\" x=\"230\" y=\"80\" height=\"60\" width=\"60\"/>"+
+                                    
+                                "</g>";
 
 
                             db.UserTrees.Add(new UserTree

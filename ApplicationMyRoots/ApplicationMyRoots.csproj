@@ -161,6 +161,9 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="ControllersAPI\HtmlBuilderController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\MyAccountController.cs" />
+    <Compile Include="CustomAttributes\AccessControl.cs" />
+    <Compile Include="CustomAttributes\LogInTwice.cs" />
     <Compile Include="DAL\DbContext.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -217,6 +220,10 @@
     <Compile Include="Migrations\201708121116011_tabelka users dodanie wybranego języka.Designer.cs">
       <DependentUpon>201708121116011_tabelka users dodanie wybranego języka.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201709251716163_image to user.cs" />
+    <Compile Include="Migrations\201709251716163_image to user.Designer.cs">
+      <DependentUpon>201709251716163_image to user.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Error.cs" />
     <Compile Include="Models\FailedLogin.cs" />
@@ -240,6 +247,8 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="images\ajax-loader.gif" />
+    <Content Include="images\computer.png" />
+    <Content Include="images\no_foto.png" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -252,6 +261,7 @@
     <Content Include="Scripts\mytreescripts.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Styles\mytreestyle.css" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -268,6 +278,7 @@
     <Content Include="Views\Login\Registry.cshtml" />
     <Content Include="Views\Login\LogOut.cshtml" />
     <Content Include="Views\Login\LogIn.cshtml" />
+    <Content Include="Views\MyAccount\Settings.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201707231254483_Tabelka User - dodanie.resx">
@@ -309,6 +320,9 @@
     <EmbeddedResource Include="Migrations\201708121116011_tabelka users dodanie wybranego języka.resx">
       <DependentUpon>201708121116011_tabelka users dodanie wybranego języka.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709251716163_image to user.resx">
+      <DependentUpon>201709251716163_image to user.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -325,6 +339,7 @@
   <ItemGroup>
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

@@ -1,0 +1,38 @@
+﻿
+@{
+    ViewBag.Title = "Settings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Settings</h2>
+
+@using(Html.BeginForm("Settings", "MyAccount", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        <div class="form-group">
+            <div class="col-md-3"></div>
+            <div class="col-lg-1">
+                <label style="margin-top: 10%" data-tag="28">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(28, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+            </div>
+            <div class="col-md-4">
+                <div class="col-md-8">
+                    <input name="file" class="form-control" type="file" />
+                </div>
+                <div class="col-lg-4">
+                    <svg height="32" width="32">
+                        <image xlink:href="@ViewBag.ImageData" x="0" y="0" height="32px" width="32px" />
+                    </svg>
+                </div>
+            </div>
+            <div class="col-md-1">
+                <input type="submit" data-tag="27" value="@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(27, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)" class="btn btn-default" />
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+
+        <strong style="color:red;">@ViewBag.Error</strong>
+    </div>
+}

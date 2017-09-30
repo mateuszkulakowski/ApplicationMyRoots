@@ -4,73 +4,38 @@
 
 @section scripts
 {
-    <style type="text/css">
-        .minus_plus {
-            pointer-events: none;
-        }
-
-
-        /*wyłączanie pointer-eventów od elementów w svg czyli w każdym węźle dla rectów*/
-        .tree-elements *:not(rect) {
-            pointer-events: none;
-        }
-
-
-        .tree-elements .tree-element-frames,
-        .tree-element-frames-active:hover,
-        rect[class^=add]:hover
-        {
-            stroke: #808080;
-            cursor: pointer;
-        }
-
-        .move-trees:hover {
-            stroke-linecap: round;
-            stroke-miterlimit: 6;
-            stroke: #808080;
-            stroke-width: 2;
-        }
-
-        .zoom-tree:hover {
-            fill: #808080;
-        }
-    </style>
+    @Styles.Render("~/Styles/mytreestyle")
     @Scripts.Render("~/bundles/mytreescripts")
+
 }
-
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
-
+<br/><br/><br/>
 <div class="row">
-
+    <p id="dx"></p>
+    <p id="dy"></p>
+    <br/><br/>
     <svg id="svg_container" class="svg_container" height="1000" width="100%" style="border:1px gray solid" data-loggeduser="@ViewBag.LoggedUser" data-language="@ViewBag.LanguageID">
         
         <g class="tree" transform="matrix(2 0 0 2 0 0)">
-            @*<svg class="tree-elements" id="2" width="240" height="140" x="100" y="50">
-                <rect class="tree-element-frames" width="200" height="100" x="20" y="20" fill="white" stroke="black" />
-                <text class="tree-element-texts" x="50%" y="25%" font-family="verdana" font-size="12" fill="blue" alignment-baseline="middle" text-anchor="middle">krzysztof</text>
+            @*<svg class="tree-elements" id="2" width="240" height="140" x="100" y="50" >*@
+            @*<g transform="matrix(1 0 0 1 0 0)">
+                <rect class="tree-element-frames" width="200" height="100" x="100" y="50" fill="white" stroke="black" />
+                <text class="tree-element-texts" x="200" y="65" font-family="verdana" font-size="12" fill="blue" alignment-baseline="middle" text-anchor="middle">krzysztof</text>
                 
-                <rect class="addfather" width="80" height="20" x="30" y="0" fill="white" stroke="red" />
-                <text class="addfather" x="28%" y="8%" font-family="verdana" font-size="6" fill="black" alignment-baseline="middle" text-anchor="middle">Dodaj Ojca</text>
+                <rect class="addparents" width="180" height="20" x="110" y="30" fill="white" stroke="red" />
+                <text class="addparents" x="200" y="40" font-family="verdana" font-size="6" fill="black" alignment-baseline="middle" text-anchor="middle">Dodaj rodziców</text>
             
-                <rect class="addmother" width="80" height="20" x="130" y="0" fill="white" stroke="red" />
-                <text class="addmother" x="71%" y="8%" font-family="verdana" font-size="6" fill="black" alignment-baseline="middle" text-anchor="middle">Dodaj Matkę</text>
+                <rect class="addpartnerR" width="20" height="80" x="300" y="60" fill="white" stroke="red" />
+                <text class="addpartnerR" transform="rotate(90)" x="100" y="-310" font-family="verdana" font-size="6" fill="black" alignment-baseline="middle" text-anchor="middle">Dodaj Partnera</text>
 
-                <rect class="addpartnerR" width="20" height="80" x="220" y="30" fill="white" stroke="red" />
-                <text class="addpartnerR" transform="rotate(90)" x="29%" y="-164%" font-family="verdana" font-size="6" fill="black" alignment-baseline="middle" text-anchor="middle">Dodaj Partnera</text>
+                <rect class="addpartnerL" width="20" height="80" x="80" y="60" fill="white" stroke="red" />
+                <text class="addpartnerL" transform="rotate(90)" x="100" y="-90" font-family="verdana" font-size="6" fill="black" alignment-baseline="middle" text-anchor="middle">Dodaj Partnera</text>
 
-                <rect class="addpartnerL" width="20" height="80" x="0" y="30" fill="white" stroke="red" />
-                <text class="addpartnerL" transform="rotate(90)" x="29%" y="-8%" font-family="verdana" font-size="6" fill="black" alignment-baseline="middle"text-anchor="middle">Dodaj Partnera</text>
-
-                <rect class="addpartnerL" width="20" height="80" x="0" y="30" fill="white" stroke="red" />
-                <text class="addpartnerL" transform="rotate(90)" x="29%" y="-8%" font-family="verdana" font-size="6" fill="black" alignment-baseline="middle" text-anchor="middle">Dodaj Partnera</text>
-
-                <rect class="addchildren" width="180" height="20" x="30" y="120" fill="white" stroke="red" />
-                <text class="addchildren" x="50%" y="92%" font-family="verdana" font-size="6" fill="black" alignment-baseline="middle" text-anchor="middle">Dodaj Dziecko</text>
-            </svg>*@
+                <rect class="addchildren" width="180" height="20" x="110" y="150" fill="white" stroke="red" />
+                <text class="addchildren" x="200" y="160" font-family="verdana" font-size="6" fill="black" alignment-baseline="middle" text-anchor="middle">Dodaj Dziecko</text>
+            
+                <image xlink:href="@ViewBag.ImageData" x="110" y="60" height="50px" width="50px" />
+            </g>*@
+            @*</svg>*@
         </g>
 
         <!-- Kontrolka do przewijania -->

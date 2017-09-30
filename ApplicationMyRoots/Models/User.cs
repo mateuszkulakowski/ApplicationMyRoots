@@ -48,5 +48,7 @@ namespace ApplicationMyRoots.Models
 
         public Language Language { get; set; }
 
+        public byte[] Image { get; set; }
+
     }
 }

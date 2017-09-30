@@ -1,4 +1,5 @@
 ﻿using ApplicationMyRoots.Common;
+using ApplicationMyRoots.CustomAttributes;
 using ApplicationMyRoots.DAL;
 using ApplicationMyRoots.Models;
 using ApplicationMyRoots.ViewsModels;
@@ -12,12 +13,12 @@ namespace ApplicationMyRoots.Controllers
 {
     public class LoginController : Controller
     {
+        [LogInTwice]
         public ActionResult LogIn()
         {
-            if (ResourceManager.LoggedUser != null) return RedirectToAction("MyTree", "Home");
-            else return View();
+            return View();
         }
-
+        
         [HttpPost]
         public ActionResult LogIn(LogInUser logInUser)
         {
@@ -86,6 +87,7 @@ namespace ApplicationMyRoots.Controllers
             return View(registryUser);
         }
 
+        [AccessControl]
         public ActionResult LogOut()
         {
             ResourceManager.LoggedUser = null;
