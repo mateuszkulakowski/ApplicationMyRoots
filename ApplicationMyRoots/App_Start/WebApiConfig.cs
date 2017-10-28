@@ -25,6 +25,12 @@ namespace ApplicationMyRoots
             routeTemplate: "api/{controller}/{action}/{id}/{mainUser}",
             defaults: new { id = RouteParameter.Optional }
             );
+
+            config.Routes.MapHttpRoute(
+            name: "ThirdApi",
+            routeTemplate: "api/{controller}/{action}/{id}/{mainUser}/{languageID}",
+            defaults: new { id = RouteParameter.Optional }
+            );
         }
     }
 }

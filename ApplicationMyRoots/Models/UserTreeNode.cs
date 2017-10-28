@@ -10,6 +10,10 @@ namespace ApplicationMyRoots.Models
     {
         public int UserTreeNodeID { get; set; }
 
+        public int UserTreeID { get; set; }
+
+        public virtual UserTree UserTree { get; set; }
+
         public string Name { get; set; }
 
         public string Surname { get; set; }
@@ -17,26 +21,9 @@ namespace ApplicationMyRoots.Models
         [NotMapped]
         public string NameSurname { get { return Name + " " + Surname; } }
 
-        public DateTime DateBorn { get; set; }
+        public DateTime? DateBorn { get; set; }
 
-        [NotMapped]
-        public int Age
-        {
-            get
-            {
-                if (DateBorn != null)
-                {
-                    int yearsDifference = DateTime.Now.Year - DateBorn.Year;
-                    int monthsDifference = DateTime.Now.Month - DateBorn.Month;
-                    int daysDifference = DateTime.Now.Day - DateBorn.Day;
-
-                    if (monthsDifference < 0 || daysDifference < 0) yearsDifference--;
-
-                    return yearsDifference;
-                }
-                else return -1;
-            }
-        }
+        public DateTime? DateDead { get; set; }
 
         public byte[] Image { get; set; }
 
@@ -56,5 +43,7 @@ namespace ApplicationMyRoots.Models
                 else return "Nieokreślono";
             }
         }
+
+        public string AdditionalInfo { get; set; }
     }
 }

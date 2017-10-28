@@ -61,7 +61,7 @@ namespace ApplicationMyRoots.Common
                     });
                     db.SaveChanges();
 
-                    return "";
+                    return "<Error>";
                 }
             }
         }

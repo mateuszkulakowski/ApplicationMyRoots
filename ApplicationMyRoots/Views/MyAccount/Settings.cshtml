@@ -4,35 +4,258 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Settings</h2>
-
-@using(Html.BeginForm("Settings", "MyAccount", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@section scripts
 {
-    @Html.AntiForgeryToken()
+    @*<script type="text/javascript" src="~/Scripts/bootstrap-filestyle.min.js"></script>*@
+    <script src="//cdn.jsdelivr.net/webshim/1.14.5/polyfiller.js"></script>
+    <script type="text/javascript">
+        var allowExtensions = ['png', 'jpg', 'bmp', 'gif'];
+        var fileIsRight = true;
+        var nameIsRight = true;
+        var surnameIsRight = true;
+        var dateIsRight = true;
 
-    <div class="form-horizontal">
-        <hr />
-        <div class="form-group">
-            <div class="col-md-3"></div>
-            <div class="col-lg-1">
-                <label style="margin-top: 10%" data-tag="28">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(28, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
-            </div>
-            <div class="col-md-4">
-                <div class="col-md-8">
-                    <input name="file" class="form-control" type="file" />
+        $(document).ready(function () {
+            webshims.setOptions('forms-ext', { types: 'date' });
+            webshims.polyfill('forms forms-ext');
+            $.webshims.formcfg = {
+                en: {
+                    dFormat: '-',
+                    dateSigns: '-',
+                    patterns: {
+                        d: "yy-mm-dd"
+                    }
+                }
+            };
+        });
+
+        function fileChanged(element) {
+            var isRightName = false;
+            var extension = $(element).val().substring($(element).val().lastIndexOf('.') + 1);
+
+            for (var item in allowExtensions)
+            {
+                if (allowExtensions[item].toUpperCase() == extension.toUpperCase()) //extension prawidłowe
+                {
+                    isRightName = true;
+                    break;
+                }
+            }
+
+            var name = $(element).attr('name') + 'Informator';
+            if (isRightName)
+            {
+                $('circle[name=' + name + ']').attr('fill', 'orange');
+                fileIsRight = true;
+            } 
+            else
+            {
+                $('circle[name=' + name + ']').attr('fill', 'red');
+                fileIsRight = false;
+            }
+                
+        }
+
+        function nameChanged(element) {
+            var valueOfInput = $(element).val();
+            var name = $(element).attr('name') + 'Informator';
+
+            if (valueOfInput == "")
+            {
+                $('circle[name=' + name + ']').attr('fill', 'red');
+                nameIsRight = false;
+            }
+            else
+            {
+                $('circle[name=' + name + ']').attr('fill', 'orange');
+                nameIsRight = true;
+            }
+        }
+
+        function surnameChanged(element) {
+            var valueOfInput = $(element).val();
+            var name = $(element).attr('name') + 'Informator';
+
+            if (valueOfInput == "") {
+                $('circle[name=' + name + ']').attr('fill', 'red');
+                surnameIsRight = false;
+            }
+            else {
+                $('circle[name=' + name + ']').attr('fill', 'orange');
+                surnameIsRight = true;
+            }
+        }
+
+        function languageChanged(element) {
+            var name = $(element).attr('name') + 'Informator';
+            $('circle[name=' + name + ']').attr('fill', 'orange');
+        }
+
+        function dateChanged(element) {
+            var d = new Date();
+            var yearNow = d.getFullYear();
+            var monthNow = d.getMonth()+1;
+            var dayNow = d.getDay()+1;
+            var table = $(element).val().split('-');
+            var name = $(element).attr('name') + 'Informator';
+            // 1753 - 1 - 1 min baza tyle obsuguje max 9999 12 31
+            if (yearNow < table[0] ||
+                (yearNow == table[0] && monthNow < table[1]) ||
+                (yearNow == table[0] && monthNow == table[1] && dayNow < table[2]) || //urodzeni w przyszłości
+                (1752 >= table[0]) || (9999 < table[0])) 
+            {
+                $('circle[name=' + name + ']').attr('fill', 'red');
+                dateIsRight = false;
+            }
+            else
+            {
+                $('circle[name=' + name + ']').attr('fill', 'orange');
+                dateIsRight = true;
+            }
+                
+        }
+
+        function isValid()
+        {
+            if (!fileIsRight || !nameIsRight || !surnameIsRight || !dateIsRight)
+                return false;
+            else
+                return true;
+        }
+
+    </script>
+}
+
+<br/><br/>
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8" style="background-color: lightgray;border-radius: 5px;text-align:center;border:1px solid grey;">
+        <h2 data-tag="33">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(33, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</h2>
+    </div>
+    <div class="col-md-2"></div>
+</div>
+
+    @using (Html.BeginForm("Settings", "MyAccount", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return isValid()" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <hr />
+            <div class="form-group">
+                <div class="col-md-3"></div>
+                <div class="col-lg-2">
+                    <label style="margin-top: 10%" data-tag="28">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(28, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
                 </div>
-                <div class="col-lg-4">
+                <div class="col-md-4">
+                    <div class="col-md-10">
+                        <input name="file" class="form-control" type="file" onchange="fileChanged(this)"/>
+                    </div>
+                    <div class="col-mg-2">
+                        <svg height="32" width="32">
+                            <image xlink:href="@ViewBag.ImageData" x="0" y="0" height="32px" width="32px"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="col-md-2">
                     <svg height="32" width="32">
-                        <image xlink:href="@ViewBag.ImageData" x="0" y="0" height="32px" width="32px" />
+                        <circle name="fileInformator" class="informator" cx="16" cy="16" r="10" fill="green" stroke="black" stroke-width="1px" />
                     </svg>
                 </div>
+                <div class="col-md-1"></div>
             </div>
-            <div class="col-md-1">
-                <input type="submit" data-tag="27" value="@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(27, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)" class="btn btn-default" />
+            <hr />
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4" style="text-align:center;background-color:lightgray;border-radius: 5px;border:1px solid grey;">
+                    <h4 data-tag="34">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(34, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</h4>
+                </div>
+                <div class="col-md-4"></div>
             </div>
-            <div class="col-md-3"></div>
-        </div>
+            <hr/>
+            <div class="form-group">
+                <div class="col-md-3"></div>
+                <div class="col-lg-2">
+                    <label style="margin-top: 5%" data-tag="35">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(35, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+                </div>
+                <div class="col-md-4">
+                    <div class="col-md-10">
+                        <input name="name" class="form-control" type="text" value="@ViewBag.Name" oninput="nameChanged(this)"/>
+                    </div>
+                    <div class="col-mg-2">
+                        <svg height="32" width="32">
+                            <circle name="nameInformator" class="informator" cx="16" cy="16" r="10" fill="green" stroke="black" stroke-width="1px" />                        
+                        </svg>
+                    </div>
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-3"></div>
+                <div class="col-lg-2">
+                    <label style="margin-top: 5%" data-tag="36">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(36, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+                </div>
+                <div class="col-md-4">
+                    <div class="col-md-10">
+                        <input name="surname" class="form-control" type="text" value="@ViewBag.Surname" oninput="surnameChanged(this)"/>
+                    </div>
+                    <div class="col-mg-2">
+                        <svg height="32" width="32">
+                            <circle name="surnameInformator" class="informator" cx="16" cy="16" r="10" fill="green" stroke="black" stroke-width="1px" /> 
+                        </svg>
+                    </div>
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-3"></div>
+                <div class="col-lg-2">
+                    <label style="margin-top: 5%" data-tag="37">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(37, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+                </div>
+                <div class="col-md-4">
+                    <div class="col-md-10">
+                        <input name="date" class="form-control" type="date" value="@ViewBag.DateBorn" onchange="dateChanged(this)"/>
+                    </div>
+                    <div class="col-mg-2">
+                        <svg height="32" width="32">
+                            <circle name="dateInformator" class="informator" cx="16" cy="16" r="10" fill="green" stroke="black" stroke-width="1px" /> 
+                        </svg>
+                    </div>
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-3"></div>
+                <div class="col-lg-2">
+                    <label style="margin-top: 5%" data-tag="39">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(39, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+                </div>
+                <div class="col-md-4">
+                    <div class="col-md-10">
+                        <select class="form-control" name="language" onchange="languageChanged(this)">
+                            <option value="1" @(ViewBag.LanguageID == 1 ? "selected" : string.Empty)>
+                                @ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(40, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)
+                            </option>
+                            <option value="2" @(ViewBag.LanguageID == 2 ? "selected" : string.Empty)>
+                                @ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(41, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-mg-2">
+                        <svg height="32" width="32">
+                            <circle name="languageInformator" class="informator" cx="16" cy="16" r="10" fill="green" stroke="black" stroke-width="1px" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+            <br/><br/>
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-6">
+                    <input type="submit" data-tag="38" value="@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(38, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)" class="btn btn-default" />
+                </div>
+                <div class="col-md-3"></div>
+            </div>
 
-        <strong style="color:red;">@ViewBag.Error</strong>
-    </div>
-}
+            <strong style="color:red;">@ViewBag.Error</strong>
+        </div>
+    }

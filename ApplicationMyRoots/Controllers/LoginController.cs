@@ -70,6 +70,7 @@ namespace ApplicationMyRoots.Controllers
             if(ModelState.IsValid)
             {
                 User user = Converters.RegistryUserToUserConverter(registryUser);
+                user.LanguageID = 1;
                 user.DateSign = DateTime.Now;
                 user.DateBorn = null;
 

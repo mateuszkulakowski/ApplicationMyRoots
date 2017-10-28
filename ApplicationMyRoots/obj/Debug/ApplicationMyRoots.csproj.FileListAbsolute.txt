@@ -158,8 +158,11 @@ C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoot
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.tabelkausertreenodesijęzykipoczątek.resources
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.zmiananazwypolalanguagetext.resources
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.tabelkausersdodaniewybranegojęzyka.resources
+C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.imagetouser.resources
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.csproj.GenerateResource.Cache
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.dll
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.pdb
+C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.additionalinfotousertreenodes.resources
+C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.nulowalnydatetimeusertresnodes.resources
+C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.usertreeidwusertreenodes.resources
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.csprojResolveAssemblyReference.cache
-C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.imagetouser.resources

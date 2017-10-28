@@ -43,29 +43,56 @@ namespace ApplicationMyRoots.Controllers
                         {
                             //data-have - czy dodany już ojciec/matka/partner
                             //data-mainuser - czy to ten co ma konto na stronce czy dodany jako węzeł 1-main, 0-dodany
+                            string ageLabelX;
+                            string dateBornX;
+                            string dateDeadX;
+                            string ageValueX;
+                            if (user.LanguageID == 1)
+                            {
+                                ageLabelX = "147.5";
+                                dateBornX = "170";
+                                dateDeadX = "174";
+                                ageValueX = "162";
+                            }
+                            else
+                            {
+                                ageLabelX = "145.5";
+                                dateBornX = "170";
+                                dateDeadX = "173";
+                                ageValueX = "163";
+                            }
 
-                            string htmlTree =
-                                "<g class=\"tree-elements\" id=\""+user.UserID+ "\" onmousedown=\"mousedowntreeelement(evt)\" transform=\"matrix(1 0 0 1 0 0)\" data-mainuser=\"1\">" +
-                                    "<rect class=\"tree-element-frames\" width=\"200\" height=\"100\" x=\"100\" y=\"50\" fill=\"white\" stroke=\"black\"/>" +
-                                    "<text class=\"tree-element-texts\" x=\"200\" y=\"65\" font-family=\"verdana\" font-size=\"12\" fill=\"blue\" alignment-baseline=\"middle\" text-anchor=\"middle\">" + user.NameSurname+"</text>"+
+                                string htmlTree =
+                                    "<g class=\"tree-elements\" id=\"" + user.UserID + "\" onmousedown=\"mousedowntreeelement(evt)\" transform=\"matrix(1 0 0 1 0 0)\" data-mainuser=\"1\">" +
+                                        "<rect class=\"tree-element-frames\" width=\"200\" height=\"100\" x=\"100\" y=\"50\" fill=\"white\" stroke=\"black\"/>" +
+                                        "<text class=\"tree-element-texts\" x=\"200\" y=\"65\" font-family=\"verdana\" font-size=\"12\" fill=\"blue\" alignment-baseline=\"middle\" text-anchor=\"middle\">" + user.NameSurname + "</text>" +
 
-                                    "<rect class=\"addparents\" width=\"180\" height=\"20\" x=\"110\" y=\"30\" fill=\"white\" stroke=\"red\" visibility=\"hidden\" data-have=\"0\" onclick=\"addNewNodeToTreeClick(this)\"/>" +
-                                    "<text class=\"addparents\" x=\"200\" y=\"40\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"20\" data-have=\"0\"></text>" +
+                                        "<rect class=\"addparents\" width=\"180\" height=\"20\" x=\"110\" y=\"30\" fill=\"white\" stroke=\"red\" visibility=\"hidden\" data-have=\"0\" onclick=\"addNewNodeToTreeClick(this)\"/>" +
+                                        "<text class=\"addparents-dbt\" x=\"200\" y=\"40\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"20\" data-have=\"0\"></text>" +
 
-                                    "<rect class=\"addpartnerR\" width=\"20\" height=\"80\" x=\"300\" y=\"60\" fill=\"white\" stroke=\"red\" visibility=\"hidden\" data-have=\"0\" onclick=\"addNewNodeToTreeClick(this)\"/>" +
-                                    "<text class=\"addpartnerR\" transform=\"rotate(90)\" x=\"100\" y=\"-310\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"22\" data-have=\"0\"></text>" +
+                                        "<rect class=\"addpartnerR\" width=\"20\" height=\"80\" x=\"300\" y=\"60\" fill=\"white\" stroke=\"red\" visibility=\"hidden\" data-have=\"0\" onclick=\"addNewNodeToTreeClick(this)\"/>" +
+                                        "<text class=\"addpartnerR-dbt\" transform=\"rotate(90)\" x=\"100\" y=\"-310\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"22\" data-have=\"0\"></text>" +
 
-                                    "<rect class=\"addpartnerL\" width=\"20\" height=\"80\" x=\"80\" y=\"60\" fill=\"white\" stroke=\"red\" visibility=\"hidden\" data-have=\"0\" onclick=\"addNewNodeToTreeClick(this)\"/>" +
-                                    "<text class=\"addpartnerL\" transform=\"rotate(90)\" x=\"100\" y=\"-90\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\"text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"23\" data-have=\"0\"></text>" +
+                                        "<rect class=\"addpartnerL\" width=\"20\" height=\"80\" x=\"80\" y=\"60\" fill=\"white\" stroke=\"red\" visibility=\"hidden\" data-have=\"0\" onclick=\"addNewNodeToTreeClick(this)\"/>" +
+                                        "<text class=\"addpartnerL-dbt\" transform=\"rotate(90)\" x=\"100\" y=\"-90\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\"text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"23\" data-have=\"0\"></text>" +
 
-                                    "<rect class=\"addchildren\" width=\"180\" height=\"20\" x=\"110\" y=\"150\" fill=\"white\" stroke=\"red\" visibility=\"hidden\" data-have=\"0\" onclick=\"addNewNodeToTreeClick(this)\"/>" +
-                                    "<text class=\"addchildren\" x=\"200\" y=\"160\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"24\" data-have=\"0\"></text>" +
+                                        "<rect class=\"addchildren\" width=\"180\" height=\"20\" x=\"110\" y=\"150\" fill=\"white\" stroke=\"red\" visibility=\"hidden\" data-have=\"0\" onclick=\"addNewNodeToTreeClick(this)\"/>" +
+                                        "<text class=\"addchildren-dbt\" x=\"200\" y=\"160\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"24\" data-have=\"0\"></text>" +
+                                        
+                                        "<image class=\"nodeImage\" xlink:href=\"\" x=\"230\" y=\"80\" height=\"60\" width=\"60\"/>" +
 
-                                    "<image class=\"nodeImage\" xlink:href=\"\" x=\"230\" y=\"80\" height=\"60\" width=\"60\"/>"+
+                                        "<text class=\"datebirthLabel-dbt\" x=\"138\" y=\"100\" font-family=\"verdana\" font-size=\"5\" fill=\"grey\" alignment-baseline=\"middle\" text-anchor=\"middle\" data-tag=\"29\"></text>" +
+                                        "<text class=\"datedeadLabel-dbt\" x=\"138\" y=\"110\" font-family=\"verdana\" font-size=\"5\" fill=\"grey\" alignment-baseline=\"middle\" text-anchor=\"middle\" data-tag=\"30\"></text>" +
+                                        "<text class=\"ageLabel-dbt\" x=\""+ageLabelX+"\" y=\"120\" font-family=\"verdana\" font-size=\"5\" fill=\"grey\" alignment-baseline=\"middle\" text-anchor=\"middle\" data-tag=\"31\"></text>" +
+                                        "<text class=\"maininfoLabel-dbt\" x=\"165\" y=\"86\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" data-tag=\"32\"></text>" +
+                                        
+                                        "<text class=\"datebirthValue\" x=\""+dateBornX+"\" y=\"100\" font-family=\"verdana\" font-size=\"5\" fill=\"grey\" alignment-baseline=\"middle\" text-anchor=\"middle\"></text>" +
+                                        "<text class=\"datedeadValue\" x=\""+dateDeadX+"\" y=\"110\" font-family=\"verdana\" font-size=\"5\" fill=\"grey\" alignment-baseline=\"middle\" text-anchor=\"middle\"></text>" +
+                                        "<text class=\"ageValue\" x=\""+ageValueX+"\" y=\"120\" font-family=\"verdana\" font-size=\"5\" fill=\"grey\" alignment-baseline=\"middle\" text-anchor=\"middle\"></text>" +
                                     
-                                "</g>";
-
-
+                                        
+                                    "</g>";
+                            
                             db.UserTrees.Add(new UserTree
                             {
                                 isMainTree = true,
@@ -75,7 +102,7 @@ namespace ApplicationMyRoots.Controllers
                                 TransformMatrix = "matrix(2 0 0 2 0 0)"
                             });
                             db.SaveChanges();
-
+                            
                             return htmlTree;
                         }
                     }
@@ -100,9 +127,33 @@ namespace ApplicationMyRoots.Controllers
                         DateThrow = DateTime.Now
                     });
                     db.SaveChanges();
-
                     return "";
                 }
+            }
+        }
+
+        // Zapisuje drzewo użytkownika // w metdzie unload - mytreescripts.js
+        [HttpPost]
+        public void SaveUserMainTree([FromBody]ClassWithTreeHtml treeClass,string id)
+        {
+            try
+            {
+                using (var db = new DAL.DbContext())
+                {
+                    int idc = int.Parse(id);
+
+                    UserTree userTree = db.UserTrees.Where(ut => (ut.UserID == idc && ut.isMainTree == true)).First();
+                    userTree.TreeHtmlCode = treeClass.TreeHtml;
+
+                    db.Entry(userTree).State = EntityState.Modified;
+                    db.SaveChanges();
+                }
+
+            }catch(Exception e)
+            {
+                DAL.DbContext db = new DAL.DbContext();
+                db.Errors.Add(new Error { DateThrow = DateTime.Now, Message = "ID:" + id + "/ SaveUSerMainTree() HtmlBuilderControllerAPI" + e.Message, StackTrace = e.StackTrace });
+                db.SaveChanges();
             }
         }
 
@@ -122,7 +173,6 @@ namespace ApplicationMyRoots.Controllers
                     {
                         return null;
                     }
-                    
 
                 }catch(Exception e)
                 {
@@ -154,7 +204,6 @@ namespace ApplicationMyRoots.Controllers
                     db.SaveChanges();
                 }catch (Exception e)
                 {
-
                     db.Errors.Add(new Error
                     {
                         Message = e.Message,

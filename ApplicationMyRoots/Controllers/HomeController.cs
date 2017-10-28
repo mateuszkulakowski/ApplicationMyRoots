@@ -18,11 +18,11 @@ namespace ApplicationMyRoots.Controllers
             ViewBag.LoggedUser = ResourceManager.LoggedUser.UserID;
             ViewBag.LanguageID = ResourceManager.LoggedUser.LanguageID;
 
-            string path = Server.MapPath("~/images/computer.png");
+            string path = Server.MapPath("~/images/no_foto.png");
             byte[] imageByteData = System.IO.File.ReadAllBytes(path);
             string imageBase64Data = Convert.ToBase64String(imageByteData);
             string imageDataURL = string.Format("data:image/png;base64,{0}", imageBase64Data);
-            ViewBag.ImageData = imageDataURL;
+            ViewBag.DefaultImageData = imageDataURL;
 
             return View();
         }

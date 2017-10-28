@@ -224,7 +224,20 @@
     <Compile Include="Migrations\201709251716163_image to user.Designer.cs">
       <DependentUpon>201709251716163_image to user.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201710211014069_additionalinfo to usertreenodes.cs" />
+    <Compile Include="Migrations\201710211014069_additionalinfo to usertreenodes.Designer.cs">
+      <DependentUpon>201710211014069_additionalinfo to usertreenodes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710211141273_nulowalny datetime usertresnodes.cs" />
+    <Compile Include="Migrations\201710211141273_nulowalny datetime usertresnodes.Designer.cs">
+      <DependentUpon>201710211141273_nulowalny datetime usertresnodes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710211151394_usertreeid w usertreenodes.cs" />
+    <Compile Include="Migrations\201710211151394_usertreeid w usertreenodes.Designer.cs">
+      <DependentUpon>201710211151394_usertreeid w usertreenodes.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\ClassWithTreeHtml.cs" />
     <Compile Include="Models\Error.cs" />
     <Compile Include="Models\FailedLogin.cs" />
     <Compile Include="Models\Language.cs" />
@@ -246,9 +259,11 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="images\ajax-loader.gif" />
-    <Content Include="images\computer.png" />
+    <Content Include="images\edit.png" />
+    <Content Include="images\edit.svg" />
     <Content Include="images\no_foto.png" />
+    <Content Include="images\trash_bin.svg" />
+    <Content Include="Scripts\bootstrap-filestyle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -322,6 +337,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201709251716163_image to user.resx">
       <DependentUpon>201709251716163_image to user.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710211014069_additionalinfo to usertreenodes.resx">
+      <DependentUpon>201710211014069_additionalinfo to usertreenodes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710211141273_nulowalny datetime usertresnodes.resx">
+      <DependentUpon>201710211141273_nulowalny datetime usertresnodes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710211151394_usertreeid w usertreenodes.resx">
+      <DependentUpon>201710211151394_usertreeid w usertreenodes.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

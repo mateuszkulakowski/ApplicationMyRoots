@@ -4,8 +4,14 @@
 
 
 /*wyłączanie pointer-eventów od elementów w svg czyli w każdym węźle dla rectów*/
-.tree-elements *:not(rect) {
+.tree-elements *:not(rect,image[class^=editImage],image[class^=trashImage]) {
     pointer-events: none;
+}
+
+text, image[class=nodeImage]{
+    pointer-events: none;
+    cursor: default;
+    user-select: none;
 }
 
 
@@ -26,3 +32,15 @@ rect[class^=add]:hover {
 .zoom-tree:hover {
     fill: #808080;
 }
+
+.editImage:hover + .editImageBorder {
+    stroke: #808080;
+    cursor: pointer;
+}
+
+.trashImage:hover + .trashImageBorder {
+    stroke: #808080;
+    cursor: pointer;
+}
+
+

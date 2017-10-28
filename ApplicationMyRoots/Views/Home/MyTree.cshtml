@@ -6,14 +6,13 @@
 {
     @Styles.Render("~/Styles/mytreestyle")
     @Scripts.Render("~/bundles/mytreescripts")
-
+    <script src="//cdn.jsdelivr.net/webshim/1.14.5/polyfiller.js"></script>
 }
 <br/><br/><br/>
 <div class="row">
-    <p id="dx"></p>
-    <p id="dy"></p>
     <br/><br/>
-    <svg id="svg_container" class="svg_container" height="1000" width="100%" style="border:1px gray solid" data-loggeduser="@ViewBag.LoggedUser" data-language="@ViewBag.LanguageID">
+    <p id="kkk"></p>
+    <svg id="svg_container" class="svg_container" height="1000" width="100%" style="border:1px gray solid" data-loggeduser="@ViewBag.LoggedUser" data-language="@ViewBag.LanguageID" onmousedown="mousedowntree(event)">
         
         <g class="tree" transform="matrix(2 0 0 2 0 0)">
             @*<svg class="tree-elements" id="2" width="240" height="140" x="100" y="50" >*@
@@ -33,9 +32,18 @@
                 <rect class="addchildren" width="180" height="20" x="110" y="150" fill="white" stroke="red" />
                 <text class="addchildren" x="200" y="160" font-family="verdana" font-size="6" fill="black" alignment-baseline="middle" text-anchor="middle">Dodaj Dziecko</text>
             
-                <image xlink:href="@ViewBag.ImageData" x="110" y="60" height="50px" width="50px" />
+                <image xlink:href="@ViewBag.DefaultImageData" x="110" y="60" height="50px" width="50px" />
+            
+                <text x="135" y="100" class="datebirthLabel" font-family="verdana" font-size="5" fill="grey" alignment-baseline="middle" text-anchor="middle">Data urodzenia:</text>
+                <text x="138" y="110" class="datedeadLabel" font-family="verdana" font-size="5" fill="grey" alignment-baseline="middle" text-anchor="middle">Data śmierci:</text>
+                <text x="148" y="120" class="ageLabel" font-family="verdana" font-size="5" fill="grey" alignment-baseline="middle" text-anchor="middle">Wiek:</text>
+                <text x="165" y="86" class="ageLabel" font-family="verdana" font-size="6" fill="black" alignment-baseline="middle" text-anchor="middle">Podstawowe informacje o członku</text>
+            
             </g>*@
             @*</svg>*@
+
+            @*<path d="M100,250 Q229,436 400,250" fill="transparent" stroke="black"/>
+            <line x1="100" x2="200" y1="100" y2="-100" stroke="black"/>*@
         </g>
 
         <!-- Kontrolka do przewijania -->
@@ -61,12 +69,378 @@
 </div>
 
 
-<!-- Okno modalne operacja w tle -->
-<div id="modal_loading" class="modal fade" role="dialog">
-    <div class="modal-dialog" style="width:90px;">
-        <div class="modal-content" style="margin:10%;">
-            <img src="/images/ajax-loader.gif" id="loading-indicator" />
+<!-- Okno modalne dodawanie członka -->
+<div id="modal_AddingNode" class="modal fade" role="dialog" data-edit="-1">
+    <div class="modal-dialog modal-lg" style="width: 60%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="closeCancelModal()">&times;</button>
+                <h4 id="addeditheader" class="modal-title" ></h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <div class="form-group">
+                            <div class="col-md-3"></div>
+                            <div class="col-md-1">
+                                <label style="margin-top: 10%" data-tag="47">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(47, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="col-md-10">
+                                    <input name="file" class="form-control" type="file" style="margin-left: 15%" onchange="fileChanged(this)"/>
+                                </div>
+                                <div class="col-md-2">
+                                    <svg height="32" width="47">
+                                        <image id="modalImageNode" xlink:href="@ViewBag.DefaultImageData" x="15" y="0" height="32px" width="32px" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <svg height="32" width="32">
+                                    <circle name="fileInformator" class="informator" cx="16" cy="16" r="10" fill="green" stroke="black" stroke-width="1px" />
+                                </svg>
+                            </div>
+                            <div class="col-md-3"></div>
+                        </div>
+                        <hr/>
+                        <div class="row">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-8" style="text-align:center;background-color:lightgray;border-radius: 5px;border:1px solid grey;">
+                                <h4 data-tag="48">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(48, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</h4>
+                            </div>
+                            <div class="col-md-2"></div>
+                        </div>
+                        <br/>
+                        <div class="form-group">
+                            <div class="col-md-3"></div>
+                            <div class="col-lg-1">
+                                <label style="margin-top: 5%" data-tag="45">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(45, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+                            </div>
+                            <div class="col-md-4">
+                                <input name="name" class="form-control" type="text" value="" style="margin-left:15%;" oninput="nameChanged(this)"/>
+                            </div>
+                            <div class="col-mg-1">
+                                <svg height="32" width="32">
+                                    <circle name="nameInformator" class="informator" cx="16" cy="16" r="10" fill="green" stroke="black" stroke-width="1px" />
+                                </svg>
+                            </div>
+                            <div class="col-md-3"></div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3"></div>
+                            <div class="col-lg-1">
+                                <label style="margin-top: 5%" data-tag="46">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(46, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+                            </div>
+                            <div class="col-md-4">
+                                <input name="surname" class="form-control" type="text" value="" style="margin-left:15%;" oninput="surnameChanged(this)"/>
+                            </div>
+                            <div class="col-mg-1">
+                                <svg height="32" width="32">
+                                    <circle name="surnameInformator" class="informator" cx="16" cy="16" r="10" fill="green" stroke="black" stroke-width="1px" />
+                                </svg>
+                            </div>
+                            <div class="col-md-3"></div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3"></div>
+                            <div class="col-lg-1">
+                                <label style="margin-top: 5%" data-tag="49">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(49, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+                            </div>
+                            <div class="col-md-4">
+                                <input name="dateborn" class="form-control" type="date" value="" style="margin-left:15%;" oninput="dateBornChanged(this)"/>
+                            </div>
+                            <div class="col-mg-1">
+                                <svg height="32" width="32">
+                                    <circle name="datebornInformator" class="informator" cx="16" cy="16" r="10" fill="green" stroke="black" stroke-width="1px" />
+                                </svg>
+                            </div>
+                            <div class="col-md-3"></div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3"></div>
+                            <div class="col-lg-1">
+                                <label style="margin-top: 5%" data-tag="50">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(50, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+                            </div>
+                            <div class="col-md-4">
+                                <input name="datedead" class="form-control" type="date" value="" style="margin-left:15%;" oninput="dateDeadChanged(this)"/>
+                            </div>
+                            <div class="col-mg-1">
+                                <svg height="32" width="32">
+                                    <circle name="datedeadInformator" class="informator" cx="16" cy="16" r="10" fill="green" stroke="black" stroke-width="1px" />
+                                </svg>
+                            </div>
+                            <div class="col-md-3"></div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3"></div>
+                            <div class="col-lg-1">
+                                <label style="margin-top: 5%" data-tag="51">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(51, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+                            </div>
+                            <div class="col-md-4">
+                                <textarea name="additionalinfo" class="form-control" style="margin-left:15%;" oninput="additionalChanged(this)"></textarea>
+                            </div>
+                            <div class="col-mg-1">
+                                <svg height="32" width="32">
+                                    <circle name="additionalinfoInformator" class="informator" cx="16" cy="16" r="10" fill="green" stroke="black" stroke-width="1px" />
+                                </svg>
+                            </div>
+                            <div class="col-md-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-tag="52" onclick="closeOkModal()">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(52, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</button>
+                <button type="button" class="btn btn-danger" data-tag="44" onclick="closeCancelModal()">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(44, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</button>
+            </div>
         </div>
     </div>
 </div>
 
+
+<!-- Okno modalne dodawanie matki/ojca -->
+<div id="modal_AddingNodeMotherFather" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg" style="width: 85%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" onclick="closeCancelModal()">&times;</button>
+                <h4 class="modal-title" data-tag="53">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(53, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</h4>
+            </div>
+            <div class="modal-body">
+                <table style="width:100%;">
+                    <tr>
+                        <td width="50%">
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <div class="form-group">
+                                        <div class="col-md-1"></div>
+                                        <div class="col-md-2">
+                                            <label style="margin-top: 10%;" data-tag="54">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(54, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <div class="col-md-10">
+                                                <input name="filemother" class="form-control" style="margin-right:15%;" type="file" onchange="fileChanged(this)" />
+                                            </div>
+                                            <div class="col-md-2">
+                                                <svg height="32" width="32">
+                                                    <image xlink:href="@ViewBag.DefaultImageData" x="0" y="0" height="32px" width="32px" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <svg height="32" width="32">
+                                                <circle name="fileInformatormother" class="informator" cx="16" cy="16" r="10" fill="green" stroke="black" stroke-width="1px" />
+                                            </svg>
+                                        </div>
+                                        <div class="col-md-1"></div>
+                                    </div>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-md-1"></div>
+                                        <div class="col-md-10" style="text-align:center;background-color:lightgray;border-radius: 5px;border:1px solid grey;">
+                                            <h4 data-tag="55">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(55, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</h4>
+                                        </div>
+                                        <div class="col-md-1"></div>
+                                    </div>
+                                    <br />
+                                    <div class="form-group">
+                                        <div class="col-md-2"></div>
+                                        <div class="col-lg-2">
+                                            <label style="margin-top: 5%" data-tag="56">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(56, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input name="namemother" class="form-control" type="text" style="margin-left:5%" oninput="nameChanged(this)"/>
+                                        </div>
+                                        <div class="col-mg-1">
+                                            <svg height="32" width="32">
+                                                <circle name="nameInformatormother" class="informator" cx="16" cy="16" r="10" fill="green" stroke="black" stroke-width="1px" />
+                                            </svg>
+                                        </div>
+                                        <div class="col-md-1"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-2"></div>
+                                        <div class="col-lg-2">
+                                            <label style="margin-top: 5%" data-tag="57">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(57, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input name="surnamemother" class="form-control" type="text" style="margin-left:5%;" oninput="surnameChanged(this)"/>
+                                        </div>
+                                        <div class="col-mg-1">
+                                            <svg height="32" width="32">
+                                                <circle name="surnameInformatormother" class="informator" cx="16" cy="16" r="10" fill="green" stroke="black" stroke-width="1px" />
+                                            </svg>
+                                        </div>
+                                        <div class="col-md-1"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-2"></div>
+                                        <div class="col-lg-2">
+                                            <label style="margin-top: 5%" data-tag="58">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(58, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input name="datebornmother" class="form-control" type="date" value="" style="margin-left:5%;" oninput="dateBornChanged(this)"/>
+                                        </div>
+                                        <div class="col-mg-1">
+                                            <svg height="32" width="32">
+                                                <circle name="datebornInformatormother" class="informator" cx="16" cy="16" r="10" fill="green" stroke="black" stroke-width="1px" />
+                                            </svg>
+                                        </div>
+                                        <div class="col-md-1"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-2"></div>
+                                        <div class="col-lg-2">
+                                            <label style="margin-top: 5%" data-tag="59">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(59, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input name="datedeadmother" class="form-control" type="date" value="" style="margin-left:5%;" oninput="dateDeadChanged(this)"/>
+                                        </div>
+                                        <div class="col-mg-1">
+                                            <svg height="32" width="32">
+                                                <circle name="datedeadInformatormother" class="informator" cx="16" cy="16" r="10" fill="green" stroke="black" stroke-width="1px" />
+                                            </svg>
+                                        </div>
+                                        <div class="col-md-1"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-2"></div>
+                                        <div class="col-lg-2">
+                                            <label style="margin-top: 5%" data-tag="60">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(60, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <textarea name="additionalinfomother" class="form-control" style="margin-left:5%;" oninput="additionalChanged(this)"></textarea>
+                                        </div>
+                                        <div class="col-mg-1">
+                                            <svg height="32" width="32">
+                                                <circle name="additionalinfoInformatormother" class="informator" cx="16" cy="16" r="10" fill="green" stroke="black" stroke-width="1px" />
+                                            </svg>
+                                        </div>
+                                        <div class="col-md-1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td width="50%">
+                            @*ojciec*@
+                            <div class="form-horizontal">
+                                   <div class="form-group">
+                                       <div class="form-group">
+                                           <div class="col-md-1"></div>
+                                           <div class="col-md-2">
+                                               <label style="margin-top: 10%;" data-tag="61">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(61, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+                                           </div>
+                                           <div class="col-md-7">
+                                               <div class="col-md-10">
+                                                   <input name="filefather" class="form-control" style="margin-right:15%;" type="file" onchange="fileChanged(this)" />
+                                               </div>
+                                               <div class="col-md-2">
+                                                   <svg height="32" width="32">
+                                                       <image xlink:href="@ViewBag.DefaultImageData" x="0" y="0" height="32px" width="32px" />
+                                                   </svg>
+                                               </div>
+                                           </div>
+                                           <div class="col-md-1">
+                                               <svg height="32" width="32">
+                                                   <circle name="fileInformatorfather" class="informator" cx="16" cy="16" r="10" fill="green" stroke="black" stroke-width="1px" />
+                                               </svg>
+                                           </div>
+                                           <div class="col-md-2"></div>
+                                       </div>
+                                       <hr />
+                                       <div class="row">
+                                           <div class="col-md-1"></div>
+                                           <div class="col-md-10" style="text-align:center;background-color:lightgray;border-radius: 5px;border:1px solid grey;">
+                                               <h4 data-tag="62">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(62, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</h4>
+                                           </div>
+                                           <div class="col-md-1"></div>
+                                       </div>
+                                       <br />
+                                       <div class="form-group">
+                                           <div class="col-md-2"></div>
+                                           <div class="col-lg-2">
+                                               <label style="margin-top: 5%" data-tag="63">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(63, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+                                           </div>
+                                           <div class="col-md-6">
+                                               <input name="namefather" class="form-control" type="text" style="margin-left:5%" oninput="nameChanged(this)"/>
+                                           </div>
+                                           <div class="col-mg-1">
+                                               <svg height="32" width="32">
+                                                   <circle name="nameInformatorfather" class="informator" cx="16" cy="16" r="10" fill="green" stroke="black" stroke-width="1px" />
+                                               </svg>
+                                           </div>
+                                           <div class="col-md-1"></div>
+                                       </div>
+                                       <div class="form-group">
+                                           <div class="col-md-2"></div>
+                                           <div class="col-lg-2">
+                                               <label style="margin-top: 5%" data-tag="64">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(64, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+                                           </div>
+                                           <div class="col-md-6">
+                                               <input name="surnamefather" class="form-control" type="text" style="margin-left:5%;" oninput="surnameChanged(this)"/>
+                                           </div>
+                                           <div class="col-mg-1">
+                                               <svg height="32" width="32">
+                                                   <circle name="surnameInformatorfather" class="informator" cx="16" cy="16" r="10" fill="green" stroke="black" stroke-width="1px" />
+                                               </svg>
+                                           </div>
+                                           <div class="col-md-1"></div>
+                                       </div>
+                                       <div class="form-group">
+                                           <div class="col-md-2"></div>
+                                           <div class="col-lg-2">
+                                               <label style="margin-top: 5%" data-tag="65">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(65, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+                                           </div>
+                                           <div class="col-md-6">
+                                               <input name="datebornfather" class="form-control" type="date" value="" style="margin-left:5%;" oninput="dateBornChanged(this)"/>
+                                           </div>
+                                           <div class="col-mg-1">
+                                               <svg height="32" width="32">
+                                                   <circle name="datebornInformatorfather" class="informator" cx="16" cy="16" r="10" fill="green" stroke="black" stroke-width="1px" />
+                                               </svg>
+                                           </div>
+                                           <div class="col-md-1"></div>
+                                       </div>
+                                       <div class="form-group">
+                                           <div class="col-md-2"></div>
+                                           <div class="col-lg-2">
+                                               <label style="margin-top: 5%" data-tag="66">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(66, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+                                           </div>
+                                           <div class="col-md-6">
+                                               <input name="datedeadfather" class="form-control" type="date" value="" style="margin-left:5%;" oninput="dateDeadChanged(this)"/>
+                                           </div>
+                                           <div class="col-mg-1">
+                                               <svg height="32" width="32">
+                                                   <circle name="datedeadInformatorfather" class="informator" cx="16" cy="16" r="10" fill="green" stroke="black" stroke-width="1px" />
+                                               </svg>
+                                           </div>
+                                           <div class="col-md-1"></div>
+                                       </div>
+                                       <div class="form-group">
+                                           <div class="col-md-2"></div>
+                                           <div class="col-lg-2">
+                                               <label style="margin-top: 5%" data-tag="67">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(67, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+                                           </div>
+                                           <div class="col-md-6">
+                                               <textarea name="additionalinfofather" class="form-control" style="margin-left:5%;" oninput="additionalChanged(this)"></textarea>
+                                           </div>
+                                           <div class="col-mg-1">
+                                               <svg height="32" width="32">
+                                                   <circle name="additionalinfoInformatorfather" class="informator" cx="16" cy="16" r="10" fill="green" stroke="black" stroke-width="1px" />
+                                               </svg>
+                                           </div>
+                                           <div class="col-md-1"></div>
+                                       </div>
+                                   </div>
+                               </div>
+                        </td>
+                    <tr/>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-tag="52" onclick="closeOkModalMotherFather()">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(52, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</button>
+                <button type="button" class="btn btn-danger" data-tag="44" onclick="closeCancelModalMotherFather()">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(44, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</button>
+            </div>
+        </div>
+    </div>
+</div>
