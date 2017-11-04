@@ -3,6 +3,16 @@
     ViewBag.Title = "LogOut";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#divmenu').attr('hidden', 'hidden');
+            $('li[class="active"]').removeClass();
+            $('#menutree').attr('class', 'active');
+        });
+    </script>
+}
 
 <h2 data-tag="13">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(13, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</h2>
 

@@ -5,6 +5,17 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#divmenu').attr('hidden', 'hidden');
+            $('li[class="active"]').removeClass();
+            $('#menutree').attr('class', 'active');
+        });
+    </script>
+}
+
 @using (Html.BeginForm()) 
 {
     @Html.AntiForgeryToken()

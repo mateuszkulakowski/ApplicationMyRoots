@@ -14,6 +14,12 @@ namespace ApplicationMyRoots
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+                name: "First",
+                url: "{controller}/{action}",
+                defaults: new { controller = "Home", action = "MyTree", id = UrlParameter.Optional }
+            );
+
+            routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "MyTree", id = UrlParameter.Optional }

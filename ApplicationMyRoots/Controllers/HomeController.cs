@@ -26,5 +26,39 @@ namespace ApplicationMyRoots.Controllers
 
             return View();
         }
+
+
+        [AccessControl]
+        public ActionResult Home()
+        {
+            ViewBag.Title = "Home";
+
+            return View();
+        }
+
+        [AccessControl]
+        public ActionResult Statistics()
+        {
+            ViewBag.Title = "Statistics";
+
+            return View();
+        }
+
+
+        [AccessControl]
+        public ActionResult Events()
+        {
+            ViewBag.Title = "Events";
+
+            return View();
+        }
+
+        [AccessControl]
+        public ActionResult Photos()
+        {
+            ViewBag.Title = "Photos";
+
+            return View();
+        }
     }
 }

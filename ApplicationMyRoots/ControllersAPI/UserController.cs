@@ -105,6 +105,15 @@ namespace ApplicationMyRoots.ControllersAPI
             return imageDataURL;
         }
 
+        [HttpGet]
+        public string getDefaultImage()
+        {
+            string path = HostingEnvironment.MapPath("~/images/no_foto.png");
+            byte[] imageByteData = System.IO.File.ReadAllBytes(path);
+            string imageBase64Data = Convert.ToBase64String(imageByteData);
+            string imageDataURL = string.Format("data:image/png;base64,{0}", imageBase64Data);
+            return imageDataURL;
+        }
 
         [HttpGet]
         public string getTrashImage()
@@ -443,7 +452,6 @@ namespace ApplicationMyRoots.ControllersAPI
             }
         }
 
-
         [HttpPost]
         //Metoda zwracająca id zapisanego węzła
         public string GetUserNode(int id)
@@ -506,6 +514,35 @@ namespace ApplicationMyRoots.ControllersAPI
                 db.Errors.Add(new Error { DateThrow = DateTime.Now, Message = "Błąd przy pobieraniu węzła UserController metoda:getUserNode() id(" + id + ") - " + e.Message, StackTrace = e.StackTrace });
                 db.SaveChanges();
                 return "";
+            }
+        }
+
+        [HttpPost]
+        public void RemoveUserNode()
+        {
+            try
+            {
+                int id1 = int.Parse(this.Request.Headers.GetValues("id1").First());
+                int id2 = int.Parse(this.Request.Headers.GetValues("id2").First());
+
+                if (id1 == -1 && id2 == -1) return;
+
+                using (var db = new DbContext())
+                {
+                    if(id1 != -1)
+                        db.UserTreeNodes.Remove(db.UserTreeNodes.Find(id1));
+                    
+                    if (id2 != -1)
+                        db.UserTreeNodes.Remove(db.UserTreeNodes.Find(id2));
+
+                    db.SaveChanges();
+
+                }
+            }catch(Exception e)
+            {
+                DbContext db = new DbContext();
+                db.Errors.Add(new Error { DateThrow = DateTime.Now, Message = "Błąd przy usuwaniu węzła UserController metoda:removeUserNode() - " + e.Message, StackTrace = e.StackTrace });
+                db.SaveChanges();
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ApplicationMyRoots.DAL;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -49,6 +50,23 @@ namespace ApplicationMyRoots.Models
         public Language Language { get; set; }
 
         public byte[] Image { get; set; }
+
+        [NotMapped]
+        public string ImageString
+        {
+            get {
+                DbContext db = new DbContext();
+                string img = "";
+                User user = db.Users.Where(u => u.UserID == this.UserID).First();
+                byte[] imgByteData = user.Image;
+                if (imgByteData != null)
+                {
+                    string imageBase64Data = Convert.ToBase64String(imgByteData);
+                    img = string.Format("data:image/png;base64,{0}", imageBase64Data);
+                }
+                return img;
+            }
+        }
 
     }
 }

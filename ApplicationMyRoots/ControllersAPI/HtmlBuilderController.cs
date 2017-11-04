@@ -63,21 +63,21 @@ namespace ApplicationMyRoots.Controllers
                             }
 
                                 string htmlTree =
-                                    "<g class=\"tree-elements\" id=\"" + user.UserID + "\" onmousedown=\"mousedowntreeelement(evt)\" transform=\"matrix(1 0 0 1 0 0)\" data-mainuser=\"1\">" +
+                                    "<g class=\"tree-elements\" id=\"" + user.UserID + "\" onmousedown=\"mousedowntreeelement(evt)\" transform=\"matrix(1 0 0 1 0 0)\" data-mainuser=\"1\" data-haveRightLine=\"0\" data-haveLeftLine=\"0\" data-haveUpLine=\"1\">" +
                                         "<rect class=\"tree-element-frames\" width=\"200\" height=\"100\" x=\"100\" y=\"50\" fill=\"white\" stroke=\"black\"/>" +
                                         "<text class=\"tree-element-texts\" x=\"200\" y=\"65\" font-family=\"verdana\" font-size=\"12\" fill=\"blue\" alignment-baseline=\"middle\" text-anchor=\"middle\">" + user.NameSurname + "</text>" +
 
-                                        "<rect class=\"addparents\" width=\"180\" height=\"20\" x=\"110\" y=\"30\" fill=\"white\" stroke=\"red\" visibility=\"hidden\" data-have=\"0\" onclick=\"addNewNodeToTreeClick(this)\"/>" +
+                                        "<rect class=\"addparents\" width=\"180\" height=\"20\" x=\"110\" y=\"30\" fill=\"white\" stroke=\"#428bca\" visibility=\"hidden\" data-have=\"0\" onclick=\"addNewNodeToTreeClick(this)\"/>" +
                                         "<text class=\"addparents-dbt\" x=\"200\" y=\"40\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"20\" data-have=\"0\"></text>" +
 
-                                        "<rect class=\"addpartnerR\" width=\"20\" height=\"80\" x=\"300\" y=\"60\" fill=\"white\" stroke=\"red\" visibility=\"hidden\" data-have=\"0\" onclick=\"addNewNodeToTreeClick(this)\"/>" +
+                                        "<rect class=\"addpartnerR\" width=\"20\" height=\"80\" x=\"300\" y=\"60\" fill=\"white\" stroke=\"#428bca\" visibility=\"hidden\" data-have=\"0\" onclick=\"addNewNodeToTreeClick(this)\"/>" +
                                         "<text class=\"addpartnerR-dbt\" transform=\"rotate(90)\" x=\"100\" y=\"-310\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"22\" data-have=\"0\"></text>" +
 
-                                        "<rect class=\"addpartnerL\" width=\"20\" height=\"80\" x=\"80\" y=\"60\" fill=\"white\" stroke=\"red\" visibility=\"hidden\" data-have=\"0\" onclick=\"addNewNodeToTreeClick(this)\"/>" +
+                                        "<rect class=\"addpartnerL\" width=\"20\" height=\"80\" x=\"80\" y=\"60\" fill=\"white\" stroke=\"#428bca\" visibility=\"hidden\" data-have=\"0\" onclick=\"addNewNodeToTreeClick(this)\"/>" +
                                         "<text class=\"addpartnerL-dbt\" transform=\"rotate(90)\" x=\"100\" y=\"-90\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\"text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"23\" data-have=\"0\"></text>" +
 
-                                        "<rect class=\"addchildren\" width=\"180\" height=\"20\" x=\"110\" y=\"150\" fill=\"white\" stroke=\"red\" visibility=\"hidden\" data-have=\"0\" onclick=\"addNewNodeToTreeClick(this)\"/>" +
-                                        "<text class=\"addchildren-dbt\" x=\"200\" y=\"160\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"24\" data-have=\"0\"></text>" +
+                                        "<rect class=\"addchildren\" width=\"180\" height=\"20\" x=\"110\" y=\"150\" fill=\"white\" stroke=\"#428bca\" visibility=\"hidden\" data-have=\"1\" onclick=\"addNewNodeToTreeClick(this)\"/>" +
+                                        "<text class=\"addchildren-dbt\" x=\"200\" y=\"160\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" visibility=\"hidden\" data-tag=\"24\" data-have=\"1\"></text>" +
                                         
                                         "<image class=\"nodeImage\" xlink:href=\"\" x=\"230\" y=\"80\" height=\"60\" width=\"60\"/>" +
 

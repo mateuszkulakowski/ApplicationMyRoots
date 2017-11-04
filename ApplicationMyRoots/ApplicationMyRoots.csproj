@@ -294,6 +294,10 @@
     <Content Include="Views\Login\LogOut.cshtml" />
     <Content Include="Views\Login\LogIn.cshtml" />
     <Content Include="Views\MyAccount\Settings.cshtml" />
+    <Content Include="Views\Home\Home.cshtml" />
+    <Content Include="Views\Home\Photos.cshtml" />
+    <Content Include="Views\Home\Events.cshtml" />
+    <Content Include="Views\Home\Statistics.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201707231254483_Tabelka User - dodanie.resx">

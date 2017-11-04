@@ -20,7 +20,8 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink(@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(3, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID), "MyTree", "Home", new { area = "" }, new { @class = "navbar-brand", data_tag = "3" })
+                <a class="navbar-brand" data-tag="3" href="/Home"><span class="glyphicon glyphicon-leaf"></span>&nbsp;&nbsp;@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(3, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</a>
+                
             </div>
             <div class="navbar-collapse collapse">
 
@@ -34,14 +35,12 @@
                 else
                 {
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#" style="pointer-events:none;" data-tag="4">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(4, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID) <strong>@zalogowany.Name</strong></a></li>
-                        <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#" data-tag="25">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(25, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)
-                                <span class="caret"></span>
+                        <li><a href="#" style="pointer-events:none;" data-tag="4">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(4, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID) <strong>@zalogowany.Name</strong> </a> </li>
+                        <li><a href="#" style="pointer-events:none;margin-left:-40%;margin-top:-2%;">
+                                <svg height="22" width="22">
+                                    <image id="userProfileImage" xlink:href="@zalogowany.ImageString" x="0" y="0" height="22" width="22" />
+                                </svg>
                             </a>
-                            <ul class="dropdown-menu">
-                                <li><a href="/MyAccount/Settings" data-tag="26">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(26, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</a></li>
-                            </ul>
                         </li>
                         <li><a href="/Login/LogOut"><span class="glyphicon glyphicon-log-out" data-tag="5"></span> @ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(5, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</a></li>
                     </ul>
@@ -50,7 +49,7 @@
             </div>
         </div>
     </div>
-    <div class="container body-content">
+    <div class="container">
         @RenderBody()
         <hr />
         <footer>
