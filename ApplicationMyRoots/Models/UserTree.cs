@@ -20,5 +20,7 @@ namespace ApplicationMyRoots.Models
         public string TransformMatrix { get; set; }
 
         public virtual ICollection<UserTreeNode> Nodes { get; set; }
+
+        public virtual ICollection<UserTreePhoto> TreePhotos { get; set; }
     }
 }

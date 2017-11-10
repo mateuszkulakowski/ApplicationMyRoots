@@ -237,6 +237,38 @@
     <Compile Include="Migrations\201710211151394_usertreeid w usertreenodes.Designer.cs">
       <DependentUpon>201710211151394_usertreeid w usertreenodes.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711101927157_usertreehotos.cs" />
+    <Compile Include="Migrations\201711101927157_usertreehotos.Designer.cs">
+      <DependentUpon>201711101927157_usertreehotos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711101928512_usertreehotos1.cs" />
+    <Compile Include="Migrations\201711101928512_usertreehotos1.Designer.cs">
+      <DependentUpon>201711101928512_usertreehotos1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711101930247_usertreephoto2.cs" />
+    <Compile Include="Migrations\201711101930247_usertreephoto2.Designer.cs">
+      <DependentUpon>201711101930247_usertreephoto2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711101934230_utp3.cs" />
+    <Compile Include="Migrations\201711101934230_utp3.Designer.cs">
+      <DependentUpon>201711101934230_utp3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711101935304_utp33.cs" />
+    <Compile Include="Migrations\201711101935304_utp33.Designer.cs">
+      <DependentUpon>201711101935304_utp33.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711101937471_utp333.cs" />
+    <Compile Include="Migrations\201711101937471_utp333.Designer.cs">
+      <DependentUpon>201711101937471_utp333.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711101939378_utp3331.cs" />
+    <Compile Include="Migrations\201711101939378_utp3331.Designer.cs">
+      <DependentUpon>201711101939378_utp3331.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711101942491_usertreesphotos.cs" />
+    <Compile Include="Migrations\201711101942491_usertreesphotos.Designer.cs">
+      <DependentUpon>201711101942491_usertreesphotos.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ClassWithTreeHtml.cs" />
     <Compile Include="Models\Error.cs" />
@@ -245,6 +277,7 @@
     <Compile Include="Models\LanguageText.cs" />
     <Compile Include="Models\UserTree.cs" />
     <Compile Include="Models\UserTreeNode.cs" />
+    <Compile Include="Models\UserTreePhoto.cs" />
     <Compile Include="ViewsModels\LogInUser.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -263,6 +296,7 @@
     <Content Include="images\calendar.png" />
     <Content Include="images\edit.png" />
     <Content Include="images\edit.svg" />
+    <Content Include="images\IMG_20160708_110850.jpg" />
     <Content Include="images\no_foto.png" />
     <Content Include="images\picture.png" />
     <Content Include="images\registry.png" />
@@ -359,6 +393,30 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201710211151394_usertreeid w usertreenodes.resx">
       <DependentUpon>201710211151394_usertreeid w usertreenodes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711101927157_usertreehotos.resx">
+      <DependentUpon>201711101927157_usertreehotos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711101928512_usertreehotos1.resx">
+      <DependentUpon>201711101928512_usertreehotos1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711101930247_usertreephoto2.resx">
+      <DependentUpon>201711101930247_usertreephoto2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711101934230_utp3.resx">
+      <DependentUpon>201711101934230_utp3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711101935304_utp33.resx">
+      <DependentUpon>201711101935304_utp33.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711101937471_utp333.resx">
+      <DependentUpon>201711101937471_utp333.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711101939378_utp3331.resx">
+      <DependentUpon>201711101939378_utp3331.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711101942491_usertreesphotos.resx">
+      <DependentUpon>201711101942491_usertreesphotos.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

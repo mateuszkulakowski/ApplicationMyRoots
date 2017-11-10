@@ -24,5 +24,7 @@ namespace ApplicationMyRoots.DAL
         public DbSet<Language> Languages { get; set; }
 
         public DbSet<LanguageText> LanguageTexts { get; set; }
+
+        public DbSet<UserTreePhoto> UserTreePhotos { get; set; }
     }
 }
