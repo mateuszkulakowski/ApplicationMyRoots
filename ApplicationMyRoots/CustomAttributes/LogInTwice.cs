@@ -12,7 +12,7 @@ namespace ApplicationMyRoots.CustomAttributes
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             if (ResourceManager.LoggedUser != null)
-                filterContext.Result = new RedirectResult("/Home/MyTree");
+                filterContext.Result = new RedirectResult("/Home/Home");
         }
     }
 }

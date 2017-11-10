@@ -14,7 +14,7 @@ namespace ApplicationMyRoots.CustomAttributes
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             if (ResourceManager.LoggedUser == null)
-                filterContext.Result = new RedirectResult("/Login/LogIn");
+                filterContext.Result = new RedirectResult("/Login/Home");
         }
         
     }

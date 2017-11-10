@@ -24,5 +24,21 @@ namespace ApplicationMyRoots.ControllersAPI
 
         }
 
+
+        [HttpGet]
+        public string getMonth(int id)//id to data-tag przy elemencie html
+        {
+            try
+            {
+                return ResourceManager.getElementTextInLanguage(87, id)+","+ ResourceManager.getElementTextInLanguage(88, id) + "," + ResourceManager.getElementTextInLanguage(89, id) + ","
+                    + ResourceManager.getElementTextInLanguage(90, id) + "," + ResourceManager.getElementTextInLanguage(91, id) + "," + ResourceManager.getElementTextInLanguage(92, id) + ","
+                    + ResourceManager.getElementTextInLanguage(93, id) + "," + ResourceManager.getElementTextInLanguage(94, id) + ","+ ResourceManager.getElementTextInLanguage(95, id) + ","
+                    + ResourceManager.getElementTextInLanguage(96, id) + "," + ResourceManager.getElementTextInLanguage(97, id) + ","+ ResourceManager.getElementTextInLanguage(98, id);
+            }
+            catch (Exception e) { return "Error"; }
+
+
+        }
+
     }
 }

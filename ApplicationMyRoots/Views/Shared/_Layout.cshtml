@@ -49,13 +49,8 @@
             </div>
         </div>
     </div>
-    <div class="container">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p data-tag="6">&copy; @DateTime.Now.Year - @ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(6, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</p>
-        </footer>
-    </div>
+    <br/><br/><br/>
+    @RenderBody()
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")

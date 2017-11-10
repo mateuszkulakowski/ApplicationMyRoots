@@ -157,6 +157,7 @@
     <Compile Include="Common\Converters.cs" />
     <Compile Include="Common\ResourceManager.cs" />
     <Compile Include="ControllersAPI\LanguageController.cs" />
+    <Compile Include="ControllersAPI\StatisticsController.cs" />
     <Compile Include="ControllersAPI\UserController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="ControllersAPI\HtmlBuilderController.cs" />
@@ -259,10 +260,17 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="images\calendar.png" />
     <Content Include="images\edit.png" />
     <Content Include="images\edit.svg" />
     <Content Include="images\no_foto.png" />
+    <Content Include="images\picture.png" />
+    <Content Include="images\registry.png" />
+    <Content Include="images\sigin.png" />
+    <Content Include="images\statistics.png" />
     <Content Include="images\trash_bin.svg" />
+    <Content Include="images\tree.jpg" />
+    <Content Include="images\tree.png" />
     <Content Include="Scripts\bootstrap-filestyle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -298,6 +306,7 @@
     <Content Include="Views\Home\Photos.cshtml" />
     <Content Include="Views\Home\Events.cshtml" />
     <Content Include="Views\Home\Statistics.cshtml" />
+    <Content Include="Views\Login\Home.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201707231254483_Tabelka User - dodanie.resx">

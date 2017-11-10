@@ -13,6 +13,13 @@ namespace ApplicationMyRoots.Controllers
 {
     public class LoginController : Controller
     {
+        [HttpGet]
+        public ActionResult Home()
+        {
+            return View();
+        }
+
+
         [LogInTwice]
         public ActionResult LogIn()
         {
@@ -47,14 +54,14 @@ namespace ApplicationMyRoots.Controllers
                         catch(Exception ex){} // tu brak takiego loginu więc nic nie odnotowujemy
 
 
-                        ViewBag.Error = "Nie poprawne dane logowania!";
+                        ViewBag.Error = ResourceManager.getElementTextInLanguage(99, 1);
                         return View(logInUser);
                     }
                 }
 
-                return RedirectToAction("MyTree", "Home");
+                return RedirectToAction("Home", "Home");
             }
-            ViewBag.Error = "Niepoprawne dane - upewnij się, że uzupełniłeś wszyskie pola!";
+            ViewBag.Error = ResourceManager.getElementTextInLanguage(100, 1);//"Niepoprawne dane - upewnij się, że uzupełniłeś wszyskie pola!";
             return View(logInUser);
 
         }
@@ -67,7 +74,8 @@ namespace ApplicationMyRoots.Controllers
         [HttpPost]
         public ActionResult Registry(RegistryUser registryUser)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid && registryUser.Login != null && registryUser.Name != null && registryUser.Password != null && registryUser.Surname != null
+               && registryUser.Login != "" && registryUser.Name != "" && registryUser.Password != "" && registryUser.Surname != "")
             {
                 User user = Converters.RegistryUserToUserConverter(registryUser);
                 user.LanguageID = 1;
@@ -76,15 +84,25 @@ namespace ApplicationMyRoots.Controllers
 
                 using (var db = new DbContext())
                 {
-                    ResourceManager.LoggedUser = user;
+                    int existsUser = db.Users.Where(u => u.Login.ToLower() == registryUser.Login.ToLower()).Count();
 
-                    // Sprawdzić czy nie istnieje już podny login!!
-                    db.Users.Add(user);
-                    db.SaveChanges();
+                    if (existsUser == 0)
+                    {
+                        ResourceManager.LoggedUser = user;
+                        db.Users.Add(user);
+                        db.SaveChanges();
+
+                        return RedirectToAction("MyTree", "Home");
+                    }
+                    else
+                    {
+                        ViewBag.Error = ResourceManager.getElementTextInLanguage(102, 1); ;
+                        return View(registryUser);
+                    }
                 }
-
-                return RedirectToAction("MyTree", "Home");
             }
+
+            ViewBag.Error = ResourceManager.getElementTextInLanguage(101, 1); ;
             return View(registryUser);
         }
 

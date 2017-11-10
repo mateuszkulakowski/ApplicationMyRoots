@@ -1,0 +1,128 @@
+﻿
+@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts
+{
+    <script type="text/javascript">
+        var oldwidth = 0;
+        var timer;
+        var timer1;
+
+        $(document).ready(function () {
+
+            refreshCountuser();
+            refreshCounttree();
+
+
+            $(window).resize(function () {
+                if ($(window).innerWidth() < 1600)
+                {
+                    $('.functionalityfirst').hide();
+                    $('.functionality').hide();
+                }
+                else {
+                    $('.functionalityfirst').show();
+                    $('.functionality').show();
+                }
+
+                $('.functionality').css('min-width', $('.functionality').css('min-width')+$(window).innerWidth() - oldwidth);
+                $('.functionalityfirst').css('min-width', $('.functionalityfirst').css('min-width')+$(window).innerWidth() - oldwidth);
+
+                oldwidth = $(window).innerWidth();
+            });
+        });
+
+        function refreshCountuser() {
+            $.ajax({
+                url: '/api/Statistics/GetCountUser',
+                method: 'GET',
+                success: function (data) {
+                    $('#countuser').html(data);
+                }
+            });
+        }
+
+        function refreshCounttree() {
+            $.ajax({
+                url: '/api/Statistics/GetCountTree',
+                method: 'GET',
+                success: function (data) {
+                    $('#counttree').html(data);
+                }
+            });
+        }
+
+        function loginclick()
+        {
+            window.location.replace("/Login/LogIn");
+        }
+
+        function registryclick() {
+            window.location.replace("/Login/Registry");
+        }
+    </script>
+}
+
+<div class="container" style="min-width:80%;height:400px;background-image: url('../../images/tree.jpg');background-repeat:no-repeat;background-size:cover;border:1px solid green;">
+    <br />
+    <h1 data-tag="104" style="text-align:center;color:white;"><strong>@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(104, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</strong></h1>
+    <p data-tag="105" style="text-align:center;color:white;">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(105, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</p>
+    
+    <br/><br/><br/>
+    <div class="functionalityfirst" style="float:left;padding:5px;background-color:white;margin-left:20%;min-height:150px;min-width:150px;border-radius:5px;border:1px solid darkolivegreen;">
+        <p><strong>Zarządzaj swoim drzewem</strong></p>
+        <svg width="100" height="100" style="margin-left:20%;">
+            <image width="100" height="100" xlink:href="~/images/tree.png"/>
+        </svg>
+    </div>
+    <div class="functionality" style="float:left;padding:5px;background-color:white;margin-left:5%;min-height:150px;min-width:150px;border-radius:5px;border:1px solid green;">
+        <p><strong>Miej wgląd w statystki rodziny</strong></p>
+        <svg width="100" height="100" style="margin-left:25%;">
+            <image width="100" height="100" xlink:href="~/images/statistics.png" />
+        </svg>
+    </div>
+    <div class="functionality" style="float:left;padding:5px;background-color:white;margin-left:5%;min-height:150px;min-width:150px;border-radius:5px;border:1px solid green;">
+        <p><strong>Przeglądaj rodzinne zdjęcia</strong></p>
+        <svg width="100" height="100" style="margin-left:20%;">
+            <image width="100" height="100" xlink:href="~/images/picture.png" />
+        </svg>
+    </div>
+    <div class="functionality" style="float:left;padding:5px;background-color:white;margin-left:5%;min-height:150px;min-width:150px;border-radius:5px;border:1px solid green;">
+        <p><strong>Dodawaj wydarzenia rodzinne</strong></p>
+        <svg width="100" height="100" style="margin-left:25%;">
+            <image width="100" height="100" xlink:href="~/images/calendar.png" />
+        </svg>
+    </div>
+    <div style="clear:both;"></div>
+</div>
+<div class="container" style="min-width:60%;">
+    <br/><br/>
+
+    <div style="border:1px solid green;border-radius:8px;background-color:lightgrey;">
+        <h1 style="text-align:center;">Liczba naszych użytkowników</h1>
+        <h1 id="countuser"style="text-align:center;font-weight:bold;"></h1>
+    </div><br/>
+    <div style="border:1px solid green;border-radius:8px;background-color:lightgrey;">
+        <h1 style="text-align:center;">Liczba stworzonych drzew</h1>
+        <h1 id="counttree" style="text-align:center;font-weight:bold;"></h1>
+    </div><br/><br/>
+
+    <h1 style="text-align:center;">Nie zwlekaj zarejestruj się lub zaloguj!</h1><br/>
+
+    <div class="mybutton" style="float:left;background-color:white;margin-left:35%;min-height:150px;min-width:150px;border-radius:8px;border:1px solid black;" onclick="registryclick()">
+        <p style="text-align:center;">Rejestracja</p>
+        <svg width="100" height="100" style="margin-left:20%;">
+            <image width="100" height="100" xlink:href="~/images/registry.png" />
+        </svg>
+    </div>
+    <div class="mybutton" style="float:left;background-color:white;margin-left:5%;min-height:150px;min-width:150px;border-radius:8px;border:1px solid black;" onclick="loginclick()">
+        <p style="text-align:center;">Logowanie</p>
+        <svg width="100" height="100" style="margin-left:20%;">
+            <image width="100" height="100" xlink:href="~/images/sigin.png" />
+        </svg>
+    </div>
+    <div style="clear:both;"></div>
+</div>
+

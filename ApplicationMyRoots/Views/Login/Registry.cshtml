@@ -14,52 +14,55 @@
         });
     </script>
 }
+<div class="container" style="min-width:80%;height:400px;background-image: url('../../images/tree.jpg');background-repeat:no-repeat;background-size:cover;border:1px solid green;">
+    <br/>
+    <h2 data-tag="19" style="text-align:center;color:white;"><strong>@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(19, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</strong></h2>
+    <div class="row" style="margin-left:29%;margin-top:2%;">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Login, htmlAttributes: new { @class = "control-label col-md-2", data_tag = "14", style = "color:white;" }, labelText: @ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(14, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID))
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Login, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Login, "", new { @class = "text-danger" })
+                    </div>
+                </div>
 
-@using (Html.BeginForm()) 
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4 data-tag="19">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(19, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.Login, htmlAttributes: new { @class = "control-label col-md-2", data_tag = "14" }, labelText: @ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(14, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID))
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Login, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Login, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2", data_tag = "15", style = "color:white;" }, labelText: @ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(15, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID))
+                    <div class="col-md-10">
+                        <input class="form-control" type="password" id="Password" name="Password" />
+                        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                    </div>
+                </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2", data_tag = "15" }, labelText: @ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(15, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID))
-            <div class="col-md-10">
-                <input class="form-control" type="password" id="Password" name="Password" />
-                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2", data_tag = "16", style = "color:white;" }, labelText: @ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(16, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID))
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2", data_tag = "16" }, labelText: @ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(16, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID))
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Surname, htmlAttributes: new { @class = "control-label col-md-2", data_tag = "17", style = "color:white;" }, labelText: @ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(17, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID))
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Surname, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Surname, "", new { @class = "text-danger" })
+                    </div>
+                </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Surname, htmlAttributes: new { @class = "control-label col-md-2", data_tag = "17" }, labelText: @ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(17, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID))
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Surname, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Surname, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" data-tag="18" value="@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(18, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)" class="btn btn-default" />
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" data-tag="18" value="@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(18, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)" class="btn btn-default" />
-            </div>
-        </div>
+        }
     </div>
-}
+    <h4 style="text-align:center;"><strong style="color:red;">@ViewBag.Error</strong></h4>
+</div>
 

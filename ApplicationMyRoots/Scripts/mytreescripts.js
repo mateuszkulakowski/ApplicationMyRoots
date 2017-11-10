@@ -38,7 +38,7 @@ $(document).ready(function () {
     languageID = $('#svg_container').attr('data-language');
 
     //pobieranie drzewa z api
-    $.get("api/HtmlBuilder/GetUserMainTree/" + userID, function (data) {
+    $.get("/api/HtmlBuilder/GetUserMainTree/" + userID, function (data) {
         $(".tree").html(data);
 
         //przejmujemy zaznaczony węzeł
@@ -53,7 +53,7 @@ $(document).ready(function () {
     });
 
     //pobieranie tranformmatrix
-    $.get("api/HtmlBuilder/GetUserMainTreeTransformMatrix/" + userID, function (data) {
+    $.get("/api/HtmlBuilder/GetUserMainTreeTransformMatrix/" + userID, function (data) {
     if (data !== null)
         $(".tree").attr('transform', data);
     });
@@ -62,7 +62,7 @@ $(document).ready(function () {
     $(window).unload(function () {
         $(".nodeImage").attr("xlink:href", "");
         $.ajax({
-            url: 'api/HtmlBuilder/SaveUserMainTree/' + userID,
+            url: '/api/HtmlBuilder/SaveUserMainTree/' + userID,
             data: { 'TreeHtml': $('.tree').html() },
             dataType: "json",
             method: 'POST',
@@ -70,7 +70,7 @@ $(document).ready(function () {
         });
 
         $.ajax({
-            url: 'api/HtmlBuilder/SaveUserMainTreeTransformMatrix/' + userID,
+            url: '/api/HtmlBuilder/SaveUserMainTreeTransformMatrix/' + userID,
             headers: { 'matrix': $('.tree').attr('transform') },
             method: 'GET'
             });
@@ -82,7 +82,7 @@ $(document).ready(function () {
     {
         $('image[class=nodeImage]').each(function (index, element) {
             $.ajax({
-                url: 'api/User/getUserImage/' + $(element).parent().attr('id') + "/" + $(element).parent().attr('data-mainuser'),
+                url: '/api/User/getUserImage/' + $(element).parent().attr('id') + "/" + $(element).parent().attr('data-mainuser'),
                 method: 'GET',
                 success: function (data) {
                     $(element).attr('xlink:href', data);
@@ -92,7 +92,7 @@ $(document).ready(function () {
 
         $('image[class=editImage]').each(function (index, element) {
             $.ajax({
-                url: 'api/User/getEditImage/',
+                url: '/api/User/getEditImage/',
                 method: 'GET',
                 success: function (data) {
                     $(element).attr('xlink:href', data);
@@ -102,7 +102,7 @@ $(document).ready(function () {
 
         $('image[class=trashImage]').each(function (index, element) {
             $.ajax({
-                url: 'api/User/getTrashImage/',
+                url: '/api/User/getTrashImage/',
                 method: 'GET',
                 success: function (data) {
                     $(element).attr('xlink:href', data);
@@ -124,7 +124,7 @@ $(document).ready(function () {
         {
             //pobranie tekstu do nagłówka dodaj członka rodziny
             $.ajax({
-                url: 'api/Language/getElementTextInLanguage/' + 43,
+                url: '/api/Language/getElementTextInLanguage/' + 43,
                 headers: {
                     'languageID': languageID
                 },
@@ -425,7 +425,7 @@ $(document).ready(function () {
                 var data = new FormData();
                 data.append('file',file);
                 $.ajax({
-                    url: 'api/User/SaveUserNode/' + userID,
+                    url: '/api/User/SaveUserNode/' + userID,
                     headers: {
                         'withFile': '1',
                         'name': nameValue,
@@ -447,7 +447,7 @@ $(document).ready(function () {
             }
             else { // plik zostaje jaki był..
                 $.ajax({
-                    url: 'api/User/SaveUserNode/' + userID,
+                    url: '/api/User/SaveUserNode/' + userID,
                     headers: {
                         'withFile': '0',
                         'name': nameValue,
@@ -476,7 +476,7 @@ $(document).ready(function () {
                 var data = new FormData();
                 data.append('file', filemother);
                 $.ajax({
-                    url: 'api/User/SaveUserNode/' + userID,
+                    url: '/api/User/SaveUserNode/' + userID,
                     headers: {
                         'withFile': "1",
                         'name': nameMotherValue,
@@ -497,7 +497,7 @@ $(document).ready(function () {
             }
             else {
                 $.ajax({
-                    url: 'api/User/SaveUserNode/' + userID,
+                    url: '/api/User/SaveUserNode/' + userID,
                     headers: {
                         'withFile': "0",
                         'name': nameMotherValue,
@@ -518,7 +518,7 @@ $(document).ready(function () {
                 var data = new FormData();
                 data.append('file', filefather);
                 $.ajax({
-                    url: 'api/User/SaveUserNode/' + userID,
+                    url: '/api/User/SaveUserNode/' + userID,
                     headers: {
                         'withFile': "1",
                         'name': nameFatherValue,
@@ -539,7 +539,7 @@ $(document).ready(function () {
             }
             else {
                 $.ajax({
-                    url: 'api/User/SaveUserNode/' + userID,
+                    url: '/api/User/SaveUserNode/' + userID,
                     headers: {
                         'withFile': "0",
                         'name': nameFatherValue,
@@ -566,14 +566,14 @@ $(document).ready(function () {
     function getEditedData(editid)
     {
         $.ajax({
-            url: 'api/User/getUserImage/' + editid + "/" + 0,
+            url: '/api/User/getUserImage/' + editid + "/" + 0,
             method: 'GET',
             success: function (data) {
                 $('#' + editid).children('.nodeImage').attr('xlink:href', data);
             }
         });
 
-        $.get("api/User/getUserDataToNode/" + editid + "/" + 0 + "/" + languageID, function (data) {
+        $.get("/api/User/getUserDataToNode/" + editid + "/" + 0 + "/" + languageID, function (data) {
             if (data != null) {
                 var dataTab = data.split(',');
                 $('#' + editid).children("text[class='tree-element-texts']").html(dataTab[0]); //nazwa węzła
@@ -605,7 +605,7 @@ $(document).ready(function () {
             var data = new FormData();
             data.append('file', file);
             $.ajax({
-                url: 'api/User/EditUserNode/' + editid,
+                url: '/api/User/EditUserNode/' + editid,
                 headers: {
                     'withFile': '1',
                     'name': nameValue,
@@ -626,7 +626,7 @@ $(document).ready(function () {
         }
         else { // plik zostaje jaki był..
             $.ajax({
-                url: 'api/User/EditUserNode/' + editid,
+                url: '/api/User/EditUserNode/' + editid,
                 headers: {
                     'withFile': '0',
                     'name': nameValue,
@@ -644,7 +644,7 @@ $(document).ready(function () {
 
         $('image[id=modalImageNode]').each(function (index, element) {
             $.ajax({
-                url: 'api/User/getDefaultImage/',
+                url: '/api/User/getDefaultImage/',
                 method: 'GET',
                 success: function (data) {
                     $(element).attr('xlink:href', data);
@@ -818,7 +818,7 @@ $(document).ready(function () {
     function addTextsToAllNodes(languageID)
     {
         $('g[class="tree-elements"]').each(function (index, element) {
-            $.get("api/User/getUserDataToNode/" + $(element).attr('id') + "/" + $(element).attr('data-mainuser') + "/" + languageID, function (data) {
+            $.get("/api/User/getUserDataToNode/" + $(element).attr('id') + "/" + $(element).attr('data-mainuser') + "/" + languageID, function (data) {
 
                 if (data != null)
                 {
@@ -847,7 +847,7 @@ $(document).ready(function () {
         $("text[class$='-dbt']").each(function (index, element) {
             if ($(this).html() != null)
             $.ajax({
-                url: 'api/Language/getElementTextInLanguage/' + $(element).attr('data-tag'),
+                url: '/api/Language/getElementTextInLanguage/' + $(element).attr('data-tag'),
                 headers: {
                     'languageID': languageID
                 },
@@ -905,7 +905,7 @@ $(document).ready(function () {
         setValidationToTrue();
 
         $.ajax({
-            url: 'api/User/GetUserNode/' + $(element).parent().attr('id'),
+            url: '/api/User/GetUserNode/' + $(element).parent().attr('id'),
             type: 'POST',
             success: function (data) {
                 if (data != "")
@@ -941,7 +941,7 @@ $(document).ready(function () {
 
                     //pobranie tekstu edytuj członka rodziny do nagłówka
                     $.ajax({
-                        url: 'api/Language/getElementTextInLanguage/' + 68,
+                        url: '/api/Language/getElementTextInLanguage/' + 68,
                         headers: {
                             'languageID': languageID
                         },
@@ -1110,7 +1110,7 @@ $(document).ready(function () {
                      $('line[data-down-node="' + partnerID + '"]').attr('x1') == undefined)) // możemy usuwać rodziców gdy dziecko ma partnera jako uzytkownika, lub partner usuwanego węzła nie ma rodziców
                 {
                     $.ajax({
-                        url: 'api/User/RemoveUserNode/',
+                        url: '/api/User/RemoveUserNode/',
                         headers: {
                             'id1': partnerID,
                             'id2': $(deletingElement).parent().attr('id')
@@ -1154,7 +1154,7 @@ $(document).ready(function () {
                 }
 
                 $.ajax({
-                    url: 'api/User/RemoveUserNode/',
+                    url: '/api/User/RemoveUserNode/',
                     headers: {
                         'id1': $(deletingElement).parent().attr('id'),
                         'id2': '-1'
@@ -1181,7 +1181,7 @@ $(document).ready(function () {
             else
             {
                 $.ajax({
-                    url: 'api/User/RemoveUserNode/',
+                    url: '/api/User/RemoveUserNode/',
                     headers: {
                         'id1': partnerID,
                         'id2': $(deletingElement).parent().attr('id')
@@ -1204,7 +1204,7 @@ $(document).ready(function () {
         else //można usunąć węzeł - jest to samotne dziecko
         {
             $.ajax({
-                url: 'api/User/RemoveUserNode/',
+                url: '/api/User/RemoveUserNode/',
                 headers: {
                     'id1': $(deletingElement).parent().attr('id'),
                     'id2': '-1'
@@ -1229,7 +1229,7 @@ $(document).ready(function () {
 
         $('image[id=modalImageNode]').each(function (index, element) {
             $.ajax({
-                url: 'api/User/getDefaultImage/',
+                url: '/api/User/getDefaultImage/',
                 method: 'GET',
                 success: function (data) {
                     $(element).attr('xlink:href', data);
@@ -1263,7 +1263,7 @@ $(document).ready(function () {
 
         $('image[id=modalImageNodeMother][id=modalImageNodeFather]').each(function (index, element) {
             $.ajax({
-                url: 'api/User/getDefaultImage/',
+                url: '/api/User/getDefaultImage/',
                 method: 'GET',
                 success: function (data) {
                     $(element).attr('xlink:href', data);

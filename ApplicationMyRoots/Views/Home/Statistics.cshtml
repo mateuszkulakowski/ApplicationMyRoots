@@ -10,46 +10,78 @@
         $(document).ready(function () {
             $('li[class="active"]').removeClass();
             $('#menustatistics').attr('class', 'active');
+            var id = @ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID;
 
-            //bar
-            var ctxB = document.getElementById("barChart").getContext('2d');
-            var myBarChart = new Chart(ctxB, {
-                type: 'bar',
-                data: {
-                    labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-                    datasets: [{
-                        label: '# of Votes',
-                        data: [12, 19, 3, 5, 2, 3],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgba(255,99,132,1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                optionss: {
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
-                    }
+            $.ajax({
+                url: '/api/Language/getMonth/'+@ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID,
+                method: 'GET',
+                success: function (data) {
+                    var datasplited = data.split(',');
+
+                    $.ajax({
+                        url: '/api/User/getMonthBirthCount/'+@ApplicationMyRoots.Common.ResourceManager.LoggedUser.UserID,
+                        method: 'GET',
+                        success: function (data2) {
+                            var data2splited = data2.split(',');
+
+                            //bar
+                            var ctxB = document.getElementById("barChart").getContext('2d');
+                            var myBarChart = new Chart(ctxB, {
+                                type: 'bar',
+                                data: {
+                                    labels: [datasplited[0], datasplited[1], datasplited[2], datasplited[3], datasplited[4], datasplited[5], datasplited[6], datasplited[7], datasplited[8], datasplited[9], datasplited[10], datasplited[11]],
+                                    datasets: [{
+                                        label: '',
+                                        data: [parseInt(data2splited[0]), parseInt(data2splited[1]), parseInt(data2splited[2]), parseInt(data2splited[3]), parseInt(data2splited[4]), parseInt(data2splited[5]), parseInt(data2splited[6]), parseInt(data2splited[7]), parseInt(data2splited[8]), parseInt(data2splited[9]), parseInt(data2splited[10]), parseInt(data2splited[11])],
+                                        backgroundColor: [
+                                            'rgba(255, 99, 132, 0.2)',
+                                            'rgba(54, 162, 235, 0.2)',
+                                            'rgba(255, 206, 86, 0.2)',
+                                            'rgba(75, 192, 192, 0.2)',
+                                            'rgba(153, 102, 255, 0.2)',
+                                            'rgba(255, 159, 64, 0.2)',
+                                            'rgba(255, 159, 87, 0.2)',
+                                            'rgba(44, 77, 64, 0.2)',
+                                            'rgba(123, 159, 5, 0.2)',
+                                            'rgba(255, 159, 64, 0.2)',
+                                            'rgba(255, 55, 122, 0.2)',
+                                            'rgba(1, 159, 64, 0.2)'
+                                        ],
+                                        borderColor: [
+                                            'rgba(255,99,132,1)',
+                                            'rgba(54, 162, 235, 1)',
+                                            'rgba(255, 206, 86, 1)',
+                                            'rgba(75, 192, 192, 1)',
+                                            'rgba(153, 102, 255, 1)',
+                                            'rgba(255, 159, 64, 1)',
+                                            'rgba(255, 159, 87, 1)',
+                                            'rgba(44, 77, 64, 1)',
+                                            'rgba(123, 159, 5, 1)',
+                                            'rgba(255, 159, 64, 1)',
+                                            'rgba(255, 55, 122, 1)',
+                                            'rgba(1, 159, 64, 1)'
+                                        ],
+                                        borderWidth: 1
+                                    }]
+                                },
+                                optionss: {
+                                    scales: {
+                                        yAxes: [{
+                                            ticks: {
+                                                beginAtZero: true
+                                            }
+                                        }]
+                                    }
+                                }
+                            });
+                        }
+                    });
                 }
             });
+
+            
         });
+
         function clickLink(element) {
             $('li[class="active"]').removeClass();
             $(element).parent().attr('class', 'active');
@@ -57,21 +89,23 @@
     </script>
 }
 <br /><br />
-<div id="divmenu" class="row" style="margin-left:-5%;margin-right:-5%;">
-    <ul class="nav nav-pills nav-justified">
-        <li id="menuhome" class=""><a href="/Home/Home" onclick="clickLink(this)" data-tag="76">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(76, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-home"></span></a></li>
-        <li id="menutree" class=""><a href="/Home" onclick="clickLink(this)" data-tag="77">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(77, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-tree-deciduous"></span></a></li>
-        <li id="menustatistics" class=""><a href="/Home/Statistics" onclick="clickLink(this)" data-tag="78">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(78, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-signal"></span></a></li>
-        <li id="menuevents" class=""><a href="/Home/Events" onclick="clickLink(this)" data-tag="79">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(79, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar"></span></a></li>
-        <li id="menupictures" class=""><a href="/Home/Photos" onclick="clickLink(this)" data-tag="80">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(80, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-picture"></span></a></li>
-        <li id="menusettings" class=""><a href="/MyAccount/Settings" data-tag="26" onclick="clickLink(this)">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(26, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;<span class="glyphicon glyphicon-cog"></span></a></li>
-    </ul>
-</div>
-<hr style="margin-left:-25%;margin-right:-25%;" />
-<br /><br />
+<div class="container">
+    <div id="divmenu" class="row" style="margin-left:-5%;margin-right:-5%;">
+        <ul class="nav nav-pills nav-justified">
+            <li id="menuhome" class=""><a href="/Home/Home" onclick="clickLink(this)" data-tag="76">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(76, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-home"></span></a></li>
+            <li id="menutree" class=""><a href="/Home/MyTree" onclick="clickLink(this)" data-tag="77">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(77, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-tree-deciduous"></span></a></li>
+            <li id="menustatistics" class=""><a href="/Home/Statistics" onclick="clickLink(this)" data-tag="78">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(78, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-signal"></span></a></li>
+            <li id="menuevents" class=""><a href="/Home/Events" onclick="clickLink(this)" data-tag="79">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(79, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar"></span></a></li>
+            <li id="menupictures" class=""><a href="/Home/Photos" onclick="clickLink(this)" data-tag="80">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(80, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-picture"></span></a></li>
+            <li id="menusettings" class=""><a href="/MyAccount/Settings" data-tag="26" onclick="clickLink(this)">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(26, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;<span class="glyphicon glyphicon-cog"></span></a></li>
+        </ul>
+    </div>
+    <hr style="margin-left:-25%;margin-right:-25%;" />
+    <br /><br />
 
-<div class="row">
-    <canvas id="barChart"></canvas>
+    <div class="row">
+        <h3 data-tag="86" style="text-align:center;">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(86, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</h3>
+        <canvas id="barChart"></canvas>
+    </div>
 </div>
-
 
