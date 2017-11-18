@@ -77,17 +77,18 @@ namespace ApplicationMyRoots.Controllers
             if (ModelState.IsValid && registryUser.Login != null && registryUser.Name != null && registryUser.Password != null && registryUser.Surname != null
                && registryUser.Login != "" && registryUser.Name != "" && registryUser.Password != "" && registryUser.Surname != "")
             {
-                User user = Converters.RegistryUserToUserConverter(registryUser);
-                user.LanguageID = 1;
-                user.DateSign = DateTime.Now;
-                user.DateBorn = null;
-
                 using (var db = new DbContext())
                 {
                     int existsUser = db.Users.Where(u => u.Login.ToLower() == registryUser.Login.ToLower()).Count();
 
                     if (existsUser == 0)
                     {
+                        User user = Converters.RegistryUserToUserConverter(registryUser);
+                        user.LanguageID = 1;
+                        user.DateSign = DateTime.Now;
+                        user.DateBorn = null;
+                        user.UserTreeSharingStatusID = 1; //defaultowy status drzewa - dostępny tylko dla mnie
+
                         ResourceManager.LoggedUser = user;
                         db.Users.Add(user);
                         db.SaveChanges();

@@ -2,9 +2,14 @@
 using ApplicationMyRoots.Models;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Hosting;
 using System.Web.Http;
@@ -13,6 +18,33 @@ namespace ApplicationMyRoots.ControllersAPI
 {
     public class UserController : ApiController
     {
+        [HttpPost]
+        public string getUserNewAgreements()
+        {
+            try
+            {
+                int userid = int.Parse(this.Request.Headers.GetValues("userid").First());
+                int sendedunreaded = 0;
+                int receivedunreaded = 0;
+
+                using (var db = new DbContext())
+                {
+                   sendedunreaded = db.UserTreeSharingAgreements.Where(x => x.UserSendingID == userid && x.IsSendedUserRead == false).Count();
+                   receivedunreaded = db.UserTreeSharingAgreements.Where(x => x.UserRecivingID == userid && x.IsReceivedUserRead == false).Count();
+                }
+
+                return sendedunreaded+"-"+receivedunreaded;
+            }
+            catch(Exception e)
+            {
+                DbContext db = new DbContext();
+                db.Errors.Add(new Error { DateThrow = DateTime.Now, Message = "Błąd przy pobieraniu zgód dla użytkownika - getUserNewAgreements() - UserControllerAPI - " + e.Message, StackTrace = e.StackTrace });
+                db.SaveChanges();
+            }
+
+            return "0-0";
+        }
+
         //mainuser decyduje czy bierzemy z tabeli user czy usertreenodes
         [HttpGet]
         public string getUserImage(string id, string mainUser)
@@ -125,6 +157,228 @@ namespace ApplicationMyRoots.ControllersAPI
             string imageDataURL = string.Format("data:image/svg+xml;base64,{0}", imageBase64Data);
             return imageDataURL;
         }
+
+        [HttpPost]
+        public string getUserTreeAlbums()
+        {
+            var result = "";
+
+            try
+            {
+                using (var db = new DbContext())
+                {
+                    int userID = int.Parse(this.Request.Headers.GetValues("id").First());
+
+                    //gdy użytkownik nie ma żadnego albumu pusty string
+                    if(db.UserTreeAlbums.Where(uta => uta.UserTree.UserID == userID && uta.UserTree.isMainTree == true).Count() > 0)
+                    {
+                        var albums = db.UserTreeAlbums.Where(uta => uta.UserTree.UserID == userID && uta.UserTree.isMainTree == true);
+
+                        foreach(var album in albums)
+                        {
+                            result += "<li><a id=\""+album.UserTreeAlbumID+ "\" href=\"#\" onclick=\"selectalbum(" + album.UserTreeAlbumID+")\">"+album.Name+ " <strong onclick=\"deletealbum("+album.UserTreeAlbumID+")\" style=\"color:red;\">X</strong></a></li>";
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                DbContext db = new DbContext();
+                db.Errors.Add(new Error { DateThrow = DateTime.Now, Message = "Błąd przy pobieraniu albumów getUserTreeAlbums() - " + e.Message, StackTrace = e.StackTrace });
+                db.SaveChanges();
+            }
+            return result;
+        }
+
+        [HttpPost]
+        public int addUserTreeAlbum()
+        {
+            try
+            {
+                using (var db = new DbContext())
+                {
+                    string name = this.Request.Headers.GetValues("name").First();
+                    int userid = int.Parse(this.Request.Headers.GetValues("userid").First());
+
+                    int usertreeid = db.UserTrees.Where(ut => ut.isMainTree == true && ut.UserID == userid).First().UserTreeID;
+
+                    UserTreeAlbum uta = new UserTreeAlbum();
+                    uta.Name = name;
+                    uta.UserTreeID = usertreeid;
+
+                    db.UserTreeAlbums.Add(uta);
+                    db.SaveChanges();
+                    return 0; //brak błędu
+                }
+            }
+            catch (Exception e)
+            {
+                DbContext db = new DbContext();
+                db.Errors.Add(new Error { DateThrow = DateTime.Now, Message = "Błąd przy dodawaniu albumu addUserTreeAlbum() - " + e.Message, StackTrace = e.StackTrace });
+                db.SaveChanges();
+            }
+
+            return 1;//błąd
+
+        }
+
+        [HttpPost]
+        public int deleteUserTreeAlbum()
+        {
+            try
+            {
+                using (var db = new DbContext())
+                {
+                    int userTreeAlbumID = int.Parse(this.Request.Headers.GetValues("usertreealbumid").First());
+
+                    db.UserTreeAlbums.Remove(db.UserTreeAlbums.Find(userTreeAlbumID));
+                    db.SaveChanges();
+                    return 0; //brak błędu
+                }
+            }
+            catch (Exception e)
+            {
+                DbContext db = new DbContext();
+                db.Errors.Add(new Error { DateThrow = DateTime.Now, Message = "Błąd przy usuwaniu albumu deleteUserTreeAlbum() - " + e.Message, StackTrace = e.StackTrace });
+                db.SaveChanges();
+            }
+
+            return 1;//błąd
+
+        }
+
+
+        [HttpPost]
+        public async Task<int> addPhotoToUserTreeAlbum()
+        {
+            try
+            {
+                using (var db = new DbContext())
+                {
+                    int userID = int.Parse(this.Request.Headers.GetValues("userid").First());
+                    int albumID = int.Parse(this.Request.Headers.GetValues("usertreealbumid").First()); //album z id -1 określa album główny
+
+                    if (db.UserTrees.Where(t => t.UserID == userID && t.isMainTree == true).Count() < 0) return 1;// nie ma drzewa podany user
+                    if (db.UserTrees.Where(t => t.UserID == userID && t.isMainTree == true).Count() > 1) return 2;// ma więcej drzew niż 1
+
+                    UserTreePhoto utp = new UserTreePhoto();
+                    utp.UserTreeAlbumID = albumID;
+
+                    // extract file name and file contents
+                    var provider = new MultipartMemoryStreamProvider();
+                    await this.Request.Content.ReadAsMultipartAsync(provider);
+                    byte[] filebytes = await provider.Contents[0].ReadAsByteArrayAsync();
+
+                    //Bitmap bittmap = new Bitmap(new MemoryStream(filebytes));
+                    //bittmap = this.ResizeBitmap(bittmap, 3200, 1800);
+
+                    //ImageConverter converter = new ImageConverter();
+                    //filebytes = (byte[])converter.ConvertTo(bittmap, typeof(byte[]));
+
+                    utp.Image = filebytes;
+                    utp.Description = this.Request.Headers.GetValues("description").First();
+
+                    db.UserTreePhotos.Add(utp);
+                    db.SaveChanges();
+                    return 0; //error 0
+                }
+
+            }
+            catch (Exception e)
+            {
+                DbContext db = new DbContext();
+                db.Errors.Add(new Error { DateThrow = DateTime.Now, Message = "Błąd przy zapisywaniu rodzinnego zdjęcia addPhotoToUserTreeAlbum() - " + e.Message, StackTrace = e.StackTrace });
+                db.SaveChanges();
+            }
+
+            return -1; // niezydentyfikowany błąd
+        }
+
+
+        [HttpPost]
+        public String getUserPhotoCarusel()
+        {
+            StringBuilder result = new StringBuilder();
+
+            result.Append("<div id=\"myCarousel\" class=\"carousel slide\" data-ride=\"carousel\">"+
+                            "<div id=\"carouselPhotos\" class=\"carousel-inner\">");
+
+            try
+            {
+                using (var db = new DbContext())
+                {
+                    int usertreealbumid = int.Parse(this.Request.Headers.GetValues("usertreealbumid").First());
+                    
+                    var carouselsPhotos = db.UserTreePhotos.Where(utp => utp.UserTreeAlbumID == usertreealbumid).ToList();
+
+                    foreach(UserTreePhoto utp in carouselsPhotos)
+                    {
+                        string imageBase64Data = Convert.ToBase64String(utp.Image);
+                        //String imageStringURL = "data:image/png;base64,"+ imageBase64Data;
+                        //StringBuilder imageStringURL = new StringBuilder();
+                        //imageStringURL.Append(Convert.ToBase64String(utp.Image));
+
+                        StringBuilder helper = new StringBuilder();
+
+                        result.Append(
+                                "<div id=\"" + utp.UserTreePhotoID + "\" class=\"item\">" +
+                                    "<img src=\"data:image/png;base64,");
+                        result.Append(imageBase64Data);
+                        result.Append("\">" +
+                                    "<div class=\"carousel-caption\">" +
+                                         "<h3>"+utp.Description+"</h3>" +
+                                         "<div style=\"width:25px; height:25px; border: 2px solid red; background-color: lightcoral; margin-left:48%;\" onclick=\"deletephoto("+utp.UserTreePhotoID+")\"><p style=\"cursor:pointer;\"> X </p></div>" +
+                                   "</div>" +
+                               "</div>");
+                    }
+
+                    result.Append(
+                                "</div>" +
+                                "<a class=\"left carousel-control\" href=\"#myCarousel\" data-slide=\"prev\">" +
+                                    "<span class=\"glyphicon glyphicon-chevron-left\"></span>" +
+                                    "<span class=\"sr-only\">Previous</span>" +
+                                "</a>" +
+                                "<a class=\"right carousel-control\" href=\"#myCarousel\" data-slide=\"next\">" +
+                                    "<span class=\"glyphicon glyphicon-chevron-right\"></span>" +
+                                    "<span class=\"sr-only\">Next</span>" +
+                                "</a>"+
+                            "</div>");
+
+                }
+            }catch(Exception e)
+            {
+                DbContext db = new DbContext();
+                db.Errors.Add(new Error { DateThrow = DateTime.Now, Message = "Błąd przy pobieraniu obrazków dla rodziny getUserPhotoCarusel() - " + e.Message, StackTrace = e.StackTrace });
+                db.SaveChanges();
+            }
+
+            return result.ToString();
+        }
+
+
+        [HttpPost]
+        public int deleteUserPhotoCarousel()
+        {
+            try {
+
+                using (var db = new DbContext())
+                {
+                    int usertreephotoid = int.Parse(this.Request.Headers.GetValues("usertreephotoid").First());
+
+                    db.UserTreePhotos.Remove(db.UserTreePhotos.Where(u=>u.UserTreePhotoID == usertreephotoid).First());
+                    db.SaveChanges();
+                }
+
+                return 0;
+            }catch(Exception e)
+            {
+                DbContext db = new DbContext();
+                db.Errors.Add(new Error { DateThrow = DateTime.Now, Message = "Błąd przy usuwaniu obrazka dla rodziny deleteUserPhotoCarousel() - " + e.Message, StackTrace = e.StackTrace});
+                db.SaveChanges();
+                return 1;
+            }
+        }
+
 
         /*Metoda zwraca imię+nazwisko daty urodzenia smierci i wiek użytkownika*/
         public string getUserDataToNode(string id, string mainUser, string languageID)
@@ -580,6 +834,46 @@ namespace ApplicationMyRoots.ControllersAPI
             }
 
             return "0";
+        }
+
+
+
+
+        // metody pomocnicze
+
+        private RectangleF PlaceInside(int oldWidth, int oldHeight, int newWidth, int newHeight)
+        {
+            if (oldWidth <= 0 || oldHeight <= 0 || newWidth <= 0 || newHeight <= 0)
+                return new RectangleF(oldWidth, oldHeight, newWidth, newHeight);
+            float widthFactor = (float)newWidth / (float)oldWidth;
+            float heightFactor = (float)newHeight / (float)oldHeight;
+            if (widthFactor < heightFactor)
+            {
+                // prefer width
+                float scaledHeight = widthFactor * oldHeight;
+                // new new RectangleF(x, y, width, height)
+                return new RectangleF(0, (newHeight - scaledHeight) / 2.0f, newWidth, scaledHeight);
+            }
+            else
+            {
+                // prefer height
+                float scaledWidth = heightFactor * oldWidth;
+                // new new RectangleF(x, y, width, height)
+                return new RectangleF((newWidth - scaledWidth) / 2.0f, 0, scaledWidth, newHeight);
+            }
+        }
+
+        private Bitmap ResizeBitmap(Bitmap b, int nWidth, int nHeight)
+        {
+            int oldWidth = b.Width;
+            int oldHeight = b.Height;
+            Bitmap result = new Bitmap(nWidth, nHeight);
+            using (Graphics g = Graphics.FromImage((Image)result))
+            {
+                var box = PlaceInside(oldWidth, oldHeight, nWidth, nHeight);
+                g.DrawImage(b, box);
+            }
+            return result;
         }
     }
 }

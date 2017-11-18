@@ -269,6 +269,110 @@
     <Compile Include="Migrations\201711101942491_usertreesphotos.Designer.cs">
       <DependentUpon>201711101942491_usertreesphotos.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711101957491_userphotos.cs" />
+    <Compile Include="Migrations\201711101957491_userphotos.Designer.cs">
+      <DependentUpon>201711101957491_userphotos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711101959011_userphotos1.cs" />
+    <Compile Include="Migrations\201711101959011_userphotos1.Designer.cs">
+      <DependentUpon>201711101959011_userphotos1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711102002587_userphotos_end.cs" />
+    <Compile Include="Migrations\201711102002587_userphotos_end.Designer.cs">
+      <DependentUpon>201711102002587_userphotos_end.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711111913128_description usertreephotoes.cs" />
+    <Compile Include="Migrations\201711111913128_description usertreephotoes.Designer.cs">
+      <DependentUpon>201711111913128_description usertreephotoes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711120957328_albumy.cs" />
+    <Compile Include="Migrations\201711120957328_albumy.Designer.cs">
+      <DependentUpon>201711120957328_albumy.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711161936167_sharingstatuses.cs" />
+    <Compile Include="Migrations\201711161936167_sharingstatuses.Designer.cs">
+      <DependentUpon>201711161936167_sharingstatuses.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711161945298_sharingstatuses1.cs" />
+    <Compile Include="Migrations\201711161945298_sharingstatuses1.Designer.cs">
+      <DependentUpon>201711161945298_sharingstatuses1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711161954521_nonullable language+treesharingstatus.cs" />
+    <Compile Include="Migrations\201711161954521_nonullable language+treesharingstatus.Designer.cs">
+      <DependentUpon>201711161954521_nonullable language+treesharingstatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711171136002_agreements.cs" />
+    <Compile Include="Migrations\201711171136002_agreements.Designer.cs">
+      <DependentUpon>201711171136002_agreements.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711171139283_agreements1.cs" />
+    <Compile Include="Migrations\201711171139283_agreements1.Designer.cs">
+      <DependentUpon>201711171139283_agreements1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711171141454_agreements2.cs" />
+    <Compile Include="Migrations\201711171141454_agreements2.Designer.cs">
+      <DependentUpon>201711171141454_agreements2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711171143066_agreements3.cs" />
+    <Compile Include="Migrations\201711171143066_agreements3.Designer.cs">
+      <DependentUpon>201711171143066_agreements3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711171144569_agreements4.cs" />
+    <Compile Include="Migrations\201711171144569_agreements4.Designer.cs">
+      <DependentUpon>201711171144569_agreements4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711171150359_field accepted in agreements.cs" />
+    <Compile Include="Migrations\201711171150359_field accepted in agreements.Designer.cs">
+      <DependentUpon>201711171150359_field accepted in agreements.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711171401089_field accepted in agreements2.cs" />
+    <Compile Include="Migrations\201711171401089_field accepted in agreements2.Designer.cs">
+      <DependentUpon>201711171401089_field accepted in agreements2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711171415032_agreements6.cs" />
+    <Compile Include="Migrations\201711171415032_agreements6.Designer.cs">
+      <DependentUpon>201711171415032_agreements6.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711171433336_agreeements7.cs" />
+    <Compile Include="Migrations\201711171433336_agreeements7.Designer.cs">
+      <DependentUpon>201711171433336_agreeements7.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711171447010_agreeements8.cs" />
+    <Compile Include="Migrations\201711171447010_agreeements8.Designer.cs">
+      <DependentUpon>201711171447010_agreeements8.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711172118010_date agreement.cs" />
+    <Compile Include="Migrations\201711172118010_date agreement.Designer.cs">
+      <DependentUpon>201711172118010_date agreement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711172128268_accepted agreement nullable.cs" />
+    <Compile Include="Migrations\201711172128268_accepted agreement nullable.Designer.cs">
+      <DependentUpon>201711172128268_accepted agreement nullable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711172255017_visible agreement field.cs" />
+    <Compile Include="Migrations\201711172255017_visible agreement field.Designer.cs">
+      <DependentUpon>201711172255017_visible agreement field.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711181113247_readed agreement.cs" />
+    <Compile Include="Migrations\201711181113247_readed agreement.Designer.cs">
+      <DependentUpon>201711181113247_readed agreement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711181405472_remove required fields.cs" />
+    <Compile Include="Migrations\201711181405472_remove required fields.Designer.cs">
+      <DependentUpon>201711181405472_remove required fields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711181410119_remove required fields1.cs" />
+    <Compile Include="Migrations\201711181410119_remove required fields1.Designer.cs">
+      <DependentUpon>201711181410119_remove required fields1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711181416003_remove required fields2.cs" />
+    <Compile Include="Migrations\201711181416003_remove required fields2.Designer.cs">
+      <DependentUpon>201711181416003_remove required fields2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711181425186_remove required fields3.cs" />
+    <Compile Include="Migrations\201711181425186_remove required fields3.Designer.cs">
+      <DependentUpon>201711181425186_remove required fields3.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ClassWithTreeHtml.cs" />
     <Compile Include="Models\Error.cs" />
@@ -276,8 +380,11 @@
     <Compile Include="Models\Language.cs" />
     <Compile Include="Models\LanguageText.cs" />
     <Compile Include="Models\UserTree.cs" />
+    <Compile Include="Models\UserTreeAlbum.cs" />
     <Compile Include="Models\UserTreeNode.cs" />
     <Compile Include="Models\UserTreePhoto.cs" />
+    <Compile Include="Models\UserTreeSharingAgreement.cs" />
+    <Compile Include="Models\UserTreeSharingStatus.cs" />
     <Compile Include="ViewsModels\LogInUser.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -341,6 +448,9 @@
     <Content Include="Views\Home\Events.cshtml" />
     <Content Include="Views\Home\Statistics.cshtml" />
     <Content Include="Views\Login\Home.cshtml" />
+    <Content Include="Views\MyAccount\SettingsSharing.cshtml" />
+    <Content Include="Views\MyAccount\SettingsSharingAgreementReceived.cshtml" />
+    <Content Include="Views\MyAccount\SettingsSharingAgreementSended.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201707231254483_Tabelka User - dodanie.resx">
@@ -417,6 +527,84 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201711101942491_usertreesphotos.resx">
       <DependentUpon>201711101942491_usertreesphotos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711101957491_userphotos.resx">
+      <DependentUpon>201711101957491_userphotos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711101959011_userphotos1.resx">
+      <DependentUpon>201711101959011_userphotos1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711102002587_userphotos_end.resx">
+      <DependentUpon>201711102002587_userphotos_end.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711111913128_description usertreephotoes.resx">
+      <DependentUpon>201711111913128_description usertreephotoes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711120957328_albumy.resx">
+      <DependentUpon>201711120957328_albumy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711161936167_sharingstatuses.resx">
+      <DependentUpon>201711161936167_sharingstatuses.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711161945298_sharingstatuses1.resx">
+      <DependentUpon>201711161945298_sharingstatuses1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711161954521_nonullable language+treesharingstatus.resx">
+      <DependentUpon>201711161954521_nonullable language+treesharingstatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711171136002_agreements.resx">
+      <DependentUpon>201711171136002_agreements.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711171139283_agreements1.resx">
+      <DependentUpon>201711171139283_agreements1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711171141454_agreements2.resx">
+      <DependentUpon>201711171141454_agreements2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711171143066_agreements3.resx">
+      <DependentUpon>201711171143066_agreements3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711171144569_agreements4.resx">
+      <DependentUpon>201711171144569_agreements4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711171150359_field accepted in agreements.resx">
+      <DependentUpon>201711171150359_field accepted in agreements.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711171401089_field accepted in agreements2.resx">
+      <DependentUpon>201711171401089_field accepted in agreements2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711171415032_agreements6.resx">
+      <DependentUpon>201711171415032_agreements6.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711171433336_agreeements7.resx">
+      <DependentUpon>201711171433336_agreeements7.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711171447010_agreeements8.resx">
+      <DependentUpon>201711171447010_agreeements8.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711172118010_date agreement.resx">
+      <DependentUpon>201711172118010_date agreement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711172128268_accepted agreement nullable.resx">
+      <DependentUpon>201711172128268_accepted agreement nullable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711172255017_visible agreement field.resx">
+      <DependentUpon>201711172255017_visible agreement field.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711181113247_readed agreement.resx">
+      <DependentUpon>201711181113247_readed agreement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711181405472_remove required fields.resx">
+      <DependentUpon>201711181405472_remove required fields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711181410119_remove required fields1.resx">
+      <DependentUpon>201711181410119_remove required fields1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711181416003_remove required fields2.resx">
+      <DependentUpon>201711181416003_remove required fields2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711181425186_remove required fields3.resx">
+      <DependentUpon>201711181425186_remove required fields3.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

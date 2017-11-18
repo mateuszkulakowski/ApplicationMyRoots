@@ -10,7 +10,10 @@ namespace ApplicationMyRoots.Models
 {
     public class User
     {
-        public User() { }
+        public User() {
+            this.SendingAgreements = new List<UserTreeSharingAgreement>();
+            this.ReceivingAgreements = new List<UserTreeSharingAgreement>();
+        }
 
         public User(String Login, String Password, String Name, String Surname)
         {
@@ -18,6 +21,9 @@ namespace ApplicationMyRoots.Models
             this.Password = Password;
             this.Name = Name;
             this.Surname = Surname;
+
+            this.SendingAgreements = new List<UserTreeSharingAgreement>();
+            this.ReceivingAgreements = new List<UserTreeSharingAgreement>();
         }
 
         [Key]
@@ -36,8 +42,6 @@ namespace ApplicationMyRoots.Models
         [NotMapped]
         public String NameSurname { get { return Name + " " + Surname; } }
 
-        public int Age { get; set; }
-
         public DateTime? DateBorn { get; set; }
 
         public DateTime? DateSign { get; set; }
@@ -45,9 +49,14 @@ namespace ApplicationMyRoots.Models
         public String City { get; set; }
 
         [ForeignKey("Language")]
-        public int? LanguageID { get; set; }
+        public int LanguageID { get; set; }
 
         public Language Language { get; set; }
+
+        [ForeignKey("UserTreeSharingStatus")]
+        public int UserTreeSharingStatusID { get; set; }
+
+        public UserTreeSharingStatus UserTreeSharingStatus { get; set; }
 
         public byte[] Image { get; set; }
 
@@ -67,6 +76,10 @@ namespace ApplicationMyRoots.Models
                 return img;
             }
         }
+
+        public virtual List<UserTreeSharingAgreement> SendingAgreements { get; set; }
+
+        public virtual List<UserTreeSharingAgreement> ReceivingAgreements { get; set; }
 
     }
 }

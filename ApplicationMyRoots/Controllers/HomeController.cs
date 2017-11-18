@@ -1,5 +1,6 @@
 ﻿using ApplicationMyRoots.Common;
 using ApplicationMyRoots.CustomAttributes;
+using ApplicationMyRoots.DAL;
 using ApplicationMyRoots.Models;
 using System;
 using System.Collections.Generic;
@@ -58,6 +59,8 @@ namespace ApplicationMyRoots.Controllers
         {
             ViewBag.Title = "Photos";
 
+            ViewBag.LID = ResourceManager.LoggedUser.LanguageID;
+            ViewBag.UID = ResourceManager.LoggedUser.UserID;
             return View();
         }
     }

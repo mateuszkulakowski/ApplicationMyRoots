@@ -24,7 +24,26 @@ namespace ApplicationMyRoots.DAL
         public DbSet<Language> Languages { get; set; }
 
         public DbSet<LanguageText> LanguageTexts { get; set; }
-
+        
         public DbSet<UserTreePhoto> UserTreePhotos { get; set; }
+
+        public DbSet<UserTreeAlbum> UserTreeAlbums { get; set; }
+
+        public DbSet<UserTreeSharingStatus> UserTreeSharingStatuses { get; set; }
+
+        public DbSet<UserTreeSharingAgreement> UserTreeSharingAgreements { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UserTreeSharingAgreement>()
+                .HasRequired(a => a.UserReceiving)
+                .WithMany(u => u.ReceivingAgreements)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<UserTreeSharingAgreement>()
+                .HasRequired(a => a.UserSending)
+                .WithMany(u => u.SendingAgreements)
+                .WillCascadeOnDelete(false);
+        }
     }
 }

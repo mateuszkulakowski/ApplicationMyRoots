@@ -6,19 +6,317 @@
 @section scripts
 {
     <script type="text/javascript">
+        var userID;
+        var languageID;
+        var timer;
+        var timermodaladd;
+        var actual_load_file;
+        var albumchoose;
+        var chooseAlbumcaninvoke;
+        var deletingalbumid;
+
         $(document).ready(function () {
+            chooseAlbumcaninvoke = 1;
+            albumchoose = -1;
+            userID = $('#maincontainer').attr('data-user');
+            languageID = $('#maincontainer').attr('data-language');
+
             $('li[class="active"]').removeClass();
             $('#menupictures').attr('class', 'active');
+
+            getAlbums();
+            //getCarousel();
+
         });
+
+        function getAlbums()
+        {
+            $.ajax({
+                url: '/api/User/getUserTreeAlbums',
+                headers: {
+                    'id': userID
+                },
+                type: 'POST',
+                success: function (data) {
+                    $('#dropdownitems').html(data);
+                    if ($('#dropdownitems').children().length > 0 && albumchoose == -1)
+                    { //napis nie wybrano nagłówka
+                        $.ajax({
+                            url: '/api/Language/getElementTextInLanguage/' + 116,
+                            headers: {
+                                'languageID': languageID
+                            },
+                            method: 'GET',
+                            success: function (data) {
+                                $('#headerDropdown').html(data +' <span class="caret"></span>');
+                            }
+                        });
+                    }
+                    else if ($('#dropdownitems').children().length > 0 && albumchoose != -1)
+                    {
+                        var albumname = $('a[id=' + albumchoose + ']').html().split(' <strong')[0];
+
+                        if (albumname.length > 20) // przycinanie napisu
+                            albumname = albumname.substring(0, 20) + "...";
+
+                        $('#headerDropdown').html(albumname + ' <span class="caret"></span>');
+                    }
+                    else
+                    {
+                        $.ajax({
+                            url: '/api/Language/getElementTextInLanguage/' + 115,
+                            headers: {
+                                'languageID': languageID
+                            },
+                            method: 'GET',
+                            success: function (data) {
+                                $('#headerDropdown').html(data + ' <span class="caret"></span>');
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+        function getCarousel()
+        {
+            $('#carouselPhotos').remove();
+            $.ajax({
+                url: '/api/User/getUserPhotoCarusel',
+                headers: {
+                    'usertreealbumid': albumchoose
+                },
+                type: 'POST',
+                success: function (data) {
+                    $('#carousel').html(data);
+                    if ($('#carouselPhotos').children().length > 0)
+                    {
+                        $('#carouselPhotos').children().first().attr('class', 'item active');
+                    }
+                }
+            });
+        }
+
+        function selectalbum(id)
+        {
+            if (chooseAlbumcaninvoke == 1)
+            {
+                albumchoose = id;
+                var albumname = $('a[id=' + id + ']').html().split(' <strong')[0];
+
+                if (albumname.length > 20) // przycinanie napisu
+                {
+                    albumname = albumname.substring(0, 20) + "...";
+                }
+
+                $('#headerDropdown').html(albumname + ' <span class="caret"></span>');
+
+                //pobieranie galeri fotografii dla danego albumu
+                getCarousel();
+            }
+            else
+            {
+                chooseAlbumcaninvoke = 1;
+            }
+
+        }
+
+
         function clickLink(element) {
             $('li[class="active"]').removeClass();
             $(element).parent().attr('class', 'active');
         }
+
+        function addphoto()
+        {
+            var filesList = $('input[name=file]').prop('files');
+            actual_load_file = filesList[0];
+            if (actual_load_file != undefined)
+            {
+                var fileextension = $('#file').val().split('.').pop();
+
+                if (fileextension.toLowerCase() != 'jpg' && fileextension.toLowerCase() != 'png' && fileextension.toLowerCase() != 'jpeg' && fileextension.toLowerCase() != 'bmp')
+                {
+                    $('#addfoto').attr('class', 'btn btn-danger');
+                    timer = setInterval(setbuttondefault, 2000);
+                    return;
+                }
+
+                var reader = new FileReader();
+                reader.onloadend = function () {
+                    $('#modalimage').attr('xlink:href', reader.result);
+                }
+                reader.readAsDataURL(actual_load_file);
+
+                $("#modal_enterDescriptionPhoto").modal('show');
+            }
+            else {
+                $('#addfoto').attr('class', 'btn btn-danger');
+                timer = setInterval(setbuttondefault, 2000);
+            }
+        }
+
+        function setbuttondefault()
+        {
+            $('#addfoto').attr('class', 'btn btn-primary');
+            clearTimeout(timer);
+            timer = undefined;
+        }
+
+        function closeCancelModalEnterDescription()
+        {
+            $("#modal_enterDescriptionPhoto").modal("hide");
+        }
+
+        function closeOkModalEnterDescription()
+        {
+            if (actual_load_file != undefined && albumchoose != -1) {
+
+                var data = new FormData();
+                data.append('file', actual_load_file);
+                $.ajax({
+                    url: '/api/User/addPhotoToUserTreeAlbum',
+                    headers: {
+                        'userid': userID,
+                        'description': $('textarea[name=descriptionphoto]').val(),
+                        'usertreealbumid': albumchoose
+                    },
+                    processData: false,
+                    contentType: false,
+                    data: data,
+                    type: 'POST',
+                    success: function (data) {
+                        if (data == 0)//sukces
+                        {
+                            $('input[name=file]').val(null);
+                            $('#addfoto').attr('class', 'btn btn-success');
+                            timer = setInterval(setbuttondefault, 2000);
+                            actual_load_file = undefined;
+                            $("#modal_enterDescriptionPhoto").modal("hide");
+                            getCarousel();
+                        }
+                        else {
+                            $('#addfoto').attr('class', 'btn btn-danger');
+                            timer = setInterval(setbuttondefault, 2000);
+                            actual_load_file = undefined;
+                            $("#modal_enterDescriptionPhoto").modal("hide");
+                        }
+                    }
+                });
+                $('textarea[name=descriptionphoto]').val(null);
+                actual_load_file = undefined;
+                $("#modal_enterDescriptionPhoto").modal("hide");
+            }
+        }
+
+        function deletephoto(data)
+        {
+            $.ajax({
+                url: '/api/User/deleteUserPhotoCarousel',
+                headers: {
+                    'usertreephotoid': data
+                },
+                type: 'POST',
+                success: function (data) {
+                    if (data == 0)//sukces
+                    {
+                        getCarousel();
+                    }
+                }
+            });
+        }
+
+        function deletealbum(id)
+        {
+            deletingalbumid = id;
+            chooseAlbumcaninvoke = 0;
+            $("#modal_ConfirmDelete").modal("show");
+        }
+
+        function closeCancelModalConfirmDelete()
+        {
+            deletingalbumid = undefined;
+            $("#modal_ConfirmDelete").modal("hide");
+        }
+
+        function closeOkModalConfirmDelete() {
+            if (deletingalbumid != undefined)
+            {
+                $.ajax({
+                    url: '/api/User/deleteUserTreeAlbum',
+                    headers: {
+                        'usertreealbumid': deletingalbumid
+                    },
+                    type: 'POST',
+                    success: function (data) {
+                        if (data == 0) //bez błędu
+                        {
+                            getAlbums();
+                            if (albumchoose == deletingalbumid)//usuwanie zaznaczonego
+                            {
+                                albumchoose = -1;
+                            }
+
+                            deletingalbumid = undefined;
+                            getCarousel();
+                        }
+                    }
+                });
+            }
+
+            $("#modal_ConfirmDelete").modal("hide");
+        }
+
+        function closeOkModaladdNewAlbum()
+        {
+            if ($('#albumnameinput').val().search(/^\s+$/) != 0 && $('#albumnameinput').val() != '') {
+
+                $.ajax({
+                    url: '/api/User/addUserTreeAlbum',
+                    headers: {
+                        'name': $('#albumnameinput').val(),
+                        'userid': userID
+                    },
+                    type: 'POST',
+                    success: function (data) {
+                        if (data == 0) //bez błędu
+                        {
+                            getAlbums();
+                        }
+                    }
+                });
+
+                $('#albumnameinput').val(null);
+                $("#modal_addNewAlbum").modal("hide");
+            }
+            else
+            {
+                $('#namealbumlabel').css('color', 'red');
+                timermodaladd = setInterval(errornamealbum, 1500);
+            }
+        }
+
+        function errornamealbum()
+        {
+            $('#namealbumlabel').css('color', 'black');
+            clearTimeout(timermodaladd);
+        }
+
+        function closeCancelModaladdNewAlbum() {
+            $('#albumnameinput').val(null);
+            $("#modal_addNewAlbum").modal("hide");
+        }
+
+        function addalbum()
+        {
+            $("#modal_addNewAlbum").modal("show");
+        }
     </script>
 }
-<br /><br />
-<div class="container">
-    <div id="divmenu" class="row" style="margin-left:-5%;margin-right:-5%;">
+
+<div id="maincontainer" class="container" style="min-width:80%;" data-user="@ViewBag.UID" data-language="@ViewBag.LID">
+    <div id="divmenu" class="row" style="background-color: lightgray;min-height:150px;border-radius: 50px 50px 0px 0px;">
+        <div class="row" style="min-height:55px;"></div>
         <ul class="nav nav-pills nav-justified">
             <li id="menuhome" class=""><a href="/Home/Home" onclick="clickLink(this)" data-tag="76">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(76, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-home"></span></a></li>
             <li id="menutree" class=""><a href="/Home/MyTree" onclick="clickLink(this)" data-tag="77">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(77, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-tree-deciduous"></span></a></li>
@@ -27,37 +325,49 @@
             <li id="menupictures" class=""><a href="/Home/Photos" onclick="clickLink(this)" data-tag="80">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(80, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-picture"></span></a></li>
             <li id="menusettings" class=""><a href="/MyAccount/Settings" data-tag="26" onclick="clickLink(this)">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(26, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;<span class="glyphicon glyphicon-cog"></span></a></li>
         </ul>
+        <div class="row" style="min-height:50px;"></div>
     </div>
-    <hr style="margin-left:-25%;margin-right:-25%;" />
-    <br /><br /><br/>
+    <br /><br />
 
-    <div id="myCarousel" class="carousel slide" data-ride="carousel">
-
-        <!-- Wrapper for slides -->
-        <div class="carousel-inner">
-            <div class="item active">
-                <img src="~/images/IMG_20160708_110850.jpg" alt="Chicago">
-                <div class="carousel-caption">
-                    <h3>Chicago</h3>
-                </div>
-            </div>
-
-            <div class="item">
-                <img src="~/images/no_foto.png" alt="Chicago">
-                <div class="carousel-caption">
-                    <h3>Chicago</h3>
-                </div>
-            </div>
-
-            <div class="item">
-                <img src="~/images/calendar.png" alt="Chicago">
-                <div class="carousel-caption">
-                    <h3>Chicago</h3>
-                </div>
+    <div class="form-group">
+        <div class="col-md-3"></div>
+        <div class="col-md-2">
+            <label style="margin-top:5%;" data-tag="113">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(113, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+        </div>
+        <div class="col-md-3">
+            <div class="dropdown">
+                <button id="headerDropdown" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" data-tag="115">
+                        @ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(115, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)
+                    <span class="caret"></span>
+                </button>
+                <ul id="dropdownitems" class="dropdown-menu">
+                </ul>
             </div>
         </div>
+        <div class="col-md-1">
+            <input id="addalbum" class="btn btn-primary" type="button" data-tag="114" value="@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(114, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)" onclick="addalbum()"/>
+        </div>
+        <div class="col-md-3"></div>
+    </div><br/><br/>
 
-        <!-- Left and right controls -->
+
+    <div class="form-group">
+        <div class="col-md-3"></div>
+        <div class="col-md-2">
+            <label style="margin-top:5%;" data-tag="107">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(107, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+        </div>
+        <div class="col-md-3">
+            <input id="file" name="file" class="form-control" type="file"/>
+        </div>
+        <div class="col-md-1">
+            <input id="addfoto" class="btn btn-primary" type="button" data-tag="108" value="@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(108, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)" onclick="addphoto()"/>
+        </div>
+        <div class="col-md-3"></div>
+    </div><br/><br/><br/>
+
+    <div id="carousel"></div>
+    @*<div id="myCarousel" class="carousel slide" data-ride="carousel">
+
         <a class="left carousel-control" href="#myCarousel" data-slide="prev">
             <span class="glyphicon glyphicon-chevron-left"></span>
             <span class="sr-only">Previous</span>
@@ -66,5 +376,93 @@
             <span class="glyphicon glyphicon-chevron-right"></span>
             <span class="sr-only">Next</span>
         </a>
-    </div><br/><br/>
+    </div>*@
+    <br/><br/>
+</div>
+
+
+@*Okno modalne dodanie opisu do zdjęcia*@
+<div id="modal_enterDescriptionPhoto" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="closeCancelModalEnterDescription()">&times;</button>
+                <h4 class="modal-title" data-tag="111">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(111, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</h4>
+            </div>
+            <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-8" style="margin-left:-4%;">
+                            <svg height="400" width="400">
+                                <image id="modalimage" x="0" y="0" width="400" height="400" xlink:href="" />
+                            </svg>
+                        </div>
+                        <div class="col-md-2"></div>
+                    </div><br/>
+                    <div class="row">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-2">
+                            <label style="margin-top: 5%" data-tag="112">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(112, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+                        </div>
+                        <div class="col-md-6">
+                            <textarea name="descriptionphoto" class="form-control" style="margin-left:5%;"></textarea>
+                        </div>
+                        <div class="col-md-2"></div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-tag="109" onclick="closeOkModalEnterDescription()">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(109, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</button>
+                <button type="button" class="btn btn-danger" data-tag="110" onclick="closeCancelModalEnterDescription()">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(110, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Okno modalne potwierdzenie usunięcia*@
+<div id="modal_ConfirmDelete" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="closeCancelModal()">&times;</button>
+                <h4 class="modal-title" data-tag="117">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(117, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</h4>
+            </div>
+            <div class="modal-body">
+                <p data-tag="118">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(118, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-tag="119" onclick="closeOkModalConfirmDelete()">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(119, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</button>
+                <button type="button" class="btn btn-danger" data-tag="120" onclick="closeCancelModalConfirmDelete()">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(120, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+@*Okno modalne dodanie nowego albumu*@
+<div id="modal_addNewAlbum" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="closeCancelModaladdNewAlbum()">&times;</button>
+                <h4 class="modal-title" data-tag="121">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(121, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-2">
+                        <label id="namealbumlabel" style="margin-top: 5%" data-tag="122">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(122, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</label>
+                    </div>
+                    <div class="col-md-6">
+                        <textarea id="albumnameinput" class="form-control" style="margin-left:5%;"></textarea>
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-tag="123" onclick="closeOkModaladdNewAlbum()">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(123, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</button>
+                <button type="button" class="btn btn-danger" data-tag="124" onclick="closeCancelModaladdNewAlbum()">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(124, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</button>
+            </div>
+        </div>
+    </div>
 </div>

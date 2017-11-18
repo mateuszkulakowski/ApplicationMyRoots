@@ -10,6 +10,36 @@
     <title data-tag="7">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(7, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var userid = '@Request.RequestContext.HttpContext.Session["LoggedUserID"]';
+            if (userid != '')
+            {
+                $.ajax({
+                    url: '/api/User/getUserNewAgreements/',
+                    headers: {
+                        'userid': userid
+                    },
+                    method: 'POST',
+                    success: function (data) {
+                        var sendedrecived = parseInt(data.split('-')[0]) + parseInt(data.split('-')[1])
+
+                        if (sendedrecived > 0)
+                            $("#agreements").append('<span id="messagesareementcount" class="badge">' + sendedrecived + '</span>');
+
+                        var truncatedpath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+
+                        if (truncatedpath == '/MyAccount') {
+                            $("#agreementsreceived").append(' <span id="messagesareementcountreceived" class="badge">' + data.split('-')[1] + '</span>');
+                            $("#agreementssended").append(' <span id="messagesareementcountsended" class="badge">' + data.split('-')[0] + '</span>');
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -35,8 +65,14 @@
                 else
                 {
                     <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a id="agreements" href="/MyAccount/SettingsSharingAgreementSended">
+                                <span class="glyphicon glyphicon-envelope"></span>
+                            </a>
+                        </li>
                         <li><a href="#" style="pointer-events:none;" data-tag="4">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(4, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID) <strong>@zalogowany.Name</strong> </a> </li>
-                        <li><a href="#" style="pointer-events:none;margin-left:-40%;margin-top:-2%;">
+                        <li>
+                            <a href="#" style="pointer-events:none;margin-left:-40%;margin-top:-2%;">
                                 <svg height="22" width="22">
                                     <image id="userProfileImage" xlink:href="@zalogowany.ImageString" x="0" y="0" height="22" width="22" />
                                 </svg>
@@ -44,16 +80,15 @@
                         </li>
                         <li><a href="/Login/LogOut"><span class="glyphicon glyphicon-log-out" data-tag="5"></span> @ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(5, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</a></li>
                     </ul>
-                }
+                    }
 
-            </div>
+</div>
         </div>
     </div>
-    <br/><br/><br/>
+    <br/>
     @RenderBody()
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+
     @RenderSection("scripts", required: false)
 </body>
 </html>
