@@ -30,6 +30,9 @@ namespace ApplicationMyRoots
 
             bundles.Add(new StyleBundle("~/Styles/mytreestyle").Include(
                       "~/Styles/mytreestyle.css"));
+
+            bundles.Add(new StyleBundle("~/Styles/agreementsendedstyles").Include(
+                      "~/Styles/agreementsendedstyles.css"));
         }
     }
 }

@@ -3,6 +3,145 @@
     ViewBag.Title = "SettingsSharingAgreementSended";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@section scripts
+{
+    @Styles.Render("~/Styles/agreementsendedstyles")
+    <script type="text/javascript">
+        var searchtype = '2'; //typ wyszukiwania 1 -> # , 2 -> name
+        var userid;
+        var languageid;
+        var timershackbar;
+        var texts = ["OK", "Error"];
+
+        $(document).ready(function () {
+            userid = '@Request.RequestContext.HttpContext.Session["LoggedUserID"]';
+            languageid = '@Request.RequestContext.HttpContext.Session["LanguageID"]';
+
+            $.ajax({
+                url: '/api/Language/getElementTextInLanguage/' + 163,
+                headers: {
+                    'languageID': languageid
+                },
+                method: 'GET',
+                success: function (data) {
+                    texts[0] = data; //powodzenie
+                }
+            });
+
+            $.ajax({
+                url: '/api/Language/getElementTextInLanguage/' + 164,
+                headers: {
+                    'languageID': languageid
+                },
+                method: 'GET',
+                success: function (data) {
+                    texts[1] = data;
+                }
+            });
+        });
+
+        function closeCancelModalAgreementSend()
+        {
+            $("#modal_AgreementSend").modal("hide");
+        }
+
+        function openmodalagreementsend()
+        {
+            $("#modal_AgreementSend").modal("show");
+        }
+
+        function onkeyupsearch(element)
+        {
+            if (searchtype == '1') //wyszukiwanie po id
+            {
+                $('#usertable tbody').children().each(function (index, element) {
+                    var id = $(element).children('.idcell').first().html();
+                    if ($("#searchinginput").val() == id)
+                        $(element).show();
+                    else
+                        $(element).hide();
+                });
+            }
+            else // wyszukiwanie po nazwie
+            {
+                $('#usertable tbody').children().each(function (index, element) {
+                    var name = $(element).children('.namecell').first().html();
+                    if (name.includes($("#searchinginput").val())
+                        && $("#searchinginput").val() != ""
+                        && $("#searchinginput").val() != " "
+                        && $("#searchinginput").val().length > 2)
+                        $(element).show();
+                    else
+                        $(element).hide();
+                });
+            }
+        }
+
+        function changesearchtype(element, type)
+        {
+            if (type == '1') //po id
+            {
+                searchtype = 1;
+                $(element).css("background-color", "lightgray");
+                $("#nameheader").css("background-color", "white");
+            }
+            else
+            {
+                searchtype = 2;
+                $(element).css("background-color", "lightgray");
+                $("#idheader").css("background-color", "white");
+            }
+        }
+
+        function sendagreement(receiverid,element)
+        {
+            $.ajax({
+                url: '/api/Agreement/SendAgreement/',
+                headers: {
+                    'receiverid': receiverid,
+                    'senderid': userid
+                },
+                method: 'POST',
+                success: function (data) {
+                    if (data == 0) //dodawanie zgody bez błędu
+                    {
+                        $(element).parent().parent().remove();
+
+                        $("#snackbar").html(texts[0]);//powiodło się
+                        $("#snackbar").css('background-color', 'green');
+                        $("#snackbar").attr('class', 'show');
+                        timer = setTimeout(hidesnackbar, 2000);
+
+                        $.ajax({
+                            url: '/api/Agreement/getTableSendedgreementWaiting/',
+                            headers: {
+                                'senderid': userid,
+                                'languageid': languageid
+                            },
+                            method: 'POST',
+                            success: function (data) {
+                                $("#tablesendedagreementwaiting").html(data);
+                            }
+                        });
+                    }
+                    else
+                    {
+                        $("#snackbar").html(texts[1]);//powiodło się
+                        $("#snackbar").css('background-color', 'red');
+                        $("#snackbar").attr('class', 'show');
+                        timer = setTimeout(hidesnackbar, 2000);
+                    }
+                }
+            });
+        }
+
+        function hidesnackbar()
+        {
+            $("#snackbar").attr('class', '');
+            clearTimeout(timer);
+        }
+    </script>
+}
 
 <div class="container" style="min-width:80%;">
     <div id="divmenu" class="row" style="background-color: lightgray;min-height:150px;border-radius: 50px 50px 0px 0px;">
@@ -56,7 +195,7 @@
             <div class="panel-heading" style="background-color:lightgray;text-align:center;" data-tag="145">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(145, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</div>
             <div class="panel-body">
                 <p data-tag="146">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(146, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</p>
-                <button class="btn btn-default" data-tag="147">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(147, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</button>
+                <button class="btn btn-default" data-tag="147" onclick="openmodalagreementsend()">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(147, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</button>
             </div>
             <table class="table table-hover" align="center" style="width:90%;">
                 <thead>
@@ -67,9 +206,50 @@
                         <th style="text-align:center;" data-tag="150">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(150, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</th>
                     </tr>
                 </thead>
-                @Html.Raw(ViewBag.sharingtomewaitingtable)
+                <tbody id="tablesendedagreementwaiting">
+                    @Html.Raw(@ViewBag.sharingtomewaitingtable)
+                </tbody>
             </table>
         </div>
     </div>
 </div>
 
+@*Okno wybranie odbiorcy zgody*@
+<div id="modal_AgreementSend" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg" style="width: 40%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="closeCancelModalAgreementSend()">&times;</button>
+                <h4 class="modal-title" data-tag="156">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(156, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="text" id="searchinginput" onkeyup="onkeyupsearch(this)" placeholder="@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(158, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)"/>
+                    </div>
+                </div>
+                <br/>
+                <div class="row">
+                    <table id="usertable" class="table table-hover" style="margin-left:10%;width:80%;">
+                        <thead>
+                            <tr>
+                                <th id="idheader" style="background-color:white;cursor:pointer;" onclick="changesearchtype(this,1)">#</th>
+                                <th id="nameheader" style="background-color:lightgray;cursor:pointer;" onclick="changesearchtype(this,2)">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(159, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</th>
+                                <th style="text-align:center;">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(160, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</th>
+                            </tr>
+                        </thead>
+                        @Html.Raw(@ViewBag.userlisttable)
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-tag="162" onclick="closeCancelModalAgreementSend()">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(162, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- snackbar-->
+<div id="snackbar"></div>

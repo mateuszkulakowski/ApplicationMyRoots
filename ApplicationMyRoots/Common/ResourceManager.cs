@@ -65,7 +65,15 @@ namespace ApplicationMyRoots.Common
                 }
             }
         }
-        
-        
+
+
+        //ścieżki do api
+        public static string getTableSendedgreementWaitingAPIURL = "http://localhost:25450/api/Agreement/getTableSendedgreementWaiting";
+        public static string getTableReceivedAgreementAPIURL = "http://localhost:25450/api/Agreement/getTableReceivedAgreement";
+        public static string getTableReceivedAgreementWaitingAPIURL = "http://localhost:25450/api/Agreement/getTableReceivedAgreementWaiting";
+        public static string getTableSendedgreementaPIURL = "http://localhost:25450/api/Agreement/getTableSendedgreement";
+
+
+
     }
 }

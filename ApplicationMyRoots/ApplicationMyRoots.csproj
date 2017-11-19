@@ -156,6 +156,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Common\Converters.cs" />
     <Compile Include="Common\ResourceManager.cs" />
+    <Compile Include="ControllersAPI\AgreementController.cs" />
     <Compile Include="ControllersAPI\LanguageController.cs" />
     <Compile Include="ControllersAPI\StatisticsController.cs" />
     <Compile Include="ControllersAPI\UserController.cs" />
@@ -407,6 +408,7 @@
     <Content Include="images\no_foto.png" />
     <Content Include="images\picture.png" />
     <Content Include="images\registry.png" />
+    <Content Include="images\search.png" />
     <Content Include="images\sigin.png" />
     <Content Include="images\statistics.png" />
     <Content Include="images\trash_bin.svg" />
@@ -425,6 +427,7 @@
     <Content Include="Scripts\mytreescripts.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Styles\agreementsendedstyles.css" />
     <Content Include="Styles\mytreestyle.css" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

@@ -3,6 +3,146 @@
     ViewBag.Title = "SettingsSharingAgreementReceived";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@section scripts
+{
+    <script type="text/javascript">
+        var userid;
+        var languageid;
+        $(document).ready(function () {
+            userid = '@Request.RequestContext.HttpContext.Session["LoggedUserID"]';
+            languageid = '@Request.RequestContext.HttpContext.Session["LanguageID"]';
+        });
+
+        function acceptagreement(agrementid)
+        {
+            $.ajax({
+                url: '/api/Agreement/AcceptAgreement/',
+                headers: {
+                    'agreementid': agrementid,
+                    'receivingid': userid
+                },
+                method: 'POST',
+                success: function (data) {
+                    if (data == 0) //bez błędu
+                    {
+                        //update wartości w tabeli - otrzymane oczekujące
+                        $.ajax({
+                            url: '/api/Agreement/getTableReceivedAgreement/',
+                            headers: {
+                                'languageid': languageid,
+                                'receiverid': userid
+                            },
+                            method: 'POST',
+                            success: function (data) {
+                                $("#receivedtable").html(data);
+                            }
+                        });
+
+                        //update wartości w tabeli - otrzymane oczekujące
+                        $.ajax({
+                            url: '/api/Agreement/getTableReceivedAgreementWaiting/',
+                            headers: {
+                                'languageid': languageid,
+                                'receiverid': userid
+                            },
+                            method: 'POST',
+                            success: function (data) {
+                                $("#receivedwaitingtable").html(data);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+        function discardagreement(agrementid) {
+            $.ajax({
+                url: '/api/Agreement/DiscardAgreement/',
+                headers: {
+                    'agreementid': agrementid,
+                    'receivingid': userid
+                },
+                method: 'POST',
+                success: function (data) {
+                    if (data == 0)//bez błędu
+                    {
+                        //update wartości w tabeli - otrzymane oczekujące
+                        $.ajax({
+                            url: '/api/Agreement/getTableReceivedAgreementWaiting/',
+                            headers: {
+                                'languageid': languageid,
+                                'receiverid': userid
+                            },
+                            method: 'POST',
+                            success: function (data) {
+                                $("#receivedwaitingtable").html(data);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+        function deleteagreement(agreementid)
+        {
+            $.ajax({
+                url: '/api/Agreement/DeleteAgreement/',
+                headers: {
+                    'agreementid': agreementid,
+                    'receivingid': userid
+                },
+                method: 'POST',
+                success: function (data) {
+                    if (data == 0)//bez błędu
+                    {
+                        //update wartości w tabeli
+                        $.ajax({
+                            url: '/api/Agreement/getTableReceivedAgreement/',
+                            headers: {
+                                'languageid': languageid,
+                                'receiverid': userid
+                            },
+                            method: 'POST',
+                            success: function (data) {
+                                $("#receivedtable").html(data);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+        function changeVisibility(agreementid) {
+            $.ajax({
+                url: '/api/Agreement/ChangeVisibilityAgreement/',
+                headers: {
+                    'agreementid': agreementid,
+                    'receivingid': userid
+                },
+                method: 'POST',
+                success: function (data) {
+                    if (data == 0)//bez błędu
+                    {
+                        //update wartości w tabeli
+                        $.ajax({
+                            url: '/api/Agreement/getTableReceivedAgreement/',
+                            headers: {
+                                'languageid': languageid,
+                                'receiverid': userid
+                            },
+                            method: 'POST',
+                            success: function (data) {
+                                $("#receivedtable").html(data);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+    </script>
+}
+
 
 <div class="container" style="min-width:80%;">
     <div id="divmenu" class="row" style="background-color: lightgray;min-height:150px;border-radius: 50px 50px 0px 0px;">
@@ -49,7 +189,9 @@
                     <th data-tag="152">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(152, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</th>
                 </tr>
             </thead>
-            @Html.Raw(ViewBag.sharingfrommetable)
+            <tbody id="receivedtable">
+                @Html.Raw(ViewBag.sharingfrommetable)
+            </tbody>
         </table>
 
         <br/><br/><br/>
@@ -70,7 +212,9 @@
                         <th colspan="2" data-tag="150">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(150, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</th>
                     </tr>
                 </thead>
-                @Html.Raw(ViewBag.sharingfrommewaitingtable)
+                <tbody id="receivedwaitingtable">
+                    @Html.Raw(ViewBag.sharingfrommewaitingtable)
+                </tbody>
             </table>
         </div>
     </div>

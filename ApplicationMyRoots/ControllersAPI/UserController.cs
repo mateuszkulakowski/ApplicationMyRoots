@@ -193,12 +193,18 @@ namespace ApplicationMyRoots.ControllersAPI
         [HttpPost]
         public int addUserTreeAlbum()
         {
+            int error = 0;
+
             try
             {
                 using (var db = new DbContext())
                 {
                     string name = this.Request.Headers.GetValues("name").First();
                     int userid = int.Parse(this.Request.Headers.GetValues("userid").First());
+
+                    int usermaintreecount = db.UserTrees.Where(ut => ut.isMainTree == true && ut.UserID == userid).Count();
+
+                    if (usermaintreecount != 1) return 2; // main musi być 1 -- TODO: tworzenie drzewa gdy użytkownik go nie ma 
 
                     int usertreeid = db.UserTrees.Where(ut => ut.isMainTree == true && ut.UserID == userid).First().UserTreeID;
 
@@ -208,17 +214,17 @@ namespace ApplicationMyRoots.ControllersAPI
 
                     db.UserTreeAlbums.Add(uta);
                     db.SaveChanges();
-                    return 0; //brak błędu
                 }
             }
             catch (Exception e)
             {
                 DbContext db = new DbContext();
-                db.Errors.Add(new Error { DateThrow = DateTime.Now, Message = "Błąd przy dodawaniu albumu addUserTreeAlbum() - " + e.Message, StackTrace = e.StackTrace });
+                db.Errors.Add(new Error { DateThrow = DateTime.Now, Message = "Błąd przy dodawaniu albumu addUserTreeAlbum() - UserController - " + e.Message, StackTrace = e.StackTrace });
                 db.SaveChanges();
+                error = 1;
             }
 
-            return 1;//błąd
+            return error;
 
         }
 

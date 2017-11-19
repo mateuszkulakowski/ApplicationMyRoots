@@ -7,6 +7,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -18,51 +22,49 @@ namespace ApplicationMyRoots.Controllers
         [HttpGet]
         public ActionResult SettingsSharingAgreementReceived()
         {
-            string sharingfrommetable = "<tbody>";
-            string sharingfrommewaitingtable = "<tbody>";
+            string sharingfrommetable = "";
+            string sharingfrommewaitingtable = "";
 
             try
             {
                 using (var db = new DbContext())
                 {
-                    var receivedagreements = db.UserTreeSharingAgreements.Where(x => x.UserRecivingID == ResourceManager.LoggedUser.UserID &&
-                                                                              x.Accpeted == true).ToList();
-
-                    var visibletext = db.LanguageTexts.Where(x => x.UniqueElementTag == 137 && x.LanguageID == ResourceManager.LoggedUserLanguageID).First().Text;
-                    var invisibletext = db.LanguageTexts.Where(x => x.UniqueElementTag == 138 && x.LanguageID == ResourceManager.LoggedUserLanguageID).First().Text;
-                    var deleteagreementtext = db.LanguageTexts.Where(x => x.UniqueElementTag == 142 && x.LanguageID == ResourceManager.LoggedUserLanguageID).First().Text;
-
-                    foreach (var receivedagreement in receivedagreements)
+                    // -------------------
+                    //pobieranie rekordów do tabeli - ODEBRANE I ZAAKCEPTOWANE ZGODY - Ci którzy widzą moje drzewo
+                    using (var client = new WebClient())
                     {
-                        sharingfrommetable += "<tr>";
-                        sharingfrommetable +=       "<td>" + receivedagreement.UserTreeSharingAgreementID + "</td>";
-                        sharingfrommetable +=       "<td>" + receivedagreement.UserSending.Name + "</td>";
-                        sharingfrommetable +=       "<td>" + receivedagreement.UserSending.Surname + "</td>";
-                        if (receivedagreement.Visible != null && receivedagreement.Visible == true)
-                            sharingfrommetable +=   "<td style=\"text-align:center;\"><button class=\"btn btn-default\">"+visibletext+" <span class=\"glyphicon glyphicon-eye-open\" style=\"color:blue;\"></span></button></td>";
-                        else
-                            sharingfrommetable +=   "<td style=\"text-align:center;\"><button class=\"btn btn-default\">" + invisibletext + " <span class=\"glyphicon glyphicon-eye-close\" style=\"color:gray;\"></span></button></td>";
-                        sharingfrommetable +=       "<td><button class=\"btn btn-danger\">"+deleteagreementtext+" <span class=\"glyphicon glyphicon-remove\" style=\"color:red;\"></span></button></td>";
-                        sharingfrommetable += "</tr>";
+                        client.BaseAddress = ResourceManager.getTableReceivedAgreementAPIURL;
+                        client.Headers.Add("receiverid", ResourceManager.LoggedUser.UserID.ToString());
+                        client.Headers.Add("languageid", ResourceManager.LoggedUser.LanguageID.ToString());
+
+                        sharingfrommetable = client.UploadString(ResourceManager.getTableReceivedAgreementAPIURL, "");
                     }
+                    //utf-8
+                    byte[] bytes = Encoding.Default.GetBytes(sharingfrommetable);
+                    sharingfrommetable = Encoding.UTF8.GetString(bytes);
 
-                    var receivedagreementswaitings = db.UserTreeSharingAgreements.Where(x => x.UserRecivingID == ResourceManager.LoggedUser.UserID && x.Accpeted == null).OrderByDescending(x => x.Date).ToList();
+                    sharingfrommetable = sharingfrommetable.Substring(1, sharingfrommetable.Length - 2); //obcinanie cudzysłowów
+                    // -------------------
 
-                    var accepttext = db.LanguageTexts.Where(x => x.UniqueElementTag == 143 && x.LanguageID == ResourceManager.LoggedUserLanguageID).First().Text;
-                    var discardtext = db.LanguageTexts.Where(x => x.UniqueElementTag == 144 && x.LanguageID == ResourceManager.LoggedUserLanguageID).First().Text;
 
-                    foreach (var receivedagreementswaiting in receivedagreementswaitings)
+                    //pobieranie rekordów do tabeli - OTRZYMANE OCZEKUJĄCE ZGODY NA AKCEPTACJE
+                    using (var client = new WebClient())
                     {
-                        sharingfrommewaitingtable += "<tr>";
-                        sharingfrommewaitingtable +=        "<td>" + receivedagreementswaiting.UserTreeSharingAgreementID + "</td>";
-                        sharingfrommewaitingtable +=        "<td>" + receivedagreementswaiting.UserSending.Name + "</td>";
-                        sharingfrommewaitingtable +=        "<td>" + receivedagreementswaiting.UserSending.Surname + "</td>";
-                        sharingfrommewaitingtable +=        "<td style=\"text-align:center;\"><button class=\"btn btn-success\">"+accepttext+" <span class=\"glyphicon glyphicon-ok\" style=\"color: green;\"></span></button></td>" +
-                                                            "<td style=\"text-align:center;\"><button class=\"btn btn-danger\">"+discardtext+" <span class=\"glyphicon glyphicon-remove\" style=\"color:red;\"></span></button></td>";
-                        sharingfrommewaitingtable += "</tr>";
-                    }
+                        client.BaseAddress = ResourceManager.getTableReceivedAgreementWaitingAPIURL;
+                        client.Headers.Add("receiverid", ResourceManager.LoggedUser.UserID.ToString());
+                        client.Headers.Add("languageid", ResourceManager.LoggedUser.LanguageID.ToString());
 
-                    var lista = receivedagreementswaitings.Where(x => x.IsReceivedUserRead == false);
+                        sharingfrommewaitingtable = client.UploadString(ResourceManager.getTableReceivedAgreementWaitingAPIURL, "");
+                    }
+                    //utf-8
+                    bytes = Encoding.Default.GetBytes(sharingfrommewaitingtable);
+                    sharingfrommewaitingtable = Encoding.UTF8.GetString(bytes);
+
+                    sharingfrommewaitingtable = sharingfrommewaitingtable.Substring(1, sharingfrommewaitingtable.Length - 2); //obcinanie cudzysłowów
+                    // -------------------
+
+                    //ozaczanie jako przeczytane
+                    var lista = db.UserTreeSharingAgreements.Where(x => x.UserRecivingID == ResourceManager.LoggedUser.UserID && x.Accpeted == null && x.IsReceivedUserRead == false).ToList();
 
                     foreach (var item in lista)
                     {
@@ -78,13 +80,9 @@ namespace ApplicationMyRoots.Controllers
             catch (Exception e)
             {
                 DbContext db = new DbContext();
-                db.Errors.Add(new Error { DateThrow = DateTime.Now, Message = "Błąd metoda SettingsSharingAgreementSended() - MyAccountController - " + e.Message, StackTrace = e.StackTrace });
+                db.Errors.Add(new Error { DateThrow = DateTime.Now, Message = "Błąd metoda SettingsSharingAgreementReceived() - MyAccountController - " + e.Message, StackTrace = e.StackTrace });
                 db.SaveChanges();
             }
-
-
-            sharingfrommewaitingtable += "</tbody>";
-            sharingfrommetable += "</tbody>";
 
             ViewBag.sharingfrommetable = sharingfrommetable;
             ViewBag.sharingfrommewaitingtable = sharingfrommewaitingtable;
@@ -96,53 +94,49 @@ namespace ApplicationMyRoots.Controllers
         public ActionResult SettingsSharingAgreementSended()
         {
             string sharingtometable = "<tbody>";
-            string sharingtomewaitingtable = "<tbody>";
+            string sharingtomewaitingtable = "";
+            string userlisttable = "<tbody>";
 
             try
             {
                 using (var db = new DbContext())
                 {
-                    var sendedagreements = db.UserTreeSharingAgreements.Where(x => x.UserSendingID == ResourceManager.LoggedUser.UserID && 
-                                                                              x.Accpeted == true).ToList();
-
-                    var visibletext = db.LanguageTexts.Where(x => x.UniqueElementTag == 137 && x.LanguageID == ResourceManager.LoggedUserLanguageID).First().Text;
-                    var invisibletext = db.LanguageTexts.Where(x => x.UniqueElementTag == 138 && x.LanguageID == ResourceManager.LoggedUserLanguageID).First().Text;
-
-                    foreach (var sendedagreement in sendedagreements)
+                    // -------------------
+                    //pobieranie rekordów do tabeli - WYSŁANE CZEKAJĄCE NA AKCEPTACJE
+                    using (var client = new WebClient())
                     {
-                        sharingtometable += "<tr>";
-                        sharingtometable +=     "<td>"+sendedagreement.UserTreeSharingAgreementID+"</td>";
-                        sharingtometable +=     "<td>" + sendedagreement.UserReceiving.Name + "</td>";
-                        sharingtometable +=     "<td>" + sendedagreement.UserReceiving.Surname + "</td>";
-                        if(sendedagreement.Visible != null && sendedagreement.Visible == true)
-                            sharingtometable += "<td style=\"text-align:center;\"><span style=\"color:blue;\">"+visibletext+" <span class=\"glyphicon glyphicon-eye-open\" style=\"color:blue;\"></span></span></td>";
-                        else
-                            sharingtometable += "<td style=\"text-align:center;\"><span style=\"color:gray;\">" + invisibletext + " <span class=\"glyphicon glyphicon-eye-close\" style=\"color:gray;\"></span></span></td>";
-                        sharingtometable += "</tr>";
+                        client.BaseAddress = ResourceManager.getTableSendedgreementaPIURL;
+                        client.Headers.Add("senderid", ResourceManager.LoggedUser.UserID.ToString());
+                        client.Headers.Add("languageid", ResourceManager.LoggedUser.LanguageID.ToString());
+
+                        sharingtometable = client.UploadString(ResourceManager.getTableSendedgreementaPIURL, "");
                     }
+                    //utf-8
+                    byte[] bytes = Encoding.Default.GetBytes(sharingtometable);
+                    sharingtometable = Encoding.UTF8.GetString(bytes);
 
-                    var sendedagreementswaitings = db.UserTreeSharingAgreements.Where(x => x.UserSendingID == ResourceManager.LoggedUser.UserID).OrderByDescending(x =>x.Date).ToList();
+                    sharingtometable = sharingtometable.Substring(1, sharingtometable.Length - 2); //ucinanie cudzysłowów
+                    // -------------------
 
-                    var waitingforacceptationtext = db.LanguageTexts.Where(x => x.UniqueElementTag == 139 && x.LanguageID == ResourceManager.LoggedUserLanguageID).First().Text;
-                    var accepttext = db.LanguageTexts.Where(x => x.UniqueElementTag == 140 && x.LanguageID == ResourceManager.LoggedUserLanguageID).First().Text;
-                    var discardtext = db.LanguageTexts.Where(x => x.UniqueElementTag == 141 && x.LanguageID == ResourceManager.LoggedUserLanguageID).First().Text;
 
-                    foreach (var sendedagreementswaiting in sendedagreementswaitings)
+                    //pobieranie rekordów do tabeli - WYSŁANE CZEKAJĄCE NA AKCEPTACJE
+                    using (var client = new WebClient())
                     {
-                        sharingtomewaitingtable += "<tr>";
-                        sharingtomewaitingtable +=      "<td>" + sendedagreementswaiting.UserTreeSharingAgreementID + "</td>";
-                        sharingtomewaitingtable +=      "<td>" + sendedagreementswaiting.UserReceiving.Name + "</td>";
-                        sharingtomewaitingtable +=      "<td>" + sendedagreementswaiting.UserReceiving.Surname + "</td>";
-                        if (sendedagreementswaiting.Accpeted == null)
-                            sharingtomewaitingtable += "<td style=\"text-align:center;\"><strong style=\"color:gray;\">"+waitingforacceptationtext+"</strong> <span class=\"glyphicon glyphicon-refresh\" style=\"color:gray;\"></span></td>";
-                        else if (sendedagreementswaiting.Accpeted == true)
-                            sharingtomewaitingtable += "<td style=\"text-align:center;\"><strong style=\"color: green;\">"+accepttext+"</strong> <span class=\"glyphicon glyphicon-ok-circle\" style=\"color:green;\"></span></td>";
-                        else
-                            sharingtomewaitingtable += "<td style=\"text-align:center;\"><strong style=\"color: red;\">"+discardtext+"</strong> <span class=\"glyphicon glyphicon-remove-circle\" style=\"color:red;\"></span></td>";
-                        sharingtomewaitingtable += "</tr>";
-                    }
+                        client.BaseAddress = ResourceManager.getTableSendedgreementWaitingAPIURL;
+                        client.Headers.Add("senderid", ResourceManager.LoggedUser.UserID.ToString());
+                        client.Headers.Add("languageid", ResourceManager.LoggedUser.LanguageID.ToString());
 
-                    var lista = sendedagreementswaitings.Where(x => x.IsSendedUserRead == false);
+                        sharingtomewaitingtable = client.UploadString(ResourceManager.getTableSendedgreementWaitingAPIURL, "");
+                    }
+                    //utf-8
+                    bytes = Encoding.Default.GetBytes(sharingtomewaitingtable);
+                    sharingtomewaitingtable = Encoding.UTF8.GetString(bytes);
+
+                    sharingtomewaitingtable=sharingtomewaitingtable.Substring(1, sharingtomewaitingtable.Length - 2);
+                    // -------------------
+
+                    //odznaczanie jako przeczytane
+                    var lista = db.UserTreeSharingAgreements.Where(x => x.UserSendingID == ResourceManager.LoggedUser.UserID && x.IsSendedUserRead == false).ToList();
 
                     foreach (var item in lista)
                     {
@@ -153,19 +147,40 @@ namespace ApplicationMyRoots.Controllers
                         db.SaveChanges();
                     }
 
+
+                    // lista użytkowników do modala
+                    var idsdisableduser = db.UserTreeSharingAgreements.Where(x => x.UserSendingID == ResourceManager.LoggedUser.UserID &&  //użytkownicy do których nie moge wysłąć zgody
+                                                                             x.Accpeted != false).Select(x => x.UserRecivingID); //mamy ich akceptację lub oczekuje na akceptację
+
+                    var userlist = db.Users.Where(x => x.UserID != ResourceManager.LoggedUser.UserID).ToList();
+                    userlist.RemoveAll(x => idsdisableduser.Any(y => y == x.UserID));
+
+                    var sendtext = db.LanguageTexts.Where(x => x.UniqueElementTag == 157 && x.LanguageID == ResourceManager.LoggedUserLanguageID).First().Text;
+
+
+                    foreach (var user in userlist)
+                    {
+                        userlisttable += "<tr hidden>";
+                        userlisttable += "<td class=\"idcell\">" + user.UserID + "</td>";
+                        userlisttable += "<td class=\"namecell\">" + user.NameSurname + "</td>";
+                        userlisttable += "<td style=\"text-align:center;\"><button class=\"btn btn-default\" onclick=\"sendagreement(" + user.UserID + ",this)\">" + sendtext + " <span class=\"glyphicon glyphicon-share-alt\"></span></button></td>";
+                        userlisttable += "</tr>";
+                    }
                 }
 
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 DbContext db = new DbContext();
                 db.Errors.Add(new Error { DateThrow = DateTime.Now, Message = "Błąd metoda SettingsSharingAgreementSended() - MyAccountController - " + e.Message, StackTrace = e.StackTrace });
                 db.SaveChanges();
             }
-            sharingtomewaitingtable += "</tbody>";
             sharingtometable += "</tbody>";
+            userlisttable += "</tbody>";
 
             ViewBag.sharingtometable = sharingtometable;
             ViewBag.sharingtomewaitingtable = sharingtomewaitingtable;
+            ViewBag.userlisttable = userlisttable;
             return View();
         }
 

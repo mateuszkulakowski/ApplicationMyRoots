@@ -199,3 +199,4 @@ C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoot
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.removerequiredfields1.resources
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.removerequiredfields2.resources
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.removerequiredfields3.resources
+C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.csprojResolveAssemblyReference.cache
