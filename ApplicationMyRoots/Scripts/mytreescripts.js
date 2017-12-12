@@ -1,6 +1,12 @@
 ﻿var lastClickedRect = null;
 var userID = null;
 var languageID = null;
+var actualloadtreeid = null;
+
+//element główny w aktualnym drzewie
+var rootid = null;
+var mainuserroot = null;
+var ismaintree;
 
 //zmienne poruszanie węzłem - myszką
 var startx = null;
@@ -15,6 +21,11 @@ var mouseoverelement = null;
 var mother_new_id = -1;
 var father_new_id = -1;
 var node_new_id = -1;
+
+//zmienne do snackbara
+var timershackbar;
+var snackbartexts = ["Error", "Error", "Error", "Error", "OK"]; //defaultowe napisy gdy z bazy nie zostaną pobrane
+
 
 $(document).ready(function () {
     
@@ -37,46 +48,131 @@ $(document).ready(function () {
     userID = $('#svg_container').attr('data-loggeduser');
     languageID = $('#svg_container').attr('data-language');
 
+    //------------
+    //teksty do snackbara ---
+    getTextsToSnackbar();
+    //------------
+
     //pobieranie drzewa z api
-    $.get("/api/HtmlBuilder/GetUserMainTree/" + userID, function (data) {
-        $(".tree").html(data);
+    $.get("/api/HtmlBuilder/GetUserMainTree/" + userID + "/1", function (data) {
+        var datajson = $.parseJSON(JSON.stringify(data));
 
-        //przejmujemy zaznaczony węzeł
-        if ($('.tree-element-frames-active').attr('class') != undefined) lastClickedRect = $('.tree-element-frames-active').parent();
+        //zmienne aktualnego drzewa -----
+        actualloadtreeid = datajson.Tid;
+        rootid = userID;
+        mainuserroot = 1;
+        ismaintree = 1;
 
-        //pobieranie textów dla wstawionych węzłów - etykiety dodające
-        addTextsToAllNodes(languageID);
-        // dodanie onclicka zaznaczenie na czerwono
-        addOnClickToAllNodes(); // click do wszystkich nowo dodanych węzłów
-        // pobieranie foto dla każdego węzła
-        addImageToAllNodes();
+        //pobieranie tranformmatrix
+        $.get("/api/HtmlBuilder/GetUserTreeTransformMatrix/" + actualloadtreeid, function (data) {
+            if (data !== null)
+                $(".tree").attr('transform', data);
+
+            $(".tree").html(datajson.HtmlTree);
+
+            //podstawienie pod nawigację tid
+            $(".navigationtree").attr("data-tid", datajson.Tid);
+
+            //przejmujemy zaznaczony węzeł
+            if ($('.tree-element-frames-active').attr('class') != undefined) lastClickedRect = $('.tree-element-frames-active').parent();
+
+            //pobieranie textów dla wstawionych węzłów - etykiety dodające
+            addTextsToAllNodes(languageID);
+            // dodanie onclicka zaznaczenie na czerwono
+            addOnClickToAllNodes(); // click do wszystkich nowo dodanych węzłów
+            // pobieranie foto dla każdego węzła
+            addImageToAllNodes();
+
+        });
     });
 
-    //pobieranie tranformmatrix
-    $.get("/api/HtmlBuilder/GetUserMainTreeTransformMatrix/" + userID, function (data) {
-    if (data !== null)
-        $(".tree").attr('transform', data);
-    });
 
     //unload - do zapisywania aktualnego powiększenia/pomnijeszenia przesunięcia drzewa
     $(window).unload(function () {
-        $(".nodeImage").attr("xlink:href", "");
+        $(".nodeImage").attr("xlink:href", ""); // czyszczenie zdjęć żeby nie zaśmiecać bazy
+        $('image[class=trashImage]').attr("xlink:href", "");
+        $('image[class=editImage]').attr("xlink:href", "");
+        $('image[class=otherpartnersImage]').attr("xlink:href", "");
+
         $.ajax({
-            url: '/api/HtmlBuilder/SaveUserMainTree/' + userID,
-            data: { 'TreeHtml': $('.tree').html() },
+            url: '/api/HtmlBuilder/SaveUserMainTree',
+            data: {
+                'TreeHtml': $('.tree').html()
+            },
+            headers: {
+                'id': actualloadtreeid
+            },
             dataType: "json",
             method: 'POST',
             async: false
         });
 
         $.ajax({
-            url: '/api/HtmlBuilder/SaveUserMainTreeTransformMatrix/' + userID,
-            headers: { 'matrix': $('.tree').attr('transform') },
-            method: 'GET'
+            url: '/api/HtmlBuilder/SaveUserMainTreeTransformMatrix',
+            headers: {
+                'matrix': $('.tree').attr('transform'),
+                'id': actualloadtreeid
+            },
+            method: 'POST'
             });
     });
 
 });
+
+function getTextsToSnackbar()
+{
+    $.ajax({
+        url: '/api/Language/getElementTextInLanguage/' + 196,
+        headers: {
+            'languageID': languageID
+        },
+        method: 'GET',
+        success: function (data) {
+            snackbartexts[0] = data; // członek rodziny nie posiada partnerów
+        }
+    });
+    $.ajax({
+        url: '/api/Language/getElementTextInLanguage/' + 197,
+        headers: {
+            'languageID': languageID
+        },
+        method: 'GET',
+        success: function (data) {
+            snackbartexts[1] = data; //nie można usunąć elementu głównego drzewa
+        }
+    });
+    $.ajax({
+        url: '/api/Language/getElementTextInLanguage/' + 198,
+        headers: {
+            'languageID': languageID
+        },
+        method: 'GET',
+        success: function (data) {
+            snackbartexts[2] = data; //nie można usunąć partnera -> wykorzysytwany w poddrzewie
+        }
+    });
+    $.ajax({
+        url: '/api/Language/getElementTextInLanguage/' + 200,
+        headers: {
+            'languageID': languageID
+        },
+        method: 'GET',
+        success: function (data) {
+            snackbartexts[3] = data; //błąd przy usuwaniu drzewa
+        }
+    });
+    $.ajax({
+        url: '/api/Language/getElementTextInLanguage/' + 201,
+        headers: {
+            'languageID': languageID
+        },
+        method: 'GET',
+        success: function (data) {
+            snackbartexts[4] = data; //usuwanie przebiegło pomyślnie
+        }
+    });
+}
+
 
     function addImageToAllNodes()
     {
@@ -103,6 +199,16 @@ $(document).ready(function () {
         $('image[class=trashImage]').each(function (index, element) {
             $.ajax({
                 url: '/api/User/getTrashImage/',
+                method: 'GET',
+                success: function (data) {
+                    $(element).attr('xlink:href', data);
+                }
+            });
+        });
+
+        $('image[class=otherpartnersImage]').each(function (index, element) {
+            $.ajax({
+                url: '/api/User/getOtherPartnersImage/',
                 method: 'GET',
                 success: function (data) {
                     $(element).attr('xlink:href', data);
@@ -154,10 +260,6 @@ $(document).ready(function () {
         var spacemother = width / 2.43;
         var spacefather = 100;
         var adding_parents = false;
-        var ageLabelX;
-        var dateBornValueX;
-        var dateDeadValueX;
-        var ageValueX;
         var adding_partner = false;
         var adding_child = false;
         var linefathermother = "";
@@ -209,7 +311,7 @@ $(document).ready(function () {
                     var quadratic_x = (parseInt(left_node_x) + parseInt(right_node_x)) / 2;
                     var quadratic_y = ((parseInt(left_node_y) + parseInt(right_node_y)) / 2) + 150;
 
-
+                    // zastanowić się czy nie dodać main user do pathu???? może się krzaczyć ...
                     linepartners = "<path  d=\"M" + left_node_x + " " + left_node_y + " Q" + quadratic_x + " " + quadratic_y + " " + right_node_x + " " + right_node_y + "\" fill=\"transparent\" stroke=\"black\" data-left=\"" + $(element).parent().attr('id') + "\" data-right=\"" + node_new_id + "\"/>";
                     node_new_id = -1;
                 }
@@ -334,21 +436,7 @@ $(document).ready(function () {
             inverse_parentL_rect_x = (parentL_rect_x - 2 * parentL_rect_x) - 12;
         if (parentL_rect_x < 0)
             inverse_parentL_rect_x = (parentL_rect_x - parentL_rect_x - parentL_rect_x) - 12;
-
-        //napisy angielskie troche inne wartości x/y
-        if (languageID == 1)//polski
-        {
-            var ageLabelX = parseInt(x_new + 47.5);
-            dateBornValueX = parseInt(x_new + 70);
-            dateDeadValueX = parseInt(x_new + 74);
-            ageValueX = parseInt(x_new + 64);
-        }
-        else {
-            var ageLabelX = parseInt(x_new + 47.5);
-            dateBornValueX = parseInt(x_new + 70);
-            dateDeadValueX = parseInt(x_new + 73);
-            ageValueX = parseInt(x_new + 58);
-        }
+       
 
         //ustawianie data_have przy partnerach na 1 przy dodawaniu rodziców bo mają już partnera
         var data_have_partner = 0;
@@ -381,13 +469,17 @@ $(document).ready(function () {
                 "<rect class=\"editImageBorder\" x=\"" + parseInt(x_new + 2) + "\" y=\"" + parseInt(y_new + 85) + "\" height=\"13\" width=\"13\" fill=\"none\" stroke=\"#428bca\" stroke-width=\"0.2\" visibility=\"hidden\"/>" +
                 "<image class=\"trashImage\" xlink:href=\"\" x=\"" + parseInt(x_new + 20) + "\" y=\"" + parseInt(y_new + 85) + "\" height=\"13\" width=\"13\" visibility=\"hidden\" onclick=\"onClickDelete(this)\"/>" +
                 "<rect class=\"trashImageBorder\" x=\"" + parseInt(x_new + 20) + "\" y=\"" + parseInt(y_new + 85) + "\" height=\"13\" width=\"13\" fill=\"none\" stroke=\"#428bca\" stroke-width=\"0.2\" visibility=\"hidden\"/>" +
+                "<image class=\"otherpartnersImage\" xlink:href=\"\" x=\"" + parseInt(x_new + 38) + "\" y=\"" + parseInt(y_new + 85) + "\" height=\"13\" width=\"13\" visibility=\"hidden\" onclick=\"onClickOtherPartners(this)\"/>" +
+                "<rect class=\"otherpartnersImageBorder\" x=\"" + parseInt(x_new + 38) + "\" y=\"" + parseInt(y_new + 85) + "\" height=\"13\" width=\"13\" fill=\"none\" stroke=\"#428bca\" stroke-width=\"0.2\" visibility=\"hidden\"/>" +
                 "<text class=\"datebirthLabel-dbt\" x=\"" + parseInt(x_new + 38) + "\" y=\"" + parseInt(y_new + 50) + "\" font-family=\"verdana\" font-size=\"5\" fill=\"grey\" alignment-baseline=\"middle\" text-anchor=\"middle\" data-tag=\"29\"></text>" +
                 "<text class=\"datedeadLabel-dbt\" x=\"" + parseInt(x_new + 38) + "\" y=\"" + parseInt(y_new + 60) + "\" font-family=\"verdana\" font-size=\"5\" fill=\"grey\" alignment-baseline=\"middle\" text-anchor=\"middle\" data-tag=\"30\"></text>" +
-                "<text class=\"ageLabel-dbt\" x=\"" + ageLabelX + "\" y=\"" + parseInt(y_new + 70) + "\" font-family=\"verdana\" font-size=\"5\" fill=\"grey\" alignment-baseline=\"middle\" text-anchor=\"middle\" data-tag=\"31\"></text>" +
+                "<text class=\"ageLabel-dbt\" x=\"" + parseInt(x_new + 47.5) + "\" y=\"" + parseInt(y_new + 70) + "\" font-family=\"verdana\" font-size=\"5\" fill=\"grey\" alignment-baseline=\"middle\" text-anchor=\"middle\" data-tag=\"31\"></text>" +
                 "<text class=\"maininfoLabel-dbt\" x=\"" + parseInt(x_new + 65) + "\" y=\"" + parseInt(y_new + 36) + "\" font-family=\"verdana\" font-size=\"6\" fill=\"black\" alignment-baseline=\"middle\" text-anchor=\"middle\" data-tag=\"32\"></text>" +
-                "<text class=\"datebirthValue\" x=\"" + dateBornValueX + "\" y=\"" + parseInt(y_new + 50) + "\" font-family=\"verdana\" font-size=\"5\" fill=\"grey\" alignment-baseline=\"middle\" text-anchor=\"middle\"></text>" +
-                "<text class=\"datedeadValue\" x=\"" + dateDeadValueX + "\" y=\"" + parseInt(y_new + 60) + "\" font-family=\"verdana\" font-size=\"5\" fill=\"grey\" alignment-baseline=\"middle\" text-anchor=\"middle\"></text>" +
-                "<text class=\"ageValue\" x=\"" + ageValueX + "\" y=\"" + parseInt(y_new + 70) + "\" font-family=\"verdana\" font-size=\"5\" fill=\"grey\" alignment-baseline=\"middle\" text-anchor=\"middle\"></text>" +
+                "<text class=\"datebirthValue\" x=\"" + parseInt(x_new + 70) + "\" y=\"" + parseInt(y_new + 50) + "\" font-family=\"verdana\" font-size=\"5\" fill=\"grey\" alignment-baseline=\"middle\" text-anchor=\"middle\"></text>" +
+                "<text class=\"datedeadValue\" x=\"" + parseInt(x_new + 74) + "\" y=\"" + parseInt(y_new + 60) + "\" font-family=\"verdana\" font-size=\"5\" fill=\"grey\" alignment-baseline=\"middle\" text-anchor=\"middle\"></text>" +
+                "<text class=\"ageValue\" x=\"" + parseInt(x_new + 64) + "\" y=\"" + parseInt(y_new + 70) + "\" font-family=\"verdana\" font-size=\"5\" fill=\"grey\" alignment-baseline=\"middle\" text-anchor=\"middle\"></text>" +
+                "<image class=\"copyImage\" xlink:href=\"\" x=\"" + parseInt(x_new + 2) + "\" y=\"" + parseInt(y_new + 85) + "\" height=\"13\" width=\"13\" visibility=\"hidden\" onclick=\"onClickCopy(this)\"/>" +
+                "<rect class=\"copyImageBorder\" x=\"" + parseInt(x_new + 2) + "\" y=\"" + parseInt(y_new + 85) + "\" height=\"13\" width=\"13\" fill=\"none\" stroke=\"#428bca\" stroke-width=\"0.2\" visibility=\"hidden\"/>" +
             "</g>";
 
         $(".tree").html($(".tree").html() + newNode);
@@ -425,7 +517,7 @@ $(document).ready(function () {
                 var data = new FormData();
                 data.append('file',file);
                 $.ajax({
-                    url: '/api/User/SaveUserNode/' + userID,
+                    url: '/api/User/SaveUserNode/' + actualloadtreeid,
                     headers: {
                         'withFile': '1',
                         'name': nameValue,
@@ -447,7 +539,7 @@ $(document).ready(function () {
             }
             else { // plik zostaje jaki był..
                 $.ajax({
-                    url: '/api/User/SaveUserNode/' + userID,
+                    url: '/api/User/SaveUserNode/' + actualloadtreeid,
                     headers: {
                         'withFile': '0',
                         'name': nameValue,
@@ -476,7 +568,7 @@ $(document).ready(function () {
                 var data = new FormData();
                 data.append('file', filemother);
                 $.ajax({
-                    url: '/api/User/SaveUserNode/' + userID,
+                    url: '/api/User/SaveUserNode/' + actualloadtreeid,
                     headers: {
                         'withFile': "1",
                         'name': nameMotherValue,
@@ -497,7 +589,7 @@ $(document).ready(function () {
             }
             else {
                 $.ajax({
-                    url: '/api/User/SaveUserNode/' + userID,
+                    url: '/api/User/SaveUserNode/' + actualloadtreeid,
                     headers: {
                         'withFile': "0",
                         'name': nameMotherValue,
@@ -518,7 +610,7 @@ $(document).ready(function () {
                 var data = new FormData();
                 data.append('file', filefather);
                 $.ajax({
-                    url: '/api/User/SaveUserNode/' + userID,
+                    url: '/api/User/SaveUserNode/' + actualloadtreeid,
                     headers: {
                         'withFile': "1",
                         'name': nameFatherValue,
@@ -539,7 +631,7 @@ $(document).ready(function () {
             }
             else {
                 $.ajax({
-                    url: '/api/User/SaveUserNode/' + userID,
+                    url: '/api/User/SaveUserNode/' + actualloadtreeid,
                     headers: {
                         'withFile': "0",
                         'name': nameFatherValue,
@@ -693,9 +785,6 @@ $(document).ready(function () {
             }
         });
     }
-
-
-
 
     function mousedowntreeelement(evt)
     {
@@ -864,7 +953,8 @@ $(document).ready(function () {
         $('.tree-elements').on('click', function (element) {
 
             if ($(element.target).attr('class') == 'editImage' ||
-                $(element.target).attr('class') == 'trashImage')
+                $(element.target).attr('class') == 'trashImage' ||
+                $(element.target).attr('class') == 'otherpartnersImage')
                 return;
 
             if (dragging_element)
@@ -878,8 +968,10 @@ $(document).ready(function () {
                 lastClickedRect.children('.tree-element-frames-active').attr('class', 'tree-element-frames');
                 //chowanie przycisków do dodawania
                 lastClickedRect.children('*[class^=add][data-have=0]').attr('visibility', 'hidden');
+                lastClickedRect.children('*[class^=addpartner]').attr('visibility', 'hidden');
                 lastClickedRect.children('*[class^=editImage]').attr('visibility', 'hidden');
                 lastClickedRect.children('*[class^=trashImage]').attr('visibility', 'hidden');
+                lastClickedRect.children('*[class^=otherpartnersImage]').attr('visibility', 'hidden');
 
                 if (lastClickedRect.attr('id') === $(this).attr('id')) // gdy chcemy odznaczyć zaznaczonego
                 {
@@ -892,8 +984,10 @@ $(document).ready(function () {
             $(this).children('.tree-element-frames').attr('class', 'tree-element-frames-active');
             //wyświetlenie przycisków do dodawania członków rodziny
             $(this).children('*[class^=add][data-have=0]').attr('visibility', 'visible');
+            $(this).children('*[class^=addpartner]').attr('visibility', 'visible');
             $(this).children('*[class^=editImage]').attr('visibility', 'visible');
             $(this).children('*[class^=trashImage]').attr('visibility', 'visible');
+            $(this).children('*[class^=otherpartnersImage]').attr('visibility', 'visible');
 
             lastClickedRect = $(this);
             
@@ -956,6 +1050,190 @@ $(document).ready(function () {
             }
         });
     }
+
+    var namesurnameforotherpartners; // zmienna do przechowywania imienia nazwiska osoby której chcemy pobrać drzewo z dodatkowym partnerem -> jego imię potrzebne do paska nawigacyjnego
+
+    function onClickOtherPartners(element)
+    {
+        //Pobieranie nazwy węzła na który kliknął użytkownik
+        $.ajax({
+            url: '/api/User/GetNameSurnameNode',
+            headers: {
+                'id': $(element).parent().attr("id"),
+                'mainuser': $(element).parent().attr("data-mainuser")
+            },
+            method: 'POST',
+            success: function (data) {
+                namesurnameforotherpartners = data;
+            }
+        });
+
+        // pobranie tbody do otherpartners + odpalenie okna gdy pobiorą się dane
+        $.ajax({
+            url: '/api/HtmlBuilder/GetNodeTrees',
+            headers: {
+                'id': $(element).parent().attr("id"),
+                'mainuser': $(element).parent().attr("data-mainuser"),
+                'lid': languageID
+            },
+            method: 'POST',
+            success: function (data) {
+                if (data != "") {
+                    $("#tbodyotherpartners").html(data);
+                    $("#modal_OtherPartner").modal("show");
+                }
+                else
+                {
+                    $("#snackbar").html(snackbartexts[0]);
+                    $("#snackbar").css('background-color', 'orange');
+                    $("#snackbar").attr('class', 'show');
+                    timershackbar = setTimeout(hidesnackbar, 2000);
+                }
+            }
+        });
+    }
+
+    function hidesnackbar() {
+        $("#snackbar").attr('class', '');
+        clearTimeout(timershackbar);
+    }
+
+
+    function deletetree(element)
+    {
+        $.ajax({
+            url: '/api/User/RemoveTree',
+            headers: {
+                'tid': $(element).attr("data-tid")
+            },
+            method: 'POST',
+            success: function (data) {
+                if (data == 0)
+                {
+                    $(element).parent().parent().remove();
+                    $("#modal_OtherPartner").modal("hide");
+
+                    $("#snackbar").html(snackbartexts[4]);
+                    $("#snackbar").css('background-color', 'green');
+                    $("#snackbar").attr('class', 'show');
+                    timershackbar = setTimeout(hidesnackbar, 2000);
+
+                }
+                else {
+                    $("#snackbar").html(snackbartexts[3]);
+                    $("#snackbar").css('background-color', 'red');
+                    $("#snackbar").attr('class', 'show');
+                    timershackbar = setTimeout(hidesnackbar, 2000);
+                }
+            }
+        });
+    }
+
+
+    function loadtree(element,option) //option 1 - ładowanie drzewa klikając w nawigację, 2 - ładowanie drzewa klikając w okno modalne --uwaga element z dwóch różnych miejsc wywoływany są to dwa inne elementy!! jeden z okna modalnego otherpartners, drugi z paska nawigacji
+    {
+        if (option == 1) {
+            //nawigacja usuwanie na prawo od klikniętego wybranego drzewa
+            $(".breadcrumb").children().each(function (index, element2) {
+                if (parseInt($(element2).attr("data-lp")) > parseInt($(element).parent().attr("data-lp"))) {
+                    $(element2).remove();
+                }
+            });
+        }
+        else if (option == 2) // dodajemy do nawigacji wybrane drzewo w oknie modalnym otherpartners
+        {
+            $("#modal_OtherPartner").modal("hide");//chowanie modala bo stąd klikneliśmy żeby wybrać drzewo
+
+            //dodawanie do nawigacji
+            $.ajax({
+                url: '/api/Language/getElementTextInLanguage/' + 190,
+                headers: {
+                    'languageID': languageID
+                },
+                method: 'GET',
+                success: function (data) {
+                    var lp = $(".breadcrumb").children().last().attr('data-lp');
+                    lp = parseInt(lp) + parseInt(1);
+
+                    var navigationnewitem =
+                        "<li data-lp='" + lp + "'><a href='#' data-tag='190' data-tid='" + $(element).attr("data-tid") + "' onclick='loadtree(this,1)'>" + data + " (" + namesurnameforotherpartners + ")</a></li>";
+                    $(".breadcrumb").append(navigationnewitem);
+
+                    namesurnameforotherpartners = "";
+                }
+            });
+        }
+
+        //zapis istniejącego stanu drzewa
+        //-----
+        $(".nodeImage").attr("xlink:href", ""); // czyszczenie zdjęć żeby nie zaśmiecać bazy
+        $('image[class=trashImage]').attr("xlink:href", "");
+        $('image[class=editImage]').attr("xlink:href", "");
+        $('image[class=otherpartnersImage]').attr("xlink:href", "");
+
+        $.ajax({
+            url: '/api/HtmlBuilder/SaveUserMainTree',
+            data: {
+                'TreeHtml': $('.tree').html()
+            },
+            headers: {
+                'id': actualloadtreeid
+            },
+            dataType: "json",
+            method: 'POST',
+            success: function () {
+                //zapis transformmatrixa wcześniejszego drzewa
+                $.ajax({
+                    url: '/api/HtmlBuilder/SaveUserMainTreeTransformMatrix',
+                    headers: {
+                        'matrix': $('.tree').attr('transform'),
+                        'id': actualloadtreeid
+                    },
+                    method: 'POST'
+                });
+
+                //pobieranie wybranego drzewa
+                //---------
+                $.ajax({
+                    url: '/api/HtmlBuilder/GetUserTree',
+                    headers: {
+                        'tid': $(element).attr("data-tid")
+                    },
+                    method: 'POST',
+                    success: function (data) {
+                        var datajson = $.parseJSON(JSON.stringify(data));
+
+                        //zmiana wybranego drzewa
+                        actualloadtreeid = datajson.Tid;
+                        rootid = datajson.Rootid;
+                        mainuserroot = datajson.Mainuserroot;
+                        ismaintree = datajson.Ismaintree;
+
+                        //pobieranie tranformmatrix
+                        $.get("/api/HtmlBuilder/GetUserTreeTransformMatrix/" + actualloadtreeid, function (data2) {
+                            if (data2 !== null)
+                                $(".tree").attr('transform', data2);
+
+                            $(".tree").html(datajson.HtmlTree);
+
+                            //przejmujemy zaznaczony węzeł
+                            lastClickedRect = null;
+                            if ($('.tree-element-frames-active').attr('class') != undefined) lastClickedRect = $('.tree-element-frames-active').parent();
+
+                            //pobieranie textów dla wstawionych węzłów - etykiety dodające
+                            addTextsToAllNodes(languageID);
+                            // dodanie onclicka zaznaczenie na czerwono
+                            addOnClickToAllNodes(); // click do wszystkich nowo dodanych węzłów
+                            // pobieranie foto dla każdego węzła
+                            addImageToAllNodes();
+                        });
+                    }
+                });
+        //---------
+            }
+        });
+    }
+
 
     var deletingElement = -1;
 
@@ -1041,6 +1319,18 @@ $(document).ready(function () {
 
     function closeOkModalConfirm()
     {
+        //uciekamy z błędem gdy chcemy usunąć element główny drzewa
+        if ($(deletingElement).parent().attr("id") == rootid && $(deletingElement).parent().attr("data-mainuser") == mainuserroot)
+        {
+            $("#snackbar").html(snackbartexts[1]);
+            $("#snackbar").css('background-color', 'red');
+            $("#snackbar").attr('class', 'show');
+            timershackbar = setTimeout(hidesnackbar, 2000);
+            $("#modal_ConfirmDelete").modal("hide");
+            return;
+        }
+
+
         if ($(deletingElement).parent().attr("data-haveRightLine") == 1 ||
             $(deletingElement).parent().attr("data-haveLeftLine") == 1) //ma partnera
         {
@@ -1064,7 +1354,7 @@ $(document).ready(function () {
             var size;
             var childrenID;
 
-            if (partnerIsLeft) //liczba dzieci z partnerem jak 1 można usuwać jak wiecej błąd
+            if (partnerIsLeft) //liczba dzieci z partnerem jak 1 można usuwać pod warunkiem że dzieckiem to user /jak wiecej błąd
             {
                 size = $('line[data-right-node="' + $(deletingElement).parent().attr('id') + '"][data-left-node="' + partnerID + '"]').length;
                 childrenID = $('line[data-right-node="' + $(deletingElement).parent().attr('id') + '"][data-left-node="' + partnerID + '"]').attr('data-down-node');
@@ -1074,7 +1364,24 @@ $(document).ready(function () {
                 size = $('line[data-left-node="' + $(deletingElement).parent().attr('id') + '"][data-right-node="' + partnerID + '"]').length;
                 childrenID = $('line[data-left-node="' + $(deletingElement).parent().attr('id') + '"][data-right-node="' + partnerID + '"]').attr('data-down-node');
             }
-            
+
+            if (ismaintree == 0) // jest to poddrzewo naszego głównego
+            {
+                //sytuacja gdy chcemy usunąć partnera w poddrzewie naszego głównego elementu -> nie można tego zrobić chyba że chcemy usunąć te drzewo
+                if (partnerID == rootid && $("#" + partnerID).attr("data-mainuser") == mainuserroot)
+                {
+                    $("#snackbar").html(snackbartexts[2]);
+                    $("#snackbar").css('background-color', 'orange');
+                    $("#snackbar").attr('class', 'show');
+                    timershackbar = setTimeout(hidesnackbar, 2000);
+                    $("#modal_ConfirmDelete").modal("hide");
+                    return;
+                }
+            }
+
+
+            // sprawdzanie połączeń
+            //------------
             if (size > 1) // wyrzucamy błąd jak ma wiecej niż jedno dziecko
             {
                 $("#modal_ErrorDeleting").modal("show");
@@ -1087,7 +1394,7 @@ $(document).ready(function () {
                 var childrenpartnerID;
 
                 //dziecko nie ma partnera nie możemy usunąć
-                if ($('path[data-left=' + childrenID + ']').attr('data-right') != undefined && $('path[data-right=' + childrenID + ']').attr('data-left') != undefined)
+                if ($('path[data-left=' + childrenID + ']').attr('data-right') == undefined && $('path[data-right=' + childrenID + ']').attr('data-left') == undefined)
                 {
                     $("#modal_ErrorDeleting").modal("show");
                     $("#modal_ConfirmDelete").modal("hide");
@@ -1107,7 +1414,7 @@ $(document).ready(function () {
                 if (($('#' + childrenpartnerID).attr('data-mainuser') == 1 && $('line[data-down-node="' + $(deletingElement).parent().attr('id') + '"]').attr('x1') == undefined &&
                     $('line[data-down-node="' + partnerID + '"]').attr('x1') == undefined) || 
                     ($('line[data-down-node="' + $(deletingElement).parent().attr('id') + '"]').attr('x1') == undefined &&
-                     $('line[data-down-node="' + partnerID + '"]').attr('x1') == undefined)) // możemy usuwać rodziców gdy dziecko ma partnera jako uzytkownika, lub partner usuwanego węzła nie ma rodziców
+                        $('line[data-down-node="' + partnerID + '"]').attr('x1') == undefined && $("#" + partnerID).attr("data-mainuser") == 0)) // możemy usuwać rodziców gdy dziecko ma partnera jako uzytkownika, lub partner usuwanego węzła nie ma rodziców
                 {
                     $.ajax({
                         url: '/api/User/RemoveUserNode/',
@@ -1136,6 +1443,8 @@ $(document).ready(function () {
                 }
             }
 
+            //tutaj przechodzą Ci którzy nie mają dzieci
+
             //patrzymy czy nie jest dzieckiem z góry
             if ($('line[data-down-node="' + $(deletingElement).parent().attr('id') + '"]').attr('x1') != undefined) {
                 $("#modal_ErrorDeleting").modal("show");
@@ -1143,61 +1452,31 @@ $(document).ready(function () {
                 return;
             }
 
-            if ($('#' + partnerID).attr('data-mainuser') != 0) //jak partnerem węzła usuwanego jesteśmy my - ci którzy mają konto
-            {
-                //w tym przypadku gdy to jest partner naszego konta nie może być dzieci bo pozostanie bez połączenia te dziecko
-                if (size > 0)
-                {
-                    $("#modal_ErrorDeleting").modal("show");
-                    $("#modal_ConfirmDelete").modal("hide");
-                    return;
+
+            $.ajax({
+                url: '/api/User/RemoveUserNode/',
+                headers: {
+                    'id1': $(deletingElement).parent().attr('id'),
+                    'id2': '-1'
+                },
+                method: 'POST',
+                success: function (data) {
+                    $(pathToRemove).remove();
+                    $(deletingElement).parent().remove();
+                    deletingElement = -1;
+
+                    if (partnerIsLeft) {
+                        $('#' + partnerID).children('text[class^=addpartner], rect[class^=addpartner]').attr('data-have', '0');
+                        $('#' + partnerID).children('text[class^=addchildren], rect[class^=addchildren]').attr('data-have', '1');
+                        $('#' + partnerID).attr('data-haveRightLine', '0');
+                    }
+                    else {
+                        $('#' + partnerID).children('text[class^=addpartner], rect[class^=addpartner]').attr('data-have', '0');
+                        $('#' + partnerID).children('text[class^=addchildren], rect[class^=addchildren]').attr('data-have', '1');
+                        $('#' + partnerID).attr('data-haveLeftLine', '0');
+                    }
                 }
-
-                $.ajax({
-                    url: '/api/User/RemoveUserNode/',
-                    headers: {
-                        'id1': $(deletingElement).parent().attr('id'),
-                        'id2': '-1'
-                    },
-                    method: 'POST',
-                    success: function (data) {
-                        $(pathToRemove).remove();
-                        $(deletingElement).parent().remove();
-                        deletingElement = -1;
-
-                        if (partnerIsLeft) {
-                            $('#' + partnerID).children('text[class^=addpartner], rect[class^=addpartner]').attr('data-have', '0');
-                            $('#' + partnerID).children('text[class^=addchildren], rect[class^=addchildren]').attr('data-have', '1');
-                            $('#' + partnerID).attr('data-haveRightLine', '0');
-                        }
-                        else {
-                            $('#' + partnerID).children('text[class^=addpartner], rect[class^=addpartner]').attr('data-have', '0');
-                            $('#' + partnerID).children('text[class^=addchildren], rect[class^=addchildren]').attr('data-have', '1');
-                            $('#' + partnerID).attr('data-haveLeftLine', '0');
-                        }
-                    }
-                });
-            }
-            else
-            {
-                $.ajax({
-                    url: '/api/User/RemoveUserNode/',
-                    headers: {
-                        'id1': partnerID,
-                        'id2': $(deletingElement).parent().attr('id')
-                    },
-                    method: 'POST',
-                    success: function (data) {
-                        $(pathToRemove).remove();
-                        $('#' + partnerID).remove();
-                        $(deletingElement).parent().remove();
-                        $('line[data-down-node="' + partnerID + '"]').remove();
-                    }
-                });
-
-                $("#modal_ConfirmDelete").modal("hide");
-                return;
-            }
+            });
 
             $("#modal_ConfirmDelete").modal("hide");
         }
@@ -1251,7 +1530,123 @@ $(document).ready(function () {
             additionalinfoValue = $('textarea[name=additionalinfo]').val();
 
             if ($("#modal_AddingNode").attr("data-edit") == -1)
-                addNewNodeToTree(elementCallAddNewNode, 1);
+            {
+                if ($(elementCallAddNewNode).attr('class') != 'addpartnerR' && $(elementCallAddNewNode).attr('class') != 'addpartnerL')
+                    addNewNodeToTree(elementCallAddNewNode, 1); //dodawanie coś innego niż partnerów, bo dodawanie ich powoduje pojawienie się nowego drzewa
+                else
+                {
+                    //sprawdzanie który z kolei dodawany partner
+                    if ($(elementCallAddNewNode).parent().children('*[class^=addpartner]').attr('data-have') == 0)//dodawanie pierwszego partnera do obecnego drzewa -> więc dodajemy do drzewa głównego
+                    {
+                        addNewNodeToTree(elementCallAddNewNode, 1);
+                    }
+                    else // dodawanie drugiego partnera -> robimy nowe drzewo z połączeniem z partnerem
+                    {
+                        //branie pliku
+                        var filesList = $('input[name=file]').prop('files');
+                        var file = filesList[0];
+
+                        var withimgae = 0;
+                        if (file != null) withimgae = 1;
+
+                        var data = new FormData();
+                        data.append('file', file);
+
+                        $.ajax({
+                            url: '/api/HTMLBuilder/BuildUserTree/',
+                            method: 'POST',
+                            processData: false,
+                            contentType: false,
+                            data: data,
+                            headers: {
+                                'id': $(elementCallAddNewNode).parent().attr('id'),
+                                'mainuser': $(elementCallAddNewNode).parent().attr('data-mainuser'),
+                                'name': nameValue,
+                                'surname': surnameValue,
+                                'dateborn': datebornValue,
+                                'datedead': datedeadValue,
+                                'additionalinfo': additionalinfoValue,
+                                'withimage': withimgae
+                            },
+                            success: function (data) {
+                                var datajson = $.parseJSON(JSON.stringify(data));
+
+                                //zapis istniejącego stanu drzewa
+                                //---------------------------------------------
+                                $(".nodeImage").attr("xlink:href", ""); // czyszczenie zdjęć żeby nie zaśmiecać bazy
+                                $('image[class=trashImage]').attr("xlink:href", "");
+                                $('image[class=editImage]').attr("xlink:href", "");
+                                $('image[class=otherpartnersImage]').attr("xlink:href", "");
+
+                                $.ajax({
+                                    url: '/api/HtmlBuilder/SaveUserMainTree',
+                                    data: {
+                                        'TreeHtml': $('.tree').html()
+                                    },
+                                    headers: {
+                                        'id': actualloadtreeid
+                                    },
+                                    dataType: "json",
+                                    method: 'POST',
+                                    success: function () {
+                                        //zapis transformmatrixa wcześniejszego drzewa
+                                        $.ajax({
+                                            url: '/api/HtmlBuilder/SaveUserMainTreeTransformMatrix',
+                                            headers: {
+                                                'matrix': $('.tree').attr('transform'),
+                                                'id': actualloadtreeid
+                                            },
+                                            method: 'POST'
+                                        });
+
+                                        $('.tree').html(datajson.HtmlTree);
+
+                                        //zmienne aktualnie przeglądanego drzewa
+                                        actualloadtreeid = datajson.Tid; //aktualnie przeglądane drzewo
+                                        rootid = datajson.Rootid;
+                                        mainuserroot = datajson.Mainuserroot;
+                                        ismaintree = 0;
+
+                                        //dodawanie do nawigacji nasze nowe stworzone drzewo ->najpierw text 'Drzewo użytkownika (imię)'
+                                        $.ajax({
+                                            url: '/api/Language/getElementTextInLanguage/' + 190,
+                                            headers: {
+                                                'languageID': languageID
+                                            },
+                                            method: 'GET',
+                                            success: function (data) {
+                                                var lp = $(".breadcrumb").children().last().attr('data-lp');
+                                                lp = parseInt(lp) + parseInt(1);
+
+                                                var navigationnewitem =
+                                                    "<li data-lp='" + lp + "'><a href='#' data-tag='190' data-tid='" + actualloadtreeid+"' onclick='loadtree(this,1)'>" + data + " (" + datajson.NameSurnameCaller + ")</a></li>";
+                                                $(".breadcrumb").append(navigationnewitem);
+                                            }
+                                        });
+
+                                        //przejmujemy zaznaczony węzeł
+                                        lastClickedRect = null;
+                                        if ($('.tree-element-frames-active').attr('class') != undefined) lastClickedRect = $('.tree-element-frames-active').parent();
+
+                                        //pobieranie textów dla wstawionych węzłów - etykiety dodające
+                                        addTextsToAllNodes(languageID);
+                                        // dodanie onclicka zaznaczenie na czerwono
+                                        addOnClickToAllNodes(); // click do wszystkich nowo dodanych węzłów
+                                        // pobieranie foto dla każdego węzła
+                                        addImageToAllNodes();
+
+                                        //pobieranie tranformmatrix
+                                        $.get("/api/HtmlBuilder/GetUserTreeTransformMatrix/" + actualloadtreeid, function (data) {
+                                            if (data !== null)
+                                                $(".tree").attr('transform', data);
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
+            }
             else
                 editNode($("#modal_AddingNode").attr("data-edit"));
 
@@ -1500,3 +1895,92 @@ $(document).ready(function () {
         var name = 'additionalinfoInformator' + dialogAdditional;
         $('circle[name=' + name + ']').attr('fill', 'orange');
     }
+
+    // --------------
+    //Kopiowanie węzłów
+    // --------------
+
+    var copyto; // 1 - partner/children, 2 - mother, 3 - father
+
+    function onClickCopy(element, from)
+    {
+        $("#modal_ChoosePasteNode").modal('show');
+
+        if (from == 1) copyto = 1;
+        else if (from == 2) copyto = 2;
+        else if (from == 3) copyto = 3;
+    }
+
+    function onClickChooseNodeToPaste(extid, mainuser)
+    {
+        $("#modal_ChoosePasteNode").modal('hide');
+
+        $.ajax({
+            url: '/Home/getCopiedNode/' + extid + "/" + mainuser,
+            method: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var copynode = $.parseJSON(JSON.stringify(data));
+                var dateborn;
+                var datebornmonth;
+                var datebornday;
+                var datedead;
+                var datedeadmonth;
+                var datedeadday;
+
+                if (copynode[0].DateBorn != null) {
+                    var datemilis = copynode[0].DateBorn.substring(copynode[0].DateBorn.lastIndexOf('(') + 1, copynode[0].DateBorn.length - 2);
+                    dateborn = new Date(parseInt(datemilis));
+
+                    datebornmonth = parseInt(dateborn.getMonth() + 1);
+                    if (datebornmonth < 10) datebornmonth = '0' + datebornmonth;
+
+                    datebornday = parseInt(dateborn.getDate());
+                    if (datebornday < 10) datebornday = '0' + datebornday;
+
+                }
+
+                if (copynode[0].DateDead != null) {
+                    var datemilis = copynode[0].DateDead.substring(copynode[0].DateDead.lastIndexOf('(') + 1, copynode[0].DateDead.length - 2);
+                    datedead = new Date(parseInt(datemilis));
+
+                    datedeadmonth = parseInt(datedead.getMonth() + 1);
+                    if (datedeadmonth < 10) datedeadmonth = '0' + datedeadmonth;
+
+                    datedeadday = parseInt(datedead.getDate());
+                    if (datedeadday < 10) datedeadday = '0' + datedeadday;
+
+                }
+
+                if (copyto == 1)
+                {
+                    $('input[name=name]').val(copynode[0].Name);
+                    $('input[name=surname]').val(copynode[0].Surname);
+                    if (dateborn != undefined) $('input[name=dateborn]').val(dateborn.getFullYear() + '-' + datebornmonth + '-' + datebornday);
+                    if (datedead != undefined) $('input[name=datedead]').val(datedead.getFullYear() + '-' + datedeadmonth + '-' + datedeadday);
+                    $('textarea[name=additionalinfo]').val(copynode[0].AdditionalInfo);
+                }
+                else if (copyto == 2)
+                {
+                    $('input[name=namemother]').val(copynode[0].Name);
+                    $('input[name=surnamemother]').val(copynode[0].Surname);
+                    if (dateborn != undefined) $('input[name=datebornmother]').val(dateborn.getFullYear() + '-' + datebornmonth + '-' + datebornday);
+                    if (datedead != undefined) $('input[name=datedeadmother]').val(datedead.getFullYear() + '-' + datedeadmonth + '-' + datedeadday);
+                    $('textarea[name=additionalinfomother]').val(copynode[0].AdditionalInfo);
+                }
+                else if (copyto == 3)
+                {
+                    $('input[name=namefather]').val(copynode[0].Name);
+                    $('input[name=surnamefather]').val(copynode[0].Surname);
+                    if (dateborn != undefined) $('input[name=datebornfather]').val(dateborn.getFullYear() + '-' + datebornmonth + '-' + datebornday);
+                    if (datedead != undefined) $('input[name=datedeadfather]').val(datedead.getFullYear() + '-' + datedeadmonth + '-' + datedeadday);
+                    $('textarea[name=additionalinfofather]').val(copynode[0].AdditionalInfo);
+                }
+
+                copyto = undefined;
+            }
+        });
+    }
+
+    // --------------
+    // --------------

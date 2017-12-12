@@ -170,9 +170,6 @@ C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoot
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.utp333.resources
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.utp3331.resources
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.usertreesphotos.resources
-C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.csproj.GenerateResource.Cache
-C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.dll
-C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.pdb
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.userphotos.resources
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.userphotos1.resources
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.userphotos_end.resources
@@ -199,4 +196,11 @@ C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoot
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.removerequiredfields1.resources
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.removerequiredfields2.resources
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.removerequiredfields3.resources
+C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.otherpartners.resources
+C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.relationmanymanyusertreeusertreenodenewtable.resources
+C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.usertreeuseridnonullable.resources
+C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.Migrations.addfieldusertreenodepartnerusertreetable.resources
+C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.csproj.GenerateResource.Cache
+C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.dll
+C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.pdb
 C:\Users\Mateusz\Documents\Visual Studio 2017\Projects\MyRoots\ApplicationMyRoots\ApplicationMyRoots\obj\Debug\ApplicationMyRoots.csprojResolveAssemblyReference.cache

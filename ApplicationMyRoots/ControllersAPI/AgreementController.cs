@@ -256,8 +256,19 @@ namespace ApplicationMyRoots.ControllersAPI
                 {
                     int sendedid = int.Parse(this.Request.Headers.GetValues("senderid").First());
                     int languageid = int.Parse(this.Request.Headers.GetValues("languageid").First());
+                    int count = int.Parse(this.Request.Headers.GetValues("count").First()); //liczba branych zgód
+                    bool trhidden = bool.Parse(this.Request.Headers.GetValues("trhidden").First()); // czy ustawiać tr jako hidden
+                    bool joinnamesurnam = bool.Parse(this.Request.Headers.GetValues("joinnamesurname").First()); // imie i nazwisko w jednej komórce
 
-                    var sendedagreementswaitings = db.UserTreeSharingAgreements.Where(x => x.UserSendingID == sendedid).OrderByDescending(x => x.Date).ToList();
+                    string hidden = trhidden ? "hidden" : "";
+
+                    List<UserTreeSharingAgreement> sendedagreementswaitings = new List<UserTreeSharingAgreement>();
+
+                    if (count == 0) return "";
+                    else if(count > 0)
+                        sendedagreementswaitings = db.UserTreeSharingAgreements.Where(x => x.UserSendingID == sendedid).OrderByDescending(x => x.Date).Take(count).ToList();
+                    else
+                        sendedagreementswaitings = db.UserTreeSharingAgreements.Where(x => x.UserSendingID == sendedid).OrderByDescending(x => x.Date).ToList();
 
                     var waitingforacceptationtext = db.LanguageTexts.Where(x => x.UniqueElementTag == 139 && x.LanguageID == languageid).First().Text;
                     var accepttext = db.LanguageTexts.Where(x => x.UniqueElementTag == 140 && x.LanguageID == languageid).First().Text;
@@ -265,10 +276,20 @@ namespace ApplicationMyRoots.ControllersAPI
 
                     foreach (var sendedagreementswaiting in sendedagreementswaitings)
                     {
-                        sharingtomewaitingtable += "<tr>";
-                        sharingtomewaitingtable +=      "<td>" + sendedagreementswaiting.UserTreeSharingAgreementID + "</td>";
-                        sharingtomewaitingtable +=      "<td>" + sendedagreementswaiting.UserReceiving.Name + "</td>";
-                        sharingtomewaitingtable +=      "<td>" + sendedagreementswaiting.UserReceiving.Surname + "</td>";
+                        sharingtomewaitingtable += "<tr "+ hidden + ">";
+                        sharingtomewaitingtable +=      "<td class='cellagreementid'>" + sendedagreementswaiting.UserTreeSharingAgreementID + "</td>";
+
+                        //złączanie kolum imię-nazwisko w jedną td
+                        if(joinnamesurnam)
+                        {
+                            sharingtomewaitingtable += "<td class='cellnamesurname'>" + sendedagreementswaiting.UserReceiving.Name + " " + sendedagreementswaiting.UserReceiving.Surname + "</td>";
+                        }
+                        else
+                        {
+                            sharingtomewaitingtable += "<td>" + sendedagreementswaiting.UserReceiving.Name + "</td>";
+                            sharingtomewaitingtable += "<td>" + sendedagreementswaiting.UserReceiving.Surname + "</td>";
+                        }
+
                         if (sendedagreementswaiting.Accpeted == null)
                             sharingtomewaitingtable +=  "<td style='text-align:center;'><strong style='color:gray;'>" + waitingforacceptationtext + "</strong> <span class='glyphicon glyphicon-refresh' style='color:gray;'></span></td>";
                         else if (sendedagreementswaiting.Accpeted == true)
@@ -366,6 +387,38 @@ namespace ApplicationMyRoots.ControllersAPI
             }
 
             return sharingfrommewaitingtable;
+        }
+
+
+
+        [HttpPost]
+        public string getUsersWithAgree() // użytkownicy którzy wyrazili zgodę na korzystanie z ich drzewa
+        {
+            string result = "";
+
+            try
+            {
+                using (var db = new DbContext())
+                {
+                    int sendedid = int.Parse(this.Request.Headers.GetValues("senderid").First());
+
+                    var userswithagree = db.Users.Where(x => (x.UserTreeSharingStatusID == 3 && x.UserID != sendedid)
+                                                         || (x.UserTreeSharingStatusID == 2 && db.UserTreeSharingAgreements.Where(y => y.UserSendingID == sendedid
+                                                            && y.UserRecivingID == x.UserID && y.Accpeted == true && y.Visible == true).Count() > 0)).OrderBy(x => x.Name).ThenBy(x=>x.Surname).ToList(); // użytkownicy z opcją udostępniaj wszystkim
+                    foreach (var user in userswithagree)
+                    {
+                        result += "<li id='"+user.UserID+"' hidden class='userelement' onclick='viewtree(this)'><a>"+user.NameSurname+"</a></li>";
+                    }
+                }
+
+            }catch(Exception e)
+            {
+                DbContext db = new DbContext();
+                db.Errors.Add(new Error { DateThrow = DateTime.Now, Message = "Błąd metoda getUsersWithAgree() - AgreementController - " + e.Message, StackTrace = e.StackTrace });
+                db.SaveChanges();
+            }
+
+            return result;
         }
     }
 }

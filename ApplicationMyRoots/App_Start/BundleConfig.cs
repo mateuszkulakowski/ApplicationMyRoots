@@ -33,6 +33,13 @@ namespace ApplicationMyRoots
 
             bundles.Add(new StyleBundle("~/Styles/agreementsendedstyles").Include(
                       "~/Styles/agreementsendedstyles.css"));
+
+            bundles.Add(new StyleBundle("~/Styles/exchangetreesstyles").Include(
+                      "~/Styles/exchangetreesstyles.css"));
+
+
+            bundles.Add(new StyleBundle("~/Styles/globalstyles").Include(
+                      "~/Styles/globalstyles.css"));
         }
     }
 }

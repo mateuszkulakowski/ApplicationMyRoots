@@ -1,0 +1,101 @@
+﻿
+@{
+    ViewBag.Title = "StatisticsAgeRange";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts
+{
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.4.1/js/mdb.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#menustatistics').attr('class', 'active');
+            $.ajax({
+                    url: '/api/User/getAgeRange/'+@ApplicationMyRoots.Common.ResourceManager.LoggedUser.UserID,
+                    method: 'GET',
+                    success: function (data2) {
+                        var data2splited = data2.split(',');
+
+                        //bar
+                        var ctxB = document.getElementById("barChart").getContext('2d');
+                        var myBarChart = new Chart(ctxB, {
+                            type: 'bar',
+                            data: {
+                                labels: ["0-10", "10-20", "20-30", "30-40", "40-50", "50-60", "60-70", "70-80", "80-90", "90-100", "100+"],
+                                datasets: [{
+                                    label: '',
+                                    data: [parseInt(data2splited[0]), parseInt(data2splited[1]), parseInt(data2splited[2]), parseInt(data2splited[3]), parseInt(data2splited[4]), parseInt(data2splited[5]), parseInt(data2splited[6]), parseInt(data2splited[7]), parseInt(data2splited[8]), parseInt(data2splited[9]), parseInt(data2splited[10])],
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.2)',
+                                        'rgba(54, 162, 235, 0.2)',
+                                        'rgba(255, 206, 86, 0.2)',
+                                        'rgba(75, 192, 192, 0.2)',
+                                        'rgba(153, 102, 255, 0.2)',
+                                        'rgba(255, 159, 64, 0.2)',
+                                        'rgba(255, 159, 87, 0.2)',
+                                        'rgba(44, 77, 64, 0.2)',
+                                        'rgba(123, 159, 5, 0.2)',
+                                        'rgba(255, 159, 64, 0.2)',
+                                        'rgba(255, 55, 122, 0.2)',
+                                        'rgba(1, 159, 64, 0.2)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255,99,132,1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)',
+                                        'rgba(255, 159, 87, 1)',
+                                        'rgba(44, 77, 64, 1)',
+                                        'rgba(123, 159, 5, 1)',
+                                        'rgba(255, 159, 64, 1)',
+                                        'rgba(255, 55, 122, 1)',
+                                        'rgba(1, 159, 64, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            optionss: {
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: true
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                    }
+                });
+        });
+    </script>
+}
+
+<div class="container" style="min-width:80%;">
+    <div id="divmenu" class="row" style="background-color: lightgray;min-height:150px;border-radius: 50px 50px 0px 0px;">
+        <div class="row" style="min-height:55px;"></div>
+        <ul class="nav nav-pills nav-justified">
+            <li id="menuhome" class=""><a href="/Home/Home" onclick="clickLink(this)" data-tag="76">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(76, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-home"></span></a></li>
+            <li id="menutree" class=""><a href="/Home/MyTree" onclick="clickLink(this)" data-tag="77">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(77, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-tree-deciduous"></span></a></li>
+            <li id="menustatistics" class=""><a href="/Home/StatisticsBornMonth" onclick="clickLink(this)" data-tag="78">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(78, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-signal"></span></a></li>
+            <li id="menuevents" class=""><a href="/Home/ExchangeTrees" onclick="clickLink(this)" data-tag="79">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(79, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-transfer"></span></a></li>
+            <li id="menupictures" class=""><a href="/Home/Photos" onclick="clickLink(this)" data-tag="80">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(80, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-picture"></span></a></li>
+            <li id="menusettings" class=""><a href="/MyAccount/Settings" data-tag="26" onclick="clickLink(this)">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(26, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;<span class="glyphicon glyphicon-cog"></span></a></li>
+        </ul>
+        <div class="row" style="min-height:50px;"></div>
+    </div>
+    <br />
+
+    <div class="col-md-2" style="margin-left:-1%;border:1px solid lightgray;border-radius: 0px 0px 20px 20px;background-color:lightgray;min-height:200px;">
+        <h3 data-tag="125" style="text-align:center;color:#428bca;">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(125, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</h3>
+        <ul class="nav nav-pills nav-stacked">
+            <li><a href="/Home/StatisticsBornMonth" data-tag="202">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(202, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</a></li>
+            <li class="active"><a href="/Home/StatisticsAgeRange" data-tag="203">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(203, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</a></li>
+        </ul>
+    </div>
+    <div class="col-md-10">
+        <h3 data-tag="204" style="text-align:center;">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(204, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</h3>
+        <canvas id="barChart" style="margin:2%;"></canvas>
+    </div>
+</div>
+

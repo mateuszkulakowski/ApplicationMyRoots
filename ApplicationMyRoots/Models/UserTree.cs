@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -10,8 +11,8 @@ namespace ApplicationMyRoots.Models
     {
         public UserTree()
         {
-            this.Nodes = new List<UserTreeNode>();
             this.Albums = new List<UserTreeAlbum>();
+            this.TreeNodes = new List<UserTreeUserTreeNode>();
         }
 
         [Key]
@@ -21,16 +22,26 @@ namespace ApplicationMyRoots.Models
 
         public virtual User User { get; set; }
 
+        public int? UserTreeNodeID { get; set; }
+
+        //węzeł dla który jest głównym elementem stworzonego drzewa -> dotyczy drzew isMainTree = false
+        [ForeignKey("UserTreeNodeID")]
+        public virtual UserTreeNode UserTreeNode { get; set; }
+
+        //węzeł który jest partnerem stworzonego drzewa -> wyciągane imie nazwisko partnera przy wyborze 
+        public int? UserTreeNodePartnerID { get; set; }
+
+        [ForeignKey("UserTreeNodePartnerID")]
+        public virtual UserTreeNode UserTreeNodePartner { get; set; }
+
         public bool isMainTree { get; set; }
 
         public string TreeHtmlCode { get; set; }
 
         public string TransformMatrix { get; set; }
 
-        public virtual List<UserTreeNode> Nodes { get; set; }
-
         public virtual List<UserTreeAlbum> Albums { get; set; }
 
-
+        public ICollection<UserTreeUserTreeNode> TreeNodes { get; set; }
     }
 }

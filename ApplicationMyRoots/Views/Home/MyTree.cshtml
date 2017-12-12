@@ -20,16 +20,22 @@
         <ul class="nav nav-pills nav-justified">
             <li id="menuhome" class=""><a href="/Home/Home" onclick="clickLink(this)" data-tag="76">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(76, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-home"></span></a></li>
             <li id="menutree" class=""><a href="/Home/MyTree" onclick="clickLink(this)" data-tag="77">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(77, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-tree-deciduous"></span></a></li>
-            <li id="menustatistics" class=""><a href="/Home/Statistics" onclick="clickLink(this)" data-tag="78">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(78, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-signal"></span></a></li>
-            <li id="menuevents" class=""><a href="/Home/Events" onclick="clickLink(this)" data-tag="79">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(79, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar"></span></a></li>
+            <li id="menustatistics" class=""><a href="/Home/StatisticsBornMonth" onclick="clickLink(this)" data-tag="78">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(78, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-signal"></span></a></li>
+            <li id="menuevents" class=""><a href="/Home/ExchangeTrees" onclick="clickLink(this)" data-tag="79">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(79, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-transfer"></span></a></li>
             <li id="menupictures" class=""><a href="/Home/Photos" onclick="clickLink(this)" data-tag="80">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(80, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-picture"></span></a></li>
             <li id="menusettings" class=""><a href="/MyAccount/Settings" data-tag="26" onclick="clickLink(this)">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(26, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;<span class="glyphicon glyphicon-cog"></span></a></li>
         </ul>
         <div class="row" style="min-height:50px;"></div>
     </div>
     <br /><br />
-<div class="row" style="margin-left:-10%;margin-right:-10%;">
+
+    <ul class="breadcrumb">
+        <li data-lp="-1" data-tag="189">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(189, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</li>
+        <li data-lp="1"><a href="#" class="navigationtree" onclick="loadtree(this,1)" data-tid="-1" data-tag="188">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(188, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</a></li>
+    </ul>
+<div class="row">
         <br />
+
         <svg id="svg_container" class="svg_container" height="1000" width="100%" style="border:1px gray solid" data-loggeduser="@ViewBag.LoggedUser" data-language="@ViewBag.LanguageID" onmousedown="mousedowntree(evt)">
 
             <g class="tree" transform="matrix(2 0 0 2 0 0)"></g>
@@ -94,7 +100,14 @@
                             <div class="row">
                                 <div class="col-md-2"></div>
                                 <div class="col-md-8" style="text-align:center;background-color:lightgray;border-radius: 5px;border:1px solid grey;">
-                                    <h4 data-tag="48">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(48, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</h4>
+                                    <h4 data-tag="48">
+                                        @ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(48, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)
+                                        <svg height="22" width="72" style="margin-bottom:-3px;padding-left:2px;" onclick="onClickCopy(this,1)">
+                                            <image name="pastenode" xlink:href="@ViewBag.PasteImage" height="25" width="26" />
+                                            <rect width="70" height="22" stroke="black" fill="none" stroke-width="2" />
+                                            <text x="25" y="16" font-weight="bold" font-size="13">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(182, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</text>
+                                        </svg>
+                                    </h4>
                                 </div>
                                 <div class="col-md-2"></div>
                             </div>
@@ -226,9 +239,17 @@
                                         <div class="row">
                                             <div class="col-md-1"></div>
                                             <div class="col-md-10" style="text-align:center;background-color:lightgray;border-radius: 5px;border:1px solid grey;">
-                                                <h4 data-tag="55">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(55, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</h4>
+                                                <h4 data-tag="55">
+                                                    @ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(55, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)
+                                                    <svg height="22" width="72" style="margin-bottom:-3px;padding-left:2px;" onclick="onClickCopy(this,2)">
+                                                        <image name="pastemother" xlink:href="@ViewBag.PasteImage" height="25" width="26" />
+                                                        <rect width="70" height="22" stroke="black" fill="none" stroke-width="2"/>
+                                                        <text x="25" y="16" font-weight="bold" font-size="13">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(182, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</text>
+                                                    </svg>
+                                                </h4>
                                             </div>
-                                            <div class="col-md-1"></div>
+                                            <div class="col-md-1">
+                                            </div>
                                         </div>
                                         <br />
                                         <div class="form-group">
@@ -339,7 +360,14 @@
                                         <div class="row">
                                             <div class="col-md-1"></div>
                                             <div class="col-md-10" style="text-align:center;background-color:lightgray;border-radius: 5px;border:1px solid grey;">
-                                                <h4 data-tag="62">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(62, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</h4>
+                                                <h4 data-tag="62">
+                                                    @ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(62, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)
+                                                    <svg height="22" width="72" style="margin-bottom:-3px;padding-left:2px;" onclick="onClickCopy(this,3)">
+                                                        <image name="pastefather" xlink:href="@ViewBag.PasteImage" height="25" width="26" />
+                                                        <rect width="70" height="22" stroke="black" fill="none" stroke-width="2" />
+                                                        <text x="25" y="16" font-weight="bold" font-size="13">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(182, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</text>
+                                                    </svg>
+                                                </h4>
                                             </div>
                                             <div class="col-md-1"></div>
                                         </div>
@@ -473,4 +501,75 @@
 
         </div>
     </div>
+
+
+    @*Okno modalne wybór wklejanego elementu*@
+    <div id="modal_ChoosePasteNode" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" data-tag="183">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(183, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <table id="copiednodestable" class="table table-hover" style="margin-left:10%;width:80%;">
+                            <thead>
+                                <tr>
+                                    <th id="namenodeheader" style="background-color:lightgray;" data-tag="185">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(185, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</th>
+                                    <th style="text-align:center;" data-tag="186">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(186, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodycopiednodes">
+                                @Html.Raw(@ViewBag.copiednodes)
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-tag="184" data-dismiss="modal">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(184, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    @*Okno modalne wybór innego partnera którego to drzewo chcemy oglądać*@
+    <div id="modal_OtherPartner" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg" style="width: 35%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" data-tag="191">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(191, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <table id="otherpartnerstable" class="table table-hover" style="margin-left:10%;width:80%;">
+                            <thead>
+                                <tr>
+                                    <th id="namepartnerheader" style="background-color:lightgray;" data-tag="192">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(192, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</th>
+                                    <th></th>
+                                    <th colspan="2" data-tag="193">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(193, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyotherpartners">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-tag="194" data-dismiss="modal">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(194, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
 </div>
+
+
+<!-- snackbar-->
+<div id="snackbar"></div>

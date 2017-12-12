@@ -158,6 +158,26 @@ namespace ApplicationMyRoots.ControllersAPI
             return imageDataURL;
         }
 
+        [HttpGet]
+        public string getCopyImage()
+        {
+            string path = HostingEnvironment.MapPath("~/images/copy.svg");
+            byte[] imageByteData = System.IO.File.ReadAllBytes(path);
+            string imageBase64Data = Convert.ToBase64String(imageByteData);
+            string imageDataURL = string.Format("data:image/svg+xml;base64,{0}", imageBase64Data);
+            return imageDataURL;
+        }
+
+        [HttpGet]
+        public string getOtherPartnersImage()
+        {
+            string path = HostingEnvironment.MapPath("~/images/otherpartners.svg");
+            byte[] imageByteData = System.IO.File.ReadAllBytes(path);
+            string imageBase64Data = Convert.ToBase64String(imageByteData);
+            string imageDataURL = string.Format("data:image/svg+xml;base64,{0}", imageBase64Data);
+            return imageDataURL;
+        }
+
         [HttpPost]
         public string getUserTreeAlbums()
         {
@@ -471,7 +491,7 @@ namespace ApplicationMyRoots.ControllersAPI
                                 }
                                 else // user ma date urodzenia w przyszłości
                                 {
-                                    db.Errors.Add(new Error { DateThrow = DateTime.Now, Message = "Podany user ma datę urodzenia w przyszłości - UserController API - mainuser(" + mainUser + ") id(" + id + ") - languageID(" + languageID + ")" });
+                                    db.Errors.Add(new Error { DateThrow = DateTime.Now, Message = "Podany user ma datę urodzenia w przyszłości lub data śmierci jest wcześniej niż data urodzeń - UserController API - mainuser(" + mainUser + ") id(" + id + ") - languageID(" + languageID + ")" });
                                     db.SaveChanges();
 
                                     userData += nodataText;
@@ -596,7 +616,7 @@ namespace ApplicationMyRoots.ControllersAPI
             {
                 using (var db = new DbContext())
                 {
-                    int UserTreesID = db.UserTrees.Where(ut => ut.UserID == id).First().UserTreeID;
+                    int UserTreesID = db.UserTrees.Find(id).UserTreeID;
 
                     DateTime? dateborn = null;
                     DateTime? datedead = null;
@@ -612,6 +632,8 @@ namespace ApplicationMyRoots.ControllersAPI
                         datedead = new DateTime(int.Parse(tabDatedead[0]), int.Parse(tabDatedead[1]), int.Parse(tabDatedead[2]));
                     }
 
+                    UserTreeNode utn = null;
+
                     if (this.Request.Headers.GetValues("withFile").First() == "1") // dodawanie ze zdjęciem
                     {
                         // extract file name and file contents
@@ -619,7 +641,7 @@ namespace ApplicationMyRoots.ControllersAPI
                         await this.Request.Content.ReadAsMultipartAsync(provider);
                         byte[] filebytes = await provider.Contents[0].ReadAsByteArrayAsync();
 
-                        UserTreeNode utn = new UserTreeNode
+                        utn = new UserTreeNode
                         {
                             Name = this.Request.Headers.GetValues("name").First(),
                             Surname = this.Request.Headers.GetValues("surname").First(),
@@ -627,32 +649,39 @@ namespace ApplicationMyRoots.ControllersAPI
                             DateDead = datedead,
                             AdditionalInfo = this.Request.Headers.GetValues("additionalinfo").First(),
                             Image = filebytes,
-                            UserTreeID = UserTreesID
+                            //UserTreeID = UserTreesID
                         };
 
                         db.UserTreeNodes.Add(utn);
                         db.SaveChanges();
-
-                        return utn.UserTreeNodeID + "";
                     }
                     else if (this.Request.Headers.GetValues("withFile").First() == "0") // bez zdjęcia
                     {
-                        UserTreeNode utn = new UserTreeNode
+                        utn = new UserTreeNode
                         {
                             Name = this.Request.Headers.GetValues("name").First(),
                             Surname = this.Request.Headers.GetValues("surname").First(),
                             DateBorn = dateborn,
                             DateDead = datedead,
                             AdditionalInfo = this.Request.Headers.GetValues("additionalinfo").First(),
-                            UserTreeID = UserTreesID
+                            //UserTreeID = UserTreesID
                         };
 
                         db.UserTreeNodes.Add(utn);
                         db.SaveChanges();
-
-                        return utn.UserTreeNodeID + "";
                     }
-                    return "";
+                    else
+                        return "";
+
+                    UserTreeUserTreeNode ututn = new UserTreeUserTreeNode
+                    {
+                        UserTreeID = UserTreesID,
+                        UserTreeNodeID = utn.UserTreeNodeID
+                    };
+                    db.UserTreesUserTreeNodes.Add(ututn);
+                    db.SaveChanges();
+
+                    return utn.UserTreeNodeID + "";
                 }
             }
             catch (Exception e)
@@ -779,6 +808,33 @@ namespace ApplicationMyRoots.ControllersAPI
             }
         }
 
+        //obsługa mainuser
+        [HttpPost]
+        public string GetNameSurnameNode()
+        {
+            try
+            {
+                int id = int.Parse(this.Request.Headers.GetValues("id").First());
+                int mainuser = int.Parse(this.Request.Headers.GetValues("mainuser").First());
+                using (var db = new DbContext())
+                {
+                    if (mainuser == 1)
+                        return db.Users.Find(id).NameSurname;
+                    else if (mainuser == 0)
+                        return db.UserTreeNodes.Find(id).NameSurname;
+                }
+
+            }
+            catch(Exception e)
+            {
+                DbContext db = new DbContext();
+                db.Errors.Add(new Error { DateThrow = DateTime.Now, Message = "Błąd przy pobieraniu NameSurnameNode - UserController metoda:GetNameSurnameNode() - " + e.Message, StackTrace = e.StackTrace });
+                db.SaveChanges();
+            }
+
+            return "";
+        }
+
         [HttpPost]
         public void RemoveUserNode()
         {
@@ -792,10 +848,18 @@ namespace ApplicationMyRoots.ControllersAPI
                 using (var db = new DbContext())
                 {
                     if (id1 != -1)
+                    {
+                        db.UserTrees.RemoveRange(db.UserTrees.Where(x => x.UserTreeNodeID == id1));
+                        db.UserTreesUserTreeNodes.RemoveRange(db.UserTreesUserTreeNodes.Where(x=>x.UserTreeNodeID == id1));
                         db.UserTreeNodes.Remove(db.UserTreeNodes.Find(id1));
+                    }
 
                     if (id2 != -1)
+                    {
+                        db.UserTrees.RemoveRange(db.UserTrees.Where(x => x.UserTreeNodeID == id2));
+                        db.UserTreesUserTreeNodes.RemoveRange(db.UserTreesUserTreeNodes.Where(x => x.UserTreeNodeID == id2));
                         db.UserTreeNodes.Remove(db.UserTreeNodes.Find(id2));
+                    }
 
                     db.SaveChanges();
 
@@ -809,6 +873,38 @@ namespace ApplicationMyRoots.ControllersAPI
             }
         }
 
+        [HttpPost]
+        public int RemoveTree()
+        {
+            int error = 0;
+
+            try
+            {
+                int id = int.Parse(this.Request.Headers.GetValues("tid").First());
+
+                using (var db = new DbContext())
+                {
+                    var treenodes = db.UserTreesUserTreeNodes.Where(x => x.UserTreeID == id).ToList();
+                    var treenodesids = treenodes.Where(x => x.UserTreeNodeID != db.UserTrees.Find(id).UserTreeNodeID).Select(x => x.UserTreeNodeID).ToList(); // nie usuwamy węzła głównego bo on należy też do innego drzewa
+
+                    db.UserTrees.Remove(db.UserTrees.Find(id));
+
+                    db.UserTreeNodes.RemoveRange(db.UserTreeNodes.Where(x => treenodesids.Where(y=> y == x.UserTreeNodeID).Count().Equals(1)));
+
+                    db.SaveChanges();
+                }
+
+            }catch(Exception e)
+            {
+                DbContext db = new DbContext();
+                db.Errors.Add(new Error { DateThrow = DateTime.Now, Message = "Błąd przy usuwaniu drzewa UserController metoda:RemoveTree() - " + e.Message, StackTrace = e.StackTrace });
+                db.SaveChanges();
+                error = 1;
+            }
+
+            return error;
+        }
+
         [HttpGet]
         public string getMonthBirthCount(int id)
         {
@@ -816,14 +912,22 @@ namespace ApplicationMyRoots.ControllersAPI
             {
                 using (var db = new DbContext())
                 {
-                    int userTreeID = db.UserTrees.Where(x => x.UserID == id).First().UserTreeID;
-                    var nodes = db.UserTreeNodes.Where(x => x.DateBorn != null && x.UserTreeID == userTreeID).ToList();
+                    var usertrees = db.UserTrees.Where(x => x.UserID == id).Select(x=>x.UserTreeID).ToList();
+                    var nodes = db.UserTreeNodes.Where(x => x.DateBorn != null && //nodes jest w drzewie usera
+                                                            usertrees.Where(y=> y == db.UserTreesUserTreeNodes.Where(z=>z.UserTreeNodeID == x.UserTreeNodeID).FirstOrDefault().UserTreeID).Count().Equals(1)).ToList();
 
                     int[] months = { 0,0,0,0,0,0,0,0,0,0,0,0 };
 
                     foreach (var node in nodes)
                     {
                         int month = node.DateBorn.Value.Month;
+                        months[--month]++;
+                    }
+
+                    var user = db.Users.Find(id);
+                    if(user.DateBorn != null)
+                    {
+                        int month = user.DateBorn.Value.Month;
                         months[--month]++;
                     }
 
@@ -842,7 +946,175 @@ namespace ApplicationMyRoots.ControllersAPI
             return "0";
         }
 
+        [HttpGet]
+        public string getAgeRange(int id)
+        {
+            try
+            {
+                using (var db = new DbContext())
+                {
+                    var usertrees = db.UserTrees.Where(x => x.UserID == id).Select(x => x.UserTreeID).ToList();
+                    var nodes = db.UserTreeNodes.Where(x => x.DateBorn != null && //nodes jest w drzewie usera
+                                                            usertrees.Where(y => y == db.UserTreesUserTreeNodes.Where(z => z.UserTreeNodeID == x.UserTreeNodeID).FirstOrDefault().UserTreeID).Count().Equals(1)).ToList();
 
+                    int[] agerange = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };// 0 - 10, 10 - 20, 20 - 30, 30 - 40, 40 - 50, 50 - 60, 60 - 70, 70 - 80, 80 - 90, 90 - 100, 100+
+
+                    DateTime now = DateTime.Now;
+
+                    foreach (var node in nodes)
+                    {
+                        if(node.DateBorn != null)
+                        {
+                            DateTime dateto = now;
+
+                            if (node.DateDead != null) // do dnia śmierci liczymy
+                            {
+                                dateto = (DateTime)node.DateDead;
+                            }
+
+                            //data śmierci wcześniej niż urodzin -> continue;
+                            if(dateto.Year < node.DateBorn.Value.Year ||
+                                (dateto.Year == node.DateBorn.Value.Year && dateto.Month < node.DateBorn.Value.Month) ||
+                                (dateto.Year == node.DateBorn.Value.Year && dateto.Month == node.DateBorn.Value.Month && dateto.Day < node.DateBorn.Value.Day))
+                            {
+                                continue;
+                            }
+
+                            int age = dateto.Year - node.DateBorn.Value.Year;
+
+                            if(node.DateBorn.Value.Month < dateto.Month ||
+                                (node.DateBorn.Value.Month == dateto.Month && node.DateBorn.Value.Day > dateto.Day))
+                            {
+                                age--; //ten rok ale miesiąc jeszcze i dzień nie ten w którym ma urodziny
+                            }
+
+                            if(age >= 0 && age <= 10)
+                            {
+                                agerange[0]++;
+                            }
+                            if (age > 10 && age <= 20)
+                            {
+                                agerange[1]++;
+                            }
+                            if (age > 20 && age <= 30)
+                            {
+                                agerange[2]++;
+                            }
+                            if (age > 30 && age <= 40)
+                            {
+                                agerange[3]++;
+                            }
+                            if (age > 40 && age <= 50)
+                            {
+                                agerange[4]++;
+                            }
+                            if (age > 50 && age <= 60)
+                            {
+                                agerange[5]++;
+                            }
+                            if (age > 60 && age <= 70)
+                            {
+                                agerange[6]++;
+                            }
+                            if (age > 70 && age <= 80)
+                            {
+                                agerange[7]++;
+                            }
+                            if (age > 80 && age <= 90)
+                            {
+                                agerange[8]++;
+                            }
+                            if (age > 90 && age <= 100)
+                            {
+                                agerange[9]++;
+                            }
+                            if (age > 100)
+                            {
+                                agerange[10]++;
+                            }
+                        }
+                    }
+
+
+                    var user = db.Users.Find(id);
+
+                    //obliczanie dla węzła usera
+                    if(user.DateBorn != null)
+                    {
+                        //data urodzin musi być wczesniej niż dzisiejszy dzień
+                        if (now.Year > user.DateBorn.Value.Year ||
+                            (now.Year == user.DateBorn.Value.Year && now.Month > user.DateBorn.Value.Month) ||
+                            (now.Year == user.DateBorn.Value.Year && now.Month == user.DateBorn.Value.Month && now.Day >= user.DateBorn.Value.Day))
+                        {
+                            int age = now.Year - user.DateBorn.Value.Year;
+
+                            if (user.DateBorn.Value.Month < now.Month ||
+                                (user.DateBorn.Value.Month == now.Month && user.DateBorn.Value.Day > now.Day))
+                            {
+                                age--; //ten rok ale miesiąc jeszcze i dzień nie ten w którym ma urodziny
+                            }
+
+                            if (age >= 0 && age <= 10)
+                            {
+                                agerange[0]++;
+                            }
+                            if (age > 10 && age <= 20)
+                            {
+                                agerange[1]++;
+                            }
+                            if (age > 20 && age <= 30)
+                            {
+                                agerange[2]++;
+                            }
+                            if (age > 30 && age <= 40)
+                            {
+                                agerange[3]++;
+                            }
+                            if (age > 40 && age <= 50)
+                            {
+                                agerange[4]++;
+                            }
+                            if (age > 50 && age <= 60)
+                            {
+                                agerange[5]++;
+                            }
+                            if (age > 60 && age <= 70)
+                            {
+                                agerange[6]++;
+                            }
+                            if (age > 70 && age <= 80)
+                            {
+                                agerange[7]++;
+                            }
+                            if (age > 80 && age <= 90)
+                            {
+                                agerange[8]++;
+                            }
+                            if (age > 90 && age <= 100)
+                            {
+                                agerange[9]++;
+                            }
+                            if (age > 100)
+                            {
+                                agerange[10]++;
+                            }
+                        }
+                    }
+
+                    return agerange[0] + "," + agerange[1] + "," + agerange[2] + "," + agerange[3] + "," + agerange[4] + "," +
+                            agerange[5] + "," + agerange[6] + "," + agerange[7] + "," + agerange[8] + "," + agerange[9] + "," +
+                            agerange[10];
+                }
+            }
+            catch (Exception e)
+            {
+                DbContext db = new DbContext();
+                db.Errors.Add(new Error { DateThrow = DateTime.Now, Message = "Błąd przy liczeniu urodzin w miesiącach useraID:" + id + " UserController metoda:getMonthBirthCount() - " + e.Message, StackTrace = e.StackTrace });
+                db.SaveChanges();
+            }
+
+            return "0";
+        }
 
 
         // metody pomocnicze

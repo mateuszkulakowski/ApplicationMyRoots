@@ -1,0 +1,328 @@
+﻿
+@{
+    ViewBag.Title = "Events";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts
+{
+    @Styles.Render("~/Styles/exchangetreesstyles")
+    <script type="text/javascript">
+        var languageid = @ApplicationMyRoots.Common.ResourceManager.LoggedUser.LanguageID;
+        var useractive;
+        var startx = null;
+        var starty = null;
+        var dx, dy = null;
+        var g_element = null;
+        var main_rect = null;
+        var oldMatrix = null;
+        var dragging_element = false;
+        var mouseoverelement = null;
+        var copytexts = ["OK", "Error", "Error"]; // texty do snackbara - standardowe jak ajax zawiedzie
+        var timershackbar;
+
+        $(document).ready(function () {
+            $('li[class="active"]').removeClass();
+            $('#menuevents').attr('class', 'active');
+
+            //teksty do snackbara -powodzenie
+            $.ajax({
+                url: '/api/Language/getElementTextInLanguage/' + 179,
+                headers: {
+                    'languageID': languageid
+                },
+                method: 'GET',
+                success: function (data) {
+                    copytexts[0] = data; //powodzenie
+                }
+            });
+            //węzeł został już skopiowany
+            $.ajax({
+                url: '/api/Language/getElementTextInLanguage/' + 180,
+                headers: {
+                    'languageID': languageid
+                },
+                method: 'GET',
+                success: function (data) {
+                    copytexts[1] = data; //powodzenie
+                }
+            });
+            //błąd podczas kopiowania
+            $.ajax({
+                url: '/api/Language/getElementTextInLanguage/' + 181,
+                headers: {
+                    'languageID': languageid
+                },
+                method: 'GET',
+                success: function (data) {
+                    copytexts[2] = data; //powodzenie
+                }
+            });
+        });
+        function clickLink(element) {
+            $('li[class="active"]').removeClass();
+            $(element).parent().attr('class', 'active');
+        }
+
+        function searchusers(input)
+        {
+            $('#myUL').children().each(function (index, element) {
+                var name = $(element).children().first().html();
+                if (name.includes($(input).val())
+                    && $(input).val() != ""
+                    && $(input).val() != " "
+                    && $(input).val().length > 2)
+                    $(element).show();
+                else
+                    $(element).hide();
+            });
+        }
+
+        function viewtree(element)
+        {
+            var uid = $(element).attr('id');
+
+            $.get("/api/HtmlBuilder/GetUserMainTree/" + uid + "/0", function (data) {
+                var datajson = $.parseJSON(JSON.stringify(data));
+                $(".tree").html(datajson.HtmlTree);
+
+                $(".tree").children().children('.tree-element-frames-active').attr('stroke', 'black');
+                $(".tree").children().children('.tree-element-frames-active').attr('class', 'tree-element-frames');
+                //chowanie przycisków do dodawania
+                $(".tree").children().children('*[class^=add]').attr('visibility', 'hidden');
+                $(".tree").children().children('*[class^=editImage]').attr('visibility', 'hidden');
+                $(".tree").children().children('*[class^=trashImage]').attr('visibility', 'hidden');
+                $(".tree").children().children('*[class^=otherpartnersImage]').attr('visibility', 'hidden');
+
+                // pobieranie textów
+                $("text[class$='-dbt']").each(function (index, element) {
+                    if ($(this).html() != null)
+                        $.ajax({
+                            url: '/api/Language/getElementTextInLanguage/' + $(element).attr('data-tag'),
+                            headers: {
+                                'languageID': languageid
+                            },
+                            method: 'GET',
+                            success: function (data) {
+                                $(element).html(data);
+
+                                //zdjęcia węzłów
+                                $('image[class=nodeImage]').each(function (index, element) {
+                                    $.ajax({
+                                        url: '/api/User/getUserImage/' + $(element).parent().attr('id') + "/" + $(element).parent().attr('data-mainuser'),
+                                        method: 'GET',
+                                        success: function (data) {
+                                            $(element).attr('xlink:href', data);
+                                        }
+                                    });
+                                });
+                            }
+                        });
+                });
+
+                //odpinanie handlerów -- nie potrzebne dodawanie węzłów itp...
+                $(".tree").children().each(function (index, element) {
+                    $(element).removeAttr('onmousedown');
+                    $(element).children(':not(*[class^=copyImage])').each(function (index1, element1) {
+                        $(element1).removeAttr('onclick');
+                    });
+                    //widoczność przycisku od kopiowania
+                    $(element).children('*[class^=copyImage]').each(function (index2, element2) {
+                        $(element2).attr('visibility', 'visible');
+                    });
+
+                    $.ajax({
+                        url: '/api/User/getCopyImage/',
+                        method: 'GET',
+                        success: function (data) {
+                            $(element).children('image[class^=copyImage]').attr('xlink:href', data);
+                        }
+                    });
+
+                });
+            });
+
+            if (useractive != undefined)
+            {
+                $(useractive).children().css('color', 'black').css('border', '1px solid #ddd');
+            }
+
+            $(element).children().css('color', '#428bca').css('border', '1px solid #428bca');
+            useractive = element;
+        }
+
+        function move(dx, dy) {
+            var matrix = $('.tree').attr('transform');
+            matrix = matrix.substring(7, matrix.length - 1);
+            matrix = matrix.split(' ');
+
+            matrix[4] = parseInt(matrix[4]) + dx;
+            matrix[5] = parseInt(matrix[5]) + dy;
+
+            $('.tree').attr('transform', "matrix(" + matrix[0] + ' ' + matrix[1] + ' ' + matrix[2] + ' ' + matrix[3] + ' ' + matrix[4] + ' ' + matrix[5] + ')');
+        }
+
+        function scale(scale) {
+            var matrix = $('.tree').attr('transform');
+            matrix = matrix.substring(7, matrix.length - 1);
+            matrix = matrix.split(' ');
+
+            for (var i = 0; i < matrix.length; i++) {
+                matrix[i] *= scale;
+            }
+
+            matrix[4] += (1 - scale) * parseInt($('.svg_container').width()) / 2;
+            matrix[5] += (1 - scale) * parseInt($('.svg_container').height()) / 2;
+
+            $('.tree').attr('transform', "matrix(" + matrix[0] + ' ' + matrix[1] + ' ' + matrix[2] + ' ' + matrix[3] + ' ' + matrix[4] + ' ' + matrix[5] + ')');
+        }
+
+        function mousedowntree(evt) {
+            var target = $(evt.target);
+
+            startx = evt.clientX;
+            starty = evt.clientY;
+            $(target).on('mousemove', function (evt) {
+
+                var divider = $(".tree").attr("transform");
+                divider = divider.substring(7, divider.length - 1).split(' ');
+
+                dx = (evt.clientX - startx); /// divider[0];
+                dy = (evt.clientY - starty); /// divider[0];
+
+                move(dx, dy);
+
+                startx = evt.clientX;
+                starty = evt.clientY;
+            });
+
+            $(target).on('mouseup', function () {
+                if (target != null) {
+                    $(target).off("mousemove");
+                    $(target).off("mouseleave");
+                    $(target).off("mouseup");
+                    startx, starty, dx, dy, g_element, target = null;
+                }
+            });
+
+            $(target).on('mouseleave', function (evt) {
+                if (target != null) {
+                    $(target).off("mousemove");
+                    $(target).off("mouseleave");
+                    $(target).off("mouseup");
+                    startx, starty, dx, dy, g_element, target = null;
+                }
+            });
+        }
+
+        function onClickCopy(element)
+        {
+            $.ajax({
+                url: '/Home/saveCopyNode',
+                method: 'POST',
+                headers: {
+                    "nodeid": $(element).parent().attr('id'),
+                    "mainuser": $(element).parent().attr('data-mainuser')
+                },
+                success: function (data) {
+                    if (data == 0) // powodzenie
+                    {
+                        $("#snackbar").html(copytexts[0]);//powiodło się
+                        $("#snackbar").css('background-color', 'green');
+                        $("#snackbar").attr('class', 'show');
+                        timershackbar = setTimeout(hidesnackbar, 2000);
+                    }
+                    else if (data == 1) // węzeł już został wcześniej skopiowany
+                    {
+                        $("#snackbar").html(copytexts[1]);
+                        $("#snackbar").css('background-color', 'orange');
+                        $("#snackbar").attr('class', 'show');
+                        timershackbar = setTimeout(hidesnackbar, 2000);
+                    }
+                    else //nieznany błąd
+                    {
+                        $("#snackbar").html(copytexts[2]);
+                        $("#snackbar").css('background-color', 'red');
+                        $("#snackbar").attr('class', 'show');
+                        timershackbar = setTimeout(hidesnackbar, 2000);
+                    }
+                }
+            });
+        }
+
+        function hidesnackbar() {
+            $("#snackbar").attr('class', '');
+            clearTimeout(timershackbar);
+        }
+    </script>
+}
+
+<div class="container" style="min-width:80%;">
+    <div id="divmenu" class="row" style="background-color: lightgray;min-height:150px;border-radius: 50px 50px 0px 0px;">
+        <div class="row" style="min-height:55px;"></div>
+        <ul class="nav nav-pills nav-justified">
+            <li id="menuhome" class=""><a href="/Home/Home" onclick="clickLink(this)" data-tag="76">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(76, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-home"></span></a></li>
+            <li id="menutree" class=""><a href="/Home/MyTree" onclick="clickLink(this)" data-tag="77">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(77, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-tree-deciduous"></span></a></li>
+            <li id="menustatistics" class=""><a href="/Home/StatisticsBornMonth" onclick="clickLink(this)" data-tag="78">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(78, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-signal"></span></a></li>
+            <li id="menuevents" class=""><a href="/Home/ExchangeTrees" onclick="clickLink(this)" data-tag="79">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(79, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-transfer"></span></a></li>
+            <li id="menupictures" class=""><a href="/Home/Photos" onclick="clickLink(this)" data-tag="80">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(80, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-picture"></span></a></li>
+            <li id="menusettings" class=""><a href="/MyAccount/Settings" data-tag="26" onclick="clickLink(this)">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(26, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)&nbsp;&nbsp;<span class="glyphicon glyphicon-cog"></span></a></li>
+        </ul>
+        <div class="row" style="min-height:50px;"></div>
+    </div>
+    <br /><br/><br/>
+
+    <div class="jumbotron">
+        <h2 style="text-align:center;width:100%;font-weight:bold;" data-tag="81">@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(176, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</h2>
+        <p style="text-align:center;" data-tag="82">
+            @ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(177, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)<br/> 
+            @ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(178, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)
+        </p>
+    </div>
+    @{if (ViewBag.UsersWithAgree != "")
+        {
+            <input class="searchinput" type="text" data-tag="171" onkeyup="searchusers(this)" placeholder="@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(171, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)"/>
+
+            <ul id="myUL">
+                @Html.Raw(ViewBag.UsersWithAgree)
+            </ul>
+            <br/><br/>
+            <svg id="svg_container" class="svg_container" height="1000" width="100%" style="border:1px gray solid" onmousedown="mousedowntree(evt)">
+
+                <g class="tree" transform="matrix(2 0 0 2 0 0)"></g>
+
+                <!-- Kontrolka do przewijania -->
+                <circle cx="50" cy="50" r="42" fill="white" opacity="0.75"></circle>
+                <path class="move-tree" onclick="move(0,50)" d="M50 10 l12 20 a40, 70 0 0, 0 -24, 0z"></path>
+                <path class="move-tree" onclick="move(50,0)" d="M10 50 l20 -12 a70, 40 0 0, 0 0, 24z"></path>
+                <path class="move-tree" onclick="move(0,-50)" d="M50 90 l12 -20 a40, 70 0 0, 1 -24, 0z"></path>
+                <path class="move-tree" onclick="move(-50,0)" d="M90 50 l-20 -12 a70, 40 0 0, 1 0, 24z"></path>
+
+                <!-- Otoczka powiększ/pomniejsz-->
+                <circle cx="50" cy="50" r="20" fill="white" stroke="black" stroke-width="1" />
+
+                <!-- Powiększ/pomniejsz-->
+                <circle class="zoom-tree" onclick="scale(0.8)" cx="50" cy="40" r="7" fill="white" stroke="black" stroke-width="1" />
+                <circle class="zoom-tree" onclick="scale(1.25)" cx="50" cy="60" r="7" fill="white" stroke="black" stroke-width="1" />
+
+                <!-- Minus/Plus pomniejszania-->
+                <rect class="minus_plus" x="45" y="38.5" width="10" height="3" />
+
+                <rect class="minus_plus" x="45" y="58.5" width="10" height="3" />
+                <rect class="minus_plus" x="48.5" y="55" width="3" height="10" />
+            </svg>
+        }
+    }
+
+    @{if (ViewBag.UsersWithAgree == "")
+        {
+            <div class="alert alert-info alert-dismissable">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(172, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</strong>@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(173, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)<a href="/MyAccount/SettingsSharingAgreementSended"><strong>@ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(174, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)</strong></a>, @ApplicationMyRoots.Common.ResourceManager.getElementTextInLanguage(175, ApplicationMyRoots.Common.ResourceManager.LoggedUserLanguageID)
+            </div>
+        }
+    }
+</div>
+
+<!-- snackbar-->
+<div id="snackbar"></div>
+

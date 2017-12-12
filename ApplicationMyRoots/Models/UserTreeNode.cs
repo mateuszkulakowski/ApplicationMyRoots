@@ -8,11 +8,26 @@ namespace ApplicationMyRoots.Models
 {
     public class UserTreeNode
     {
+        public UserTreeNode() {
+            this.NodeOtherPartners = new List<UserTree>();
+            this.NodeInTrees = new List<UserTreeUserTreeNode>();
+        }
+
+        public UserTreeNode(int extid, string name, string surname, DateTime? dateborn, DateTime? datedead, string additionalinfo, int mainuser)
+        {
+            this.ExtID = extid;
+            this.Name = name;
+            this.Surname = surname;
+            this.DateBorn = dateborn;
+            this.DateDead = datedead;
+            this.AdditionalInfo = additionalinfo;
+            this.MainUser = mainuser;
+
+            this.NodeOtherPartners = new List<UserTree>();
+            this.NodeInTrees = new List<UserTreeUserTreeNode>();
+        }
+
         public int UserTreeNodeID { get; set; }
-
-        public int UserTreeID { get; set; }
-
-        public virtual UserTree UserTree { get; set; }
 
         public string Name { get; set; }
 
@@ -20,6 +35,15 @@ namespace ApplicationMyRoots.Models
 
         [NotMapped]
         public string NameSurname { get { return Name + " " + Surname; } }
+
+        // -----
+        //2 pola poniższe do kopiowania drzew innych użytkowników
+        [NotMapped]
+        public int MainUser;
+
+        [NotMapped]
+        public int ExtID; //pole wykorzystywane przy kopiowaniu z polem mainuser tworzą klucz który informuje: mainuser-0 => extid to usertreenodeid w tabelce usertreenode, mainuser-1 => extid to userid z tabelki User
+        // ------
 
         public DateTime? DateBorn { get; set; }
 
@@ -45,5 +69,13 @@ namespace ApplicationMyRoots.Models
         }
 
         public string AdditionalInfo { get; set; }
+
+        public virtual ICollection<UserTree> NodeOtherPartners { get; set; }
+
+        //klucz z polem UserTreeNodePartner -> UserTree
+        public virtual ICollection<UserTree> NodeAsNextPartner { get; set; }
+
+        public virtual ICollection<UserTreeUserTreeNode> NodeInTrees { get; set; }
+        
     }
 }

@@ -95,6 +95,7 @@ namespace ApplicationMyRoots.Controllers
         {
             string sharingtometable = "<tbody>";
             string sharingtomewaitingtable = "";
+            string agreementshistory = "";
             string userlisttable = "<tbody>";
 
             try
@@ -105,11 +106,11 @@ namespace ApplicationMyRoots.Controllers
                     //pobieranie rekordów do tabeli - WYSŁANE CZEKAJĄCE NA AKCEPTACJE
                     using (var client = new WebClient())
                     {
-                        client.BaseAddress = ResourceManager.getTableSendedgreementaPIURL;
+                        client.BaseAddress = ResourceManager.getTableSendedgreementAPIURL;
                         client.Headers.Add("senderid", ResourceManager.LoggedUser.UserID.ToString());
                         client.Headers.Add("languageid", ResourceManager.LoggedUser.LanguageID.ToString());
 
-                        sharingtometable = client.UploadString(ResourceManager.getTableSendedgreementaPIURL, "");
+                        sharingtometable = client.UploadString(ResourceManager.getTableSendedgreementAPIURL, "");
                     }
                     //utf-8
                     byte[] bytes = Encoding.Default.GetBytes(sharingtometable);
@@ -125,10 +126,13 @@ namespace ApplicationMyRoots.Controllers
                         client.BaseAddress = ResourceManager.getTableSendedgreementWaitingAPIURL;
                         client.Headers.Add("senderid", ResourceManager.LoggedUser.UserID.ToString());
                         client.Headers.Add("languageid", ResourceManager.LoggedUser.LanguageID.ToString());
+                        client.Headers.Add("count", "10");
+                        client.Headers.Add("trhidden", "false");//hidden tr - na false bo pokazujemy 10 w tabelce odkrytych
+                        client.Headers.Add("joinnamesurname", "false");//złączyć kolumnę imie/nazwisko w jedną td
 
                         sharingtomewaitingtable = client.UploadString(ResourceManager.getTableSendedgreementWaitingAPIURL, "");
                     }
-                    //utf-8
+                    //utf-8 -- polske znaki nie są dobrze odbierane z webapi
                     bytes = Encoding.Default.GetBytes(sharingtomewaitingtable);
                     sharingtomewaitingtable = Encoding.UTF8.GetString(bytes);
 
@@ -161,11 +165,31 @@ namespace ApplicationMyRoots.Controllers
                     foreach (var user in userlist)
                     {
                         userlisttable += "<tr hidden>";
-                        userlisttable += "<td class=\"idcell\">" + user.UserID + "</td>";
-                        userlisttable += "<td class=\"namecell\">" + user.NameSurname + "</td>";
+                        userlisttable += "<td class=\"idcellmodalsend\">" + user.UserID + "</td>";
+                        userlisttable += "<td class=\"namecellmodalsend\">" + user.NameSurname + "</td>";
                         userlisttable += "<td style=\"text-align:center;\"><button class=\"btn btn-default\" onclick=\"sendagreement(" + user.UserID + ",this)\">" + sendtext + " <span class=\"glyphicon glyphicon-share-alt\"></span></button></td>";
                         userlisttable += "</tr>";
                     }
+
+                    //pobieranie rekordów do tabeli - WYSŁANE CZEKAJĄCE NA AKCEPTACJE - pobieranie wszystkich do modala historia ^ na górze jest pobieranie 10 można jakoś zoptymalizować
+                    using (var client = new WebClient())
+                    {
+                        client.BaseAddress = ResourceManager.getTableSendedgreementWaitingAPIURL;
+                        client.Headers.Add("senderid", ResourceManager.LoggedUser.UserID.ToString());
+                        client.Headers.Add("languageid", ResourceManager.LoggedUser.LanguageID.ToString());
+                        client.Headers.Add("count", "-1"); //wszystkie
+                        client.Headers.Add("trhidden" ,"true");//hidden tr - na true
+                        client.Headers.Add("joinnamesurname", "true");//złączyć kolumnę imie/nazwisko w jedną td
+
+                        agreementshistory = client.UploadString(ResourceManager.getTableSendedgreementWaitingAPIURL, "");
+                    }
+                    //utf-8 -- polske znaki nie są dobrze odbierane z webapi
+                    bytes = Encoding.Default.GetBytes(agreementshistory);
+                    agreementshistory = Encoding.UTF8.GetString(bytes);
+
+                    agreementshistory = agreementshistory.Substring(1, agreementshistory.Length - 2); // dodaje jakiś nawias otaczający string
+                    // -------------------
+
                 }
 
             }
@@ -178,9 +202,10 @@ namespace ApplicationMyRoots.Controllers
             sharingtometable += "</tbody>";
             userlisttable += "</tbody>";
 
-            ViewBag.sharingtometable = sharingtometable;
-            ViewBag.sharingtomewaitingtable = sharingtomewaitingtable;
-            ViewBag.userlisttable = userlisttable;
+            ViewBag.sharingtometable = sharingtometable; // tabelka drzewa widoczne dla mnie
+            ViewBag.sharingtomewaitingtable = sharingtomewaitingtable; // oczekujące/zaakceptowane/odrzucone zgody
+            ViewBag.userlisttable = userlisttable; // modal do wysyłania zgód
+            ViewBag.agreementshistory = agreementshistory; //modal historia zgód
             return View();
         }
 

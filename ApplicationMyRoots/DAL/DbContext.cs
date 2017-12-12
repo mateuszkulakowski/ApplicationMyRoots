@@ -9,7 +9,7 @@ namespace ApplicationMyRoots.DAL
 {
     public class DbContext : System.Data.Entity.DbContext
     {
-        public DbContext() : base("MyRootsDatabase") { }
+        public DbContext() : base("MyRootsDB") { }
 
         public DbSet<User> Users { get; set; }
 
@@ -33,6 +33,8 @@ namespace ApplicationMyRoots.DAL
 
         public DbSet<UserTreeSharingAgreement> UserTreeSharingAgreements { get; set; }
 
+        public DbSet<UserTreeUserTreeNode> UserTreesUserTreeNodes { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserTreeSharingAgreement>()
@@ -43,6 +45,16 @@ namespace ApplicationMyRoots.DAL
             modelBuilder.Entity<UserTreeSharingAgreement>()
                 .HasRequired(a => a.UserSending)
                 .WithMany(u => u.SendingAgreements)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<UserTree>()
+                .HasOptional(a => a.UserTreeNode)
+                .WithMany(u => u.NodeOtherPartners)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<UserTree>()
+                .HasOptional(a => a.UserTreeNodePartner)
+                .WithMany(u => u.NodeAsNextPartner)
                 .WillCascadeOnDelete(false);
         }
     }

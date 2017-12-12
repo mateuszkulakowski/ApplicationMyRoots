@@ -13,5 +13,6 @@ namespace ApplicationMyRoots.Common
         {
             return new User(registryUser.Login,registryUser.Password,registryUser.Name,registryUser.Surname);
         }
+        
     }
 }

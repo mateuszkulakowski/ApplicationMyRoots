@@ -110,8 +110,7 @@ namespace ApplicationMyRoots.Controllers
         [AccessControl]
         public ActionResult LogOut()
         {
-            ResourceManager.LoggedUser = null;
-
+            ResourceManager.clearSessionVariables();
             return View();
         }
     }
